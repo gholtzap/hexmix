@@ -4,3 +4,5 @@
 .space-templates h2{font-size:20px;line-height:28px}.space-table th{font-size:14px}.space-controls{gap:8px}.space-activity{font-size:12px}.space-file-open small{font-size:14px}.space-item-name>span:not(.space-site-thumb):not(.space-favorite){white-space:normal;overflow:visible;overflow-wrap:anywhere}.space-page .page-tools{gap:8px}@media(max-width:700px){.space-page .page-header h1{font-size:24px}.space-item-name{font-size:14px}.space-activity,.space-sites-table .space-activity{font-size:12px}}
 .space-item-name{background:var(--p-background)}.space-item-name>span:not(.space-site-thumb){background:inherit}
 .space-templates{margin-bottom:24px}.space-file-card{display:flex;flex-direction:column;gap:8px}.space-card-more{position:static;align-self:flex-end;margin:0 8px 8px}
+
+.space-toolbar .tab{flex:none}
