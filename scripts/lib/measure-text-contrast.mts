@@ -13,6 +13,9 @@ export async function measure(frame: Frame | Page) {
    if(!wordmark&&!field&&![...node.childNodes].some(child=>child.nodeType===3&&child.textContent.trim()))continue;
    let ancestors=[];for(let parent=node;parent;parent=parent.parentElement)ancestors.push(parent);
    let background=[255,255,255];for(const parent of ancestors.toReversed())background=over(rgba(getComputedStyle(parent).backgroundColor),background);
+   const readableArtwork=node.closest('[data-preview-readable-artwork]');
+   const readableSurface=readableArtwork&&getComputedStyle(readableArtwork).getPropertyValue('--preview-readable-surface').trim();
+   if(readableSurface&&!ancestors.slice(0,ancestors.indexOf(readableArtwork)).some(parent=>rgba(getComputedStyle(parent).backgroundColor)[3]===1))background=rgba(readableSurface).slice(0,3);
    const backing=node.matches('text,tspan')&&node.previousElementSibling?.tagName.toLowerCase()==='rect'?node.previousElementSibling:null;
    if(backing){const text=node.getBoundingClientRect(),rect=backing.getBoundingClientRect(),x=text.x+text.width/2,y=text.y+text.height/2;if(rect.left<=x&&rect.right>=x&&rect.top<=y&&rect.bottom>=y)background=over(rgba(getComputedStyle(backing).fill),background);}
    const css=getComputedStyle(node);let foreground=css.webkitTextFillColor||css.color;

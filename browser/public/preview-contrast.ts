@@ -96,7 +96,16 @@ function correctText() {
         const own = css(node), rectangle = node.getBoundingClientRect();
         const x = rectangle.x + rectangle.width / 2, y = rectangle.y + rectangle.height / 2;
         const underArtwork = artwork.some(item => item.node !== node && !node.contains(item.node) && item.rectangle.left <= x && item.rectangle.right >= x && item.rectangle.top <= y && item.rectangle.bottom >= y);
-        const background = { ...surface(node), image: !node.closest<HTMLElement>('[data-preview-readable-artwork]') && (surface(node).image || underArtwork) };
+        const readableArtwork = node.closest<HTMLElement>('[data-preview-readable-artwork]');
+        const background = { ...surface(node), image: !readableArtwork && (surface(node).image || underArtwork) };
+        const readableSurface = readableArtwork && css(readableArtwork).getPropertyValue('--preview-readable-surface').trim();
+        if (readableSurface) {
+            let opaqueSurface = false;
+            for (let parent = node; parent && parent !== readableArtwork; parent = parent.parentElement)
+                if (rgba(css(parent).backgroundColor)[3] === 1) { opaqueSurface = true; break; }
+            if (!opaqueSurface)
+                background.color = rgba(readableSurface).slice(0, 3);
+        }
         const backing = node.matches('text,tspan') && node.previousElementSibling?.tagName.toLowerCase() === 'rect' ? node.previousElementSibling : null;
         if (backing) {
             const bounds = backing.getBoundingClientRect();
@@ -200,6 +209,16 @@ function queueCorrection(delay, resetReady = false) {
     timer = setTimeout(() => {
         timer = undefined;
         pendingSince = 0;
+        // Read the final colors after opted-in artwork motion has finished.
+        const animations = document.getAnimations().filter(animation => {
+            const target = animation.effect instanceof KeyframeEffect && animation.effect.target;
+            return target instanceof Element && target.closest('[data-preview-animated-artwork]') &&
+                animation.playState === 'running' && Number.isFinite(animation.effect.getTiming().iterations);
+        });
+        if (animations.length) {
+            Promise.allSettled(animations.map(animation => animation.finished)).then(() => queueCorrection(0));
+            return;
+        }
         correctText();
     }, Math.min(delay, Math.max(0, 800 - (now - pendingSince))));
 }
@@ -209,7 +228,7 @@ new MutationObserver(records => {
     if (records.some(record => record.type !== 'attributes' || record.attributeName !== 'style' || writtenStyles.get(record.target) !== colorStyle(record.target))) {
         queueCorrection(180, !root.dataset.editorSite && records.some(record => record.type !== 'attributes' || record.attributeName !== 'style'));
     }
-}).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class', 'open', 'hidden', 'aria-expanded', 'aria-hidden', 'data-state', 'data-open', 'data-framer-name'] });
+}).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class', 'open', 'hidden', 'aria-expanded', 'aria-hidden', 'data-state', 'data-open', 'data-framer-name', 'data-preview-readable-artwork'] });
 new MutationObserver(schedule).observe(document.head, { childList: true });
 new MutationObserver(scheduleNow).observe(root, { attributes: true, attributeFilter: ['style', 'data-copy-ready', 'data-home-ready'] });
 window.addEventListener('resize', schedule);
