@@ -1114,3 +1114,12 @@ body:has(.studio[data-comparison-toolbar]) .mobile-tools { display: contents; }
 }
 
 .comparison-option[data-panel-open=true] > .comparison-toolbar { visibility: hidden; pointer-events: none; }
+
+@media (max-width: 760px) {
+  .comparison-page { display: grid; grid-template-rows: 52px minmax(0, 1fr); }
+  .comparison-grid { grid-row: 2; min-height: 0; }
+  .comparison-toolbar { position: fixed; top: 0; right: 0; left: 0; bottom: auto; height: 52px; max-width: none; transform: none; justify-content: center; padding: 4px; border: 0; border-bottom: 1px solid var(--color-border); border-radius: 0; }
+}
+
+.comparison-link-toggle { display: flex; align-items: center; gap: 8px; }
+.comparison-link-toggle input { width: 16px; height: 16px; accent-color: var(--color-foreground); }

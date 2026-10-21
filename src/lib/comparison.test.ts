@@ -56,3 +56,10 @@ test('comparison links preserve manual color edits in the selected mode', () => 
   const value = { ...readComparison(''), customA: true as const };
   assert.deepEqual(readComparison(new URL(comparisonHref(value), 'https://example.com').search), value);
 });
+
+test('linked interactions default to on and can be disabled in a shared comparison', () => {
+  assert.equal(readComparison('').unlinked, undefined);
+  const value = { ...readComparison(''), unlinked: true as const };
+  assert.deepEqual(readComparison(new URL(comparisonHref(value), 'https://example.com').search), value);
+  assert.equal(readComparison('?linked=invalid').unlinked, undefined);
+});

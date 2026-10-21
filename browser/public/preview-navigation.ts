@@ -18,8 +18,10 @@
         let pathname = url.pathname.replace(new RegExp(`^/(?:render|render-assets)/${slug}(?=/|$)`), '') || '/';
         while (pathname === prefix || pathname.startsWith(`${prefix}/`))
             pathname = pathname.slice(prefix.length) || '/';
-        if (url.hash && (url.pathname === currentPath || url.pathname === location.pathname) && document.getElementById(decodeURIComponent(url.hash.slice(1))))
+        if (url.hash && (url.pathname === currentPath || url.pathname === location.pathname) && document.getElementById(decodeURIComponent(url.hash.slice(1)))) {
+            link.setAttribute('href', url.hash);
             return null;
+        }
         const label = (link.innerText || link.getAttribute('aria-label') || '').trim().toLowerCase();
         if (/register|login/.test(pathname))
             return pathname.includes('register') ? '/register' : '/login';

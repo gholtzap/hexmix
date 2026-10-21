@@ -16,6 +16,7 @@
     "capture:previews": "node scripts/capture-previews.mts",
     "test:comparison": "node scripts/check-comparison.mts",
     "test:comparison:toolbar": "node scripts/check-comparison-toolbar.mts",
+    "test:comparison:interactions": "node scripts/check-comparison-interactions.mts",
     "test:home": "node scripts/check-home.mts",
     "test:contrast": "node scripts/check-surface-contrast.mts",
     "test:site-switcher": "node scripts/check-site-switcher.mts",

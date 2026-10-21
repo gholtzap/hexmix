@@ -79,7 +79,7 @@ export default function ComparisonPage() {
   const preview = previewCatalog.find(item => item.id === value.preview)!;
   const rendered = { a: value.customA ? value.a : paletteForMode(value.a, value.mode), b: value.customB ? value.b : paletteForMode(value.b, value.mode) };
   const href = (palette: Palette) => previewHref(preview.path, palette, value.heading, value.body);
-  const frames = useComparisonScroll(value.preview, ready ? preview.path : '', ready ? preview.path : '');
+  const frames = useComparisonScroll(value.preview, ready ? preview.path : '', ready ? preview.path : '', !value.unlinked);
   async function share() {
     if (await copyText(link, input.current?.parentElement ?? document.body)) setNotice('Comparison link copied.');
     else { setNotice('Select and copy the comparison link.'); input.current?.focus(); input.current?.select(); }
@@ -97,6 +97,7 @@ export default function ComparisonPage() {
               <div className="comparison-select"><label htmlFor={`comparison-preview-${side}`}>Preview</label><select id={`comparison-preview-${side}`} value={value.preview} onChange={event => setValue({ ...value, preview: event.target.value })}>
                 {['Homepages', 'Dashboards'].map(category => <optgroup key={category} label={category}>{previewCatalog.filter(item => item.category === category).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</optgroup>)}
               </select></div>
+              <label className="comparison-link-toggle"><input type="checkbox" checked={!value.unlinked} onChange={() => setValue(({ unlinked, ...current }) => unlinked ? current : { ...current, unlinked: true })} />Link interactions</label>
               <div className="comparison-controls" role="group" aria-label="Preview appearance">{(['light', 'dark'] as const).map(mode => <Button key={mode} variant="outline" aria-pressed={value.mode === mode} onClick={() => setValue(({ customA, customB, ...current }) => ({ ...current, mode }))}>{mode === 'light' ? 'Light' : 'Dark'}</Button>)}</div>
               <Link href={href(rendered[side])}>Use palette {side.toUpperCase()}</Link>
               <div className="comparison-share"><label htmlFor={`comparison-link-${side}`}>Comparison link</label><Input ref={input} id={`comparison-link-${side}`} value={link} readOnly onFocus={event => event.target.select()} /><Button variant="outline" disabled={!ready} onClick={share}>Copy comparison link</Button></div>

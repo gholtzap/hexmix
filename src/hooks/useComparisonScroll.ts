@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import { comparisonInteractions } from '@/lib/comparison-interactions';
 
 type Side = 'a' | 'b';
 type Position = { top: number; left: number };
@@ -27,7 +28,10 @@ function elementFor(document: Document, key: string): Element | null {
   return element;
 }
 
-export function useComparisonScroll(preview: string, sourceA: string, sourceB: string) {
+export function useComparisonScroll(preview: string, sourceA: string, sourceB: string, linked = true) {
+  const enabled = useRef(linked); enabled.current = linked;
+  const interactions = useRef<ReturnType<typeof comparisonInteractions> | null>(null);
+  interactions.current ??= comparisonInteractions();
   const frames = useRef<Record<Side, HTMLIFrameElement | null>>({ a: null, b: null });
   const documents = useRef<Partial<Record<Side, Document>>>({});
   const positions = useRef(new Map<string, Position>());
@@ -58,9 +62,11 @@ export function useComparisonScroll(preview: string, sourceA: string, sourceB: s
       style.textContent = '* { scrollbar-width: none !important; } *::-webkit-scrollbar { display: none !important; }';
       document.head.append(style);
       documents.current[side] = document;
+      const unlink = interactions.current!(document, () => documents.current[side === 'a' ? 'b' : 'a'], () => enabled.current);
       let live = true;
-      const restore = () => { if (live) positions.current.forEach((position, key) => write(document, key, position)); };
+      const restore = () => { if (live && enabled.current) positions.current.forEach((position, key) => write(document, key, position)); };
       const scroll = (event: Event) => {
+        if (!enabled.current) return;
         const target = event.target === document ? document.scrollingElement : event.target as Element;
         if (!target || target.nodeType !== 1) return;
         const expected = pending.current.get(target);
@@ -83,6 +89,7 @@ export function useComparisonScroll(preview: string, sourceA: string, sourceB: s
       void document.fonts.ready.then(restore);
       disconnect = () => {
         live = false;
+        unlink();
         document.removeEventListener('scroll', scroll, true);
         style.remove();
         observer.disconnect();

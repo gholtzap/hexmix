@@ -2,7 +2,7 @@ import { fonts, type FontName } from './fonts.ts';
 import { defaultDarkPalette, initialPalette, paletteQuery, readPalette, samePalette, isDarkPalette, type Palette, type PaletteMode } from './palette.ts';
 import { previewCatalog } from './preview-catalog.ts';
 
-export type Comparison = { a: Palette; b: Palette; preview: string; heading: FontName; body: FontName; nameA: string; nameB: string; mode: PaletteMode; customA?: true; customB?: true };
+export type Comparison = { a: Palette; b: Palette; preview: string; heading: FontName; body: FontName; nameA: string; nameB: string; mode: PaletteMode; customA?: true; customB?: true; unlinked?: true };
 
 export function readComparison(search: string): Comparison {
   const query = new URLSearchParams(search);
@@ -17,6 +17,7 @@ export function readComparison(search: string): Comparison {
   };
   return {
     a,
+    ...(query.get('linked') === '0' ? { unlinked: true as const } : {}),
     ...(query.get('customA') === '1' ? { customA: true as const } : {}),
     ...(query.get('customB') === '1' ? { customB: true as const } : {}),
     b: readPalette(search, 'b') ?? (samePalette(a, initialPalette) ? defaultDarkPalette : initialPalette),
@@ -37,6 +38,7 @@ export function comparisonHref(value: Comparison): string {
   query.set('nameA', value.nameA);
   query.set('nameB', value.nameB);
   query.set('mode', value.mode);
+  if (value.unlinked) query.set('linked', '0');
   for (const key of ['customA', 'customB'] as const) if (value[key]) query.set(key, '1');
   return `/compare?${query}`;
 }

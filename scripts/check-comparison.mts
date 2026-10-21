@@ -109,7 +109,7 @@ try {
       assert.deepEqual(readComparison(new URL(page.url()).search).a, a);
       await rendered(page, 'a'); await rendered(page, 'b');
       const bounds = await page.locator('iframe[title="Palette A preview"]').boundingBox();
-      assert.equal(bounds.y, 0); assert.equal(bounds.height, width === 390 ? 844 : 1000);
+      assert.equal(bounds.y, width === 390 ? 52 : 0); assert.equal(bounds.height, width === 390 ? 792 : 1000);
       assert.ok(Math.abs(bounds.width - (width === 390 ? width : (width - 1) / 2)) < 1);
       await audit(page, 'opened', width, theme);
       await options(page); await audit(page, 'options', width, theme); await page.keyboard.press('Escape');
