@@ -1186,3 +1186,5 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 
 .comparison-link-toggle { display: flex; align-items: center; gap: 8px; }
 .comparison-link-toggle input { width: 16px; height: 16px; accent-color: var(--color-foreground); }
+
+.toolbar-anchor[data-preview-toolbar-hidden] { visibility: hidden; pointer-events: none; }
