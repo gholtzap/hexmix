@@ -93,7 +93,7 @@ export default function ComparisonPage() {
       if (data?.type === 'hexmix-comparison-options') setOptionsSide(side);
       if (data?.type === 'hexmix-comparison-name' && typeof data.name === 'string' && data.name.trim() && data.name.length <= 80) setValue(current => ({ ...current, [side === 'a' ? 'nameA' : 'nameB']: data.name.trim() }));
       if (data?.type === 'hexmix-comparison-preview') {
-        if (data.preview === 'gallery') window.location.assign('/');
+        if (data.preview === 'gallery') window.location.assign(previewHref('/', value[side === 'a' ? 'customA' : 'customB'] ? value[side] : paletteForMode(value[side], value.mode), value.heading, value.body, value.elements));
         else if (previewCatalog.some(item => item.id === data.preview)) setValue(current => ({ ...current, preview: data.preview }));
       }
       if (data?.type === 'hexmix-comparison-change' && isPalette(data.palette) && typeof data.heading === 'string' && Object.hasOwn(fonts, data.heading) && typeof data.body === 'string' && Object.hasOwn(fonts, data.body)) {
@@ -105,7 +105,7 @@ export default function ComparisonPage() {
     };
     window.addEventListener('message', toggle);
     return () => window.removeEventListener('message', toggle);
-  }, []);
+  }, [value]);
   const link = ready ? new URL(comparisonHref(value), origin).href : '';
   useEffect(() => { setSharedLink(''); }, [value, active, optionsSide, panels]);
   const preview = previewCatalog.find(item => item.id === value.preview)!;
