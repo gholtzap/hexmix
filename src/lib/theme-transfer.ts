@@ -1,3 +1,4 @@
+import {parseSnapshot} from './shared-snapshot.ts';
 import {fonts,type FontName} from './fonts.ts';
 import {roles,paletteCSS,type Palette} from './palette.ts';
 import {readElementRoles,maxElementRolesLength,type ElementRole} from './element-roles.ts';
@@ -58,6 +59,19 @@ export function parseTheme(input:string):ThemeImport {
   return {colors:palette(values),fonts:importFonts(family)};
  }
  return list(text.split(/[\s,;\-]+/).filter(Boolean));
+}
+export async function readTheme(input:string,origin:string):Promise<ThemeImport> {
+ const text=input.trim();
+ if(text.length>50000) return parseTheme(text);
+ let url:URL;try{url=new URL(text);}catch{return parseTheme(text);}
+ const id=/^\/s\/([a-f0-9]{32})\/?$/.exec(url.pathname)?.[1];
+ if(!id)return parseTheme(text);
+ if(url.origin!==origin)throw new Error('Use a shared theme link from this site.');
+ const response=await fetch(`/api/shares/${id}`,{redirect:'error'});
+ if(!response.ok)throw new Error('The shared theme could not be loaded.');
+ const snapshot=parseSnapshot(await response.json());
+ if(!snapshot)throw new Error('The shared theme is not valid.');
+ return parseTheme(new URL(snapshot.href,origin).href);
 }
 export function copyPalette(colors:Palette):string {return JSON.stringify(colors,null,2);}
 export function copyTheme(theme:Theme):string {return JSON.stringify({version:1,...theme},null,2);}
