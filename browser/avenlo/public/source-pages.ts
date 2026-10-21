@@ -1,4 +1,10 @@
 (() => {
+    const more = document.querySelector<HTMLButtonElement>('[data-bl-more]');
+    more?.addEventListener('click', () => {
+        const hidden = [...document.querySelectorAll<HTMLElement>('.bl-list > li[hidden]')];
+        hidden.slice(0, 20).forEach(item => { item.hidden = false; });
+        more.hidden = hidden.length <= 20;
+    });
     const dialog = document.querySelector<HTMLDialogElement>('#demo-popup');
     document.addEventListener('click', event => {
         const target = event.target instanceof Element ? event.target : null;
