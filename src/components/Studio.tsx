@@ -943,7 +943,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuItem onSelect={toggleTheme}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
                     <DropdownMenuItem onPointerEnter={preloadPalettePanel} onFocus={preloadPalettePanel} onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
-                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
+                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Done editing" : "Edit element"}</DropdownMenuItem>
                     <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={() => setRoleMap(current => !current)}>{roleMap ? "Hide color map" : "Show color map"}</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
@@ -952,12 +952,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                   <DropdownMenuItem onSelect={startComparison}>Compare palettes</DropdownMenuItem>
                   <DropdownMenuItem onSelect={share}>Share palette</DropdownMenuItem>
                   <DropdownMenuGroup className="clipboard-tools">
-                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy palette" onClick={()=>void copy(copyPalette(palette), "Palette copied.")}><Copy size={17}/></IconButton></DropdownMenuItem>
-                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Paste palette or theme" onClick={()=>void pasteClipboard()}><ClipboardPaste size={17}/></IconButton></DropdownMenuItem>
-                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy theme and settings" onClick={()=>void copy(copyTheme(currentTheme()), "Theme copied.")}><FileJson size={17}/></IconButton></DropdownMenuItem>
-                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy for AI" onClick={()=>void copy(themePrompt(currentTheme()), "AI prompt copied.")}><Sparkles size={17}/></IconButton></DropdownMenuItem>
+                    <DropdownMenuItem onSelect={()=>void copy(copyPalette(palette), "Palette copied.")}><Copy aria-hidden="true" />Copy palette</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={()=>void pasteClipboard()}><ClipboardPaste aria-hidden="true" />Paste palette or theme</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={()=>void copy(copyTheme(currentTheme()), "Theme copied.")}><FileJson aria-hidden="true" />Copy theme and settings</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={()=>void copy(themePrompt(currentTheme()), "AI prompt copied.")}><Sparkles aria-hidden="true" />Copy for AI</DropdownMenuItem>
                   </DropdownMenuGroup>
-                  <DropdownMenuItem asChild disabled={!pasteUndo}><IconButton className="icon-button" aria-label="Undo paste" disabled={!pasteUndo} onClick={undoPaste}><Undo2 size={17}/></IconButton></DropdownMenuItem>
+                  <DropdownMenuItem disabled={!pasteUndo} onSelect={undoPaste}><Undo2 aria-hidden="true" />Undo paste</DropdownMenuItem>
                   <DropdownMenuItem onSelect={openExport}>Export palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={reset}>Reset palette and fonts</DropdownMenuItem>
                   <DropdownMenuItem onSelect={hideToolbar}>Hide color toolbar</DropdownMenuItem>
