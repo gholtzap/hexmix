@@ -221,6 +221,44 @@
                 result.textContent = 'This is a design preview. Your request was not sent.';
             });
         }
+        for (const [index, header] of [...document.querySelectorAll<HTMLElement>('nav.mh-header')].entries()) {
+            for (const panel of header.querySelectorAll<HTMLElement>('[data-framer-name$=" Panel"]')) panel.inert = true;
+            const menus = [['Products', 'Distributors Panel'], ['Solutions', 'Manufacturers Panel']].map(([triggerName, panelName], i) => {
+                const trigger = header.querySelector<HTMLElement>(`[data-framer-name="Primary Links"] > [data-framer-name="${triggerName}"]`);
+                const panel = header.querySelector<HTMLElement>(`[data-framer-name="${panelName}"]`);
+                if (!trigger || !panel) return null;
+                panel.id ||= `nuvexa-menu-${index}-${i}`;
+                trigger.setAttribute('role', 'button'); trigger.tabIndex = 0;
+                trigger.setAttribute('aria-controls', panel.id);
+                return { trigger, panel };
+            }).filter(Boolean);
+            let active: typeof menus[number] | null = null;
+            const setMenu = (next: typeof active) => {
+                active = next;
+                for (const item of menus) {
+                    const open = item === next;
+                    item.trigger.setAttribute('aria-expanded', String(open));
+                    item.panel.setAttribute('aria-hidden', String(!open));
+                    item.panel.inert = !open;
+                    item.panel.style.opacity = open ? '1' : '0';
+                    item.panel.style.pointerEvents = open ? 'auto' : 'none';
+                }
+            };
+            setMenu(null);
+            for (const item of menus) {
+                item.trigger.addEventListener('mouseenter', () => setMenu(item));
+                item.trigger.addEventListener('click', () => setMenu(active === item ? null : item));
+                item.trigger.addEventListener('keydown', event => {
+                    if (['Enter', ' '].includes(event.key)) { event.preventDefault(); setMenu(active === item ? null : item); }
+                    if (event.key === 'ArrowDown') { event.preventDefault(); setMenu(item); item.panel.querySelector<HTMLElement>('a[href]')?.focus(); }
+                });
+            }
+            header.addEventListener('mouseleave', () => { if (!header.matches(':focus-within')) setMenu(null); });
+            header.addEventListener('focusout', event => { if (!header.contains(event.relatedTarget as Node)) setMenu(null); });
+            document.addEventListener('pointerdown', event => { if (!header.contains(event.target as Node)) setMenu(null); });
+            document.addEventListener('keydown', event => { if (event.key === 'Escape' && active) { const trigger = active.trigger; setMenu(null); trigger.focus(); } });
+            window.addEventListener('resize', () => setMenu(null));
+        }
         const menuButton = document.querySelector<HTMLElement>('nav [data-framer-name="Menu Button"] button, nav button');
         const nav = menuButton?.closest<HTMLElement>('nav');
         if (menuButton && nav && nav.querySelector<HTMLElement>('[data-framer-name="Mobile Menu"]')) {
