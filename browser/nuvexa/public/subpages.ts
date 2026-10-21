@@ -289,10 +289,9 @@
                     bar.style.transform = open ? 'rotate(90deg)' : 'none';
             });
         }
-        const carousel = document.getElementById('stories-carousel');
-        const carouselControls = document.querySelector<HTMLElement>('[data-framer-name="Carousel Arrows"]');
-        if (carousel && carouselControls) {
-            for (const button of carouselControls.querySelectorAll<HTMLElement>('button[aria-label]')) {
+        for (const id of ['stories-carousel', 'stories-video']) {
+            const carousel = document.getElementById(id);
+            for (const button of carousel?.closest('section')?.querySelectorAll<HTMLButtonElement>('button[aria-label="Previous"],button[aria-label="Next"]') ?? []) {
                 button.addEventListener('click', () => {
                     carousel.scrollBy({ left: (button.ariaLabel === 'Next' ? 1 : -1) * carousel.clientWidth * 0.8, behavior: 'smooth' });
                 });
