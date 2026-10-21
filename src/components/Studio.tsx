@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { usePreviewToolbarClearance } from '@/hooks/usePreviewToolbarClearance';
 import { useLinkState } from "@/hooks/useLinkState";
 import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
@@ -147,6 +147,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const comparisonState = useRef('');
   const [collapsed, setCollapsed] = useLinkState("Studio.Studio.collapsed", false);
   const [notice, setNotice] = useState("");
+  const swatchTooltip = useId();
   const [exportOpen, setExportOpen] = useLinkState("Studio.Studio.exportOpen", false);
   const [pasteUndo, setPasteUndo] = useLinkState<Theme | null>("Studio.pasteUndo", null, { validate: value => {
     if (value === null) return true;
@@ -719,6 +720,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <PopoverAnchor virtualRef={{ current: toolbarElement }} />
                     <ColorPickerTrigger
                       className="color-trigger"
+                      aria-describedby={`${swatchTooltip}-${role}`}
                       style={{
                         background: palette[role],
                         color:
@@ -730,6 +732,9 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     >
                       <span className="color-trigger-name">{role === "background" ? <>Backg<wbr />round</> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
                       {locked.includes(role) && <LockKeyhole size={12} aria-hidden="true" />}
+                      <span className="control-tooltip swatch-tooltip" role="tooltip" id={`${swatchTooltip}-${role}`}>
+                        {role[0].toUpperCase() + role.slice(1)} color
+                      </span>
                     </ColorPickerTrigger>
                     <ColorPickerContent
                       className="color-picker-content"
