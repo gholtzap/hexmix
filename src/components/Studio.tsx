@@ -393,7 +393,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       setPreviewPalette(null);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && panel === "fonts") { close(); focusMobileTools(); }
+      if (event.key === "Escape" && panel === "fonts") { close(); focusFontsTrigger(); }
     };
     const onPointer = (event: PointerEvent) => {
       if (panel === "fonts" && !toolbarElement?.contains(event.target as Node)) close();
@@ -507,10 +507,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     URL.revokeObjectURL(url);
     setNotice(`${format.label} file downloaded.`);
   }
-  function focusMobileTools() {
-    if (window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) toolsTrigger.current?.focus();
+  function focusFontsTrigger() {
+    const direct = toolbarElement?.querySelector<HTMLButtonElement>('button[aria-label="Fonts"]');
+    const trigger = direct?.getClientRects().length ? direct : toolsTrigger.current;
+    trigger?.focus();
   }
-  function closeFonts() { setPanel(null); focusMobileTools(); }
+  function closeFonts() { setPanel(null); focusFontsTrigger(); }
   function toggleInspector() { setInspecting(!inspecting); setSelection(null); setPanel(null); setActiveColor(null); }
   useEffect(() => { if (panel === "fonts") document.getElementById("heading-font")?.focus(); }, [panel]);
   function togglePanel(next: "fonts" | "saved") {
