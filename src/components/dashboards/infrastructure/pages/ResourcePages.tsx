@@ -2,7 +2,7 @@
 import {isDomainName} from '@/lib/validation';
 import {useState, type FormEvent} from 'react';
 import { useLinkState } from "@/hooks/useLinkState";
-import { nullable, stringRecord } from "@/lib/link-state";
+import { nullable, stringRecord, redactFields } from "@/lib/link-state";
 import {Action, Menu, Modal} from '../primitives';
 import {projects} from '../data';
 import {PageHeading, Search, Filter, Empty, Status, DataTable} from './shared';
@@ -37,10 +37,11 @@ export function ResourcePage({page,onAction}:{page:PageId;onAction:PageAction}){
 }
 function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
  const config=configs[page];
- const [records,setRecords]=useLinkState("ResourcePages.ResourceView.records", config.rows, { private: true });
+ const [records,setRecords]=useLinkState("ResourcePages.ResourceView.records", config.rows, { private: true, redact: page === "environment-variables" ? value => redactFields(value, ["value"]) : undefined });
  const [query,setQuery]=useLinkState("ResourcePages.ResourceView.query", '');const [filter,setFilter]=useLinkState("ResourcePages.ResourceView.filter", 'All');
- const [editor,setEditor]=useLinkState<{record?:RecordData;title:string}|null>("ResourcePages.ResourceView.editor", null, { validate: nullable(value => !!value && typeof value === "object" && "title" in value && typeof value.title === "string" && (!("record" in value) || value.record === undefined || stringRecord(value.record))) });
- const [detail,setDetail]=useLinkState<string|null>("ResourcePages.ResourceView.detail", null, { validate: nullable(value => typeof value === "string") });const [removing,setRemoving]=useLinkState<RecordData|null>("ResourcePages.ResourceView.removing", null, { validate: nullable(value => stringRecord(value) && ["id", "name", "project", "status"].every(key => typeof value[key] === "string")) });
+ const [editor,setEditor]=useLinkState<{id?:string;title:string}|null>("ResourcePages.ResourceView.editor", null, { validate: nullable(value => stringRecord(value) && typeof value.title === "string") });
+ const [detail,setDetail]=useLinkState<string|null>("ResourcePages.ResourceView.detail", null, { validate: nullable(value => typeof value === "string") });const [removingId,setRemovingId]=useLinkState<string|null>("ResourcePages.ResourceView.removing", null, { validate: nullable(value => typeof value === "string") });
+ const removing = records.find(item => item.id === removingId);
  const [visible,setVisible]=useLinkState<string[]>("ResourcePages.ResourceView.visible", []);const [message,setMessage]=useState('');
  const selected=records.find(item=>item.id===detail);
  const shown=records.filter(item=>Object.values(item).join(' ').toLowerCase().includes(query.toLowerCase())&&(filter==='All'||item[config.filter?.key??'']===filter));
@@ -48,16 +49,16 @@ function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
  const create=(title=config.create)=>setEditor({title});
  const rowActions=(record:RecordData)=>{
   const items=[{label:page==='domains'?'Manage DNS':page==='storage'?'Browse data':page==='integrations'?'Manage':'View details',onClick:()=>setDetail(record.id)}];
-  if(page==='environment-variables'||page==='flags')items.push({label:'Edit',onClick:()=>setEditor({record,title:page==='flags'?'Edit Flag':'Edit Variable'})});
+  if(page==='environment-variables'||page==='flags')items.push({label:'Edit',onClick:()=>setEditor({id:record.id,title:page==='flags'?'Edit Flag':'Edit Variable'})});
   if(page==='connect')items.push({label:record.status==='Connected'?'Disconnect':'Connect',onClick:()=>update(record,{status:record.status==='Connected'?'Disconnected':'Connected'},`${record.name} updated`)});
   if(page==='sandboxes')items.push({label:record.status==='Running'?'Stop':'Start',onClick:()=>update(record,{status:record.status==='Running'?'Stopped':'Running'},`${record.name} updated`)});
   if(page==='workflows'&&record.status==='Failed')items.push({label:'Retry',onClick:()=>update(record,{status:'Succeeded',duration:'1.2 sec',started:'Just now'},`${record.name} completed`)});
   if(page==='images')items.push({label:'Optimize',onClick:()=>update(record,{format:'AVIF',size:'64 KB',original:record.original||record.size},`${record.name} optimized to AVIF, 64 KB`)});
   if(page==='daemons')items.push({label:record.status==='Paused'?'Resume':'Pause',onClick:()=>update(record,{status:record.status==='Paused'?'Running':'Paused',cpu:record.status==='Paused'?'8%':'0%'},`${record.name} updated`)},{label:'Restart',onClick:()=>update(record,{status:'Running',uptime:'Just now'},`${record.name} restarted`)});
-  items.push({label:page==='integrations'?'Disconnect':'Delete',onClick:()=>setRemoving(record)});return items;
+  items.push({label:page==='integrations'?'Disconnect':'Delete',onClick:()=>setRemovingId(record.id)});return items;
  };
  function save(values:Record<string,string>){
-  const previous=editor?.record;
+  const previous=records.find(item=>item.id===editor?.id);
   const defaults:Record<string,string>={updated:'Just now',expires:'Not applicable',region:'iad1',ip:'10.0.3.12',plan:'Free',created:'Oct 19, 2026',duration:'0 sec',started:'Just now',cpu:page==='daemons'?'0%':'2 vCPU',memory:'64 MB',uptime:'Just now',dimensions:'1200 × 800',format:'WebP',size:'128 KB',original:'256 KB',requests:'0',cache:'0%',category:({Lantern:'Authentication',Harbor:'Storage',Meadow:'Database',Beacon:'Observability',Postroom:'Email',Lookout:'Observability',Ledger:'Payments'} as Record<string,string>)[values.name]??'Storage'};
   const initialStatus:Partial<Record<ResourceId,string>>={domains:'Pending Verification',connect:'Connected',storage:'Available',flags:'Disabled',sandboxes:'Running',workflows:'Running',daemons:'Running'};
   const next={...defaults,...previous,...values,id:previous?.id??`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,status:previous?.status??initialStatus[page]??'Ready'} as RecordData;
@@ -69,14 +70,14 @@ function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
   {shown.length?<DataTable label={config.title} columns={['Name',...(page==='environment-variables'?['Value']:[]),...config.columns.map(column=>column.label),'Actions']}>
    {shown.map(record=><tr key={record.id}><td data-label="Name"><button className="vp-cell-action" onClick={()=>setDetail(record.id)}>{record.name}</button></td>{page==='environment-variables'&&<td data-label="Value"><div className="vr-value"><span>{visible.includes(record.id)?record.value:'••••••••••••'}</span><Action className="outline" onClick={()=>setVisible(ids=>ids.includes(record.id)?ids.filter(id=>id!==record.id):[...ids,record.id])}>{visible.includes(record.id)?'Hide':'Show'}</Action></div></td>}{config.columns.map(column=><td key={column.key} data-label={column.label}>{column.key==='status'?page==='flags'?<Action className="outline" aria-pressed={record.status==='Enabled'} onClick={()=>update(record,{status:record.status==='Enabled'?'Disabled':'Enabled'},`${record.name} ${record.status==='Enabled'?'disabled':'enabled'}`)}>{record.status}</Action>:<Status>{record.status}</Status>:record[column.key]}</td>)}<td data-label="Actions"><Menu label={`Actions for ${record.name}`} icon="more" items={rowActions(record)}/></td></tr>)}
   </DataTable>:<Empty onReset={()=>{setQuery('');setFilter('All');}}/>}
-  {page==='integrations'&&<section className="vp-section"><h2 className="vp-section-title">Marketplace</h2><div className="vr-market">{['Postroom','Lookout','Ledger','Lantern'].map(name=><div className="vc-panel vr-provider" key={name}><h3>{name}</h3><p className="vc-muted">{name==='Lantern'?'Authentication':name==='Lookout'?'Observability':name==='Ledger'?'Payments':'Email delivery'}</p><Action className="outline" onClick={()=>setEditor({record:undefined,title:`Add ${name}`})}>Add {name}</Action></div>)}</div></section>}
-  {editor&&<RecordEditor key={editor.record?.id??editor.title} page={page} config={config} title={editor.title} record={editor.record} records={records} onClose={()=>setEditor(null)} onSave={save}/>}
+  {page==='integrations'&&<section className="vp-section"><h2 className="vp-section-title">Marketplace</h2><div className="vr-market">{['Postroom','Lookout','Ledger','Lantern'].map(name=><div className="vc-panel vr-provider" key={name}><h3>{name}</h3><p className="vc-muted">{name==='Lantern'?'Authentication':name==='Lookout'?'Observability':name==='Ledger'?'Payments':'Email delivery'}</p><Action className="outline" onClick={()=>setEditor({id:undefined,title:`Add ${name}`})}>Add {name}</Action></div>)}</div></section>}
+  {editor&&<RecordEditor key={editor.id??editor.title} page={page} config={config} title={editor.title} record={records.find(item=>item.id===editor.id)} records={records} onClose={()=>setEditor(null)} onSave={save}/>}
   {selected&&<Modal title={selected.name} onClose={()=>setDetail(null)}><ResourceDetail page={page} record={selected}/><div className="vp-form-actions">{rowActions(selected).filter(item=>!['View details','Manage DNS','Browse data','Manage'].includes(item.label)).map(item=><Action key={item.label} className="outline" onClick={()=>{setDetail(null);item.onClick();}}>{item.label}</Action>)}<Action className="primary" onClick={()=>setDetail(null)}>Done</Action></div></Modal>}
-  {removing&&<Modal title={page==='integrations'?'Disconnect integration':'Delete resource'} onClose={()=>setRemoving(null)}><p>Remove {removing.name} from this demo?</p><div className="vp-form-actions"><Action className="outline" onClick={()=>setRemoving(null)}>Cancel</Action><Action className="primary" onClick={()=>{setRecords(items=>items.filter(item=>item.id!==removing.id));setMessage(`${removing.name} removed`);setRemoving(null);}}>Confirm {page==='integrations'?'disconnect':'delete'}</Action></div></Modal>}
+  {removing&&<Modal title={page==='integrations'?'Disconnect integration':'Delete resource'} onClose={()=>setRemovingId(null)}><p>Remove {removing.name} from this demo?</p><div className="vp-form-actions"><Action className="outline" onClick={()=>setRemovingId(null)}>Cancel</Action><Action className="primary" onClick={()=>{setRecords(items=>items.filter(item=>item.id!==removing.id));setMessage(`${removing.name} removed`);setRemovingId(null);}}>Confirm {page==='integrations'?'disconnect':'delete'}</Action></div></Modal>}
  </div>;
 }
 function RecordEditor({page,config,title,record,records,onClose,onSave}:{page:ResourceId;config:Config;title:string;record?:RecordData;records:RecordData[];onClose:()=>void;onSave:(values:Record<string,string>)=>void}){
- const [values,setValues]=useLinkState<Record<string,string>>("ResourcePages.RecordEditor.values", ()=>Object.fromEntries(config.fields.map(item=>[item.key,record?.[item.key]??(title.startsWith('Add ')?item.options?.find(option=>title===`Add ${option}`):undefined)??item.options?.[0]??''])), { private: true, scope: `resource:${page}:${record?.id ?? title}` });
+ const [values,setValues]=useLinkState<Record<string,string>>("ResourcePages.RecordEditor.values", ()=>Object.fromEntries(config.fields.map(item=>[item.key,record?.[item.key]??(title.startsWith('Add ')?item.options?.find(option=>title===`Add ${option}`):undefined)??item.options?.[0]??''])), { private: true, scope: `resource:${page}:${record?.id ?? title}`, redact: page === "environment-variables" ? value => redactFields(value, ["value"]) : undefined });
  const [error,setError]=useLinkState("ResourcePages.RecordEditor.error", '');
  function submit(event:FormEvent){event.preventDefault();const cleaned=Object.fromEntries(Object.entries(values).map(([key,value])=>[key,value.trim()]));if(Object.values(cleaned).some(value=>!value)){setError('Complete all fields.');return;}
   if(page==='environment-variables'&&!/^[A-Z_][A-Z0-9_]*$/.test(cleaned.name)){setError('Use uppercase letters, numbers, and underscores. Start with a letter or underscore.');return;}

@@ -5,13 +5,18 @@ export const emptyState = (): ViewState => ({ v: 1, views: {} });
 export const oneOf = (...values: readonly unknown[]) => (value: unknown) => values.includes(value);
 export const nullable = (validate: (value: unknown) => boolean) => (value: unknown) => value === null || validate(value);
 export const stringRecord = (value: unknown): value is Record<string, string> => !!value && typeof value === 'object' && !Array.isArray(value) && Object.values(value).every(item => typeof item === 'string');
+export function redactFields(value: unknown, fields: readonly string[]): Json {
+  if (Array.isArray(value)) return value.map(item => redactFields(item, fields));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, fields.includes(key) ? '' : redactFields(item, fields)]));
+  return isJson(value) ? value : null;
+}
 
 export function isJson(value: unknown, depth = 0): value is Json {
   if (depth > 16) return false;
   if (value === null || typeof value === 'boolean' || typeof value === 'string') return true;
   if (typeof value === 'number') return Number.isFinite(value);
   if (Array.isArray(value)) return value.length <= 10_000 && value.every(item => isJson(item, depth + 1));
-  return typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype && Object.entries(value).every(([key, item]) =>
+  return typeof value === 'object' && Object.getPrototypeOf(value) !== null && Object.getPrototypeOf(Object.getPrototypeOf(value)) === null && Object.entries(value).every(([key, item]) =>
     !['__proto__', 'prototype', 'constructor'].includes(key) && key.length <= 1000 && isJson(item, depth + 1));
 }
 
@@ -75,6 +80,13 @@ export function readField(scope: string, key: string): Json | undefined {
   const fields = stateWindow().hexmixPrivateViews?.[scope];
   return fields && Object.hasOwn(fields, key) ? fields[key] : readViewState().views[scope]?.[key];
 }
+export function privateField(scope: string, key: string) { return Object.hasOwn(stateWindow().hexmixPrivateViews?.[scope] ?? {}, key); }
+export function registerRedactor(scope: string, key: string, redact: (value: unknown) => unknown) {
+  const rules = stateWindow().hexmixShareRedactors ??= new Map();
+  const id = JSON.stringify([scope, key]);
+  // Private drafts outlive their controls, so keep their redaction rules for this session.
+  rules.set(id, { scope, key, redact });
+}
 export function writeField(scope: string, key: string, value: Json, privateValue = false) {
   if (!isJson(value)) return;
   if (JSON.stringify(readField(scope, key)) === JSON.stringify(value)) return;
@@ -95,6 +107,12 @@ export function sharedState(): ViewState {
   const current = (scope: string) => scope === path || scope.startsWith(path + '|') || scope.startsWith(path + ':');
   state.views = Object.fromEntries(Object.entries(state.views).filter(([scope]) => current(scope)));
   for (const [scope, fields] of Object.entries(stateWindow().hexmixPrivateViews ?? {})) if (current(scope)) state.views[scope] = { ...state.views[scope], ...fields };
+  for (const { scope, key, redact } of stateWindow().hexmixShareRedactors?.values() ?? []) {
+    if (state.views[scope]?.[key] !== undefined) {
+      const value = redact(state.views[scope][key]);
+      if (isJson(value)) state.views[scope] = { ...state.views[scope], [key]: value };
+    }
+  }
   return state;
 }
 export function snapshotId() { return baselineId; }
@@ -125,4 +143,4 @@ export function registerSharedView(name: string, view: PreviewView) {
   });
 }
 
-declare global { interface Window { hexmixSharedBase?: ViewState; hexmixPrivateViews?: ViewState['views']; hexmixSharedPalettes?: Json[] } }
+declare global { interface Window { hexmixSharedBase?: ViewState; hexmixPrivateViews?: ViewState['views']; hexmixSharedPalettes?: Json[]; hexmixShareRedactors?: Map<string, { scope: string; key: string; redact: (value: unknown) => unknown }> } }

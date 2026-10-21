@@ -55,6 +55,11 @@ export default function ComparisonPage() {
     setValue(next); setOrigin(window.location.origin);
   }, [storageReady, saved]);
   useEffect(() => {
+    const restore = () => setValue(readComparison(window.location.search));
+    window.addEventListener('popstate', restore);
+    return () => window.removeEventListener('popstate', restore);
+  }, []);
+  useEffect(() => {
     const query = window.matchMedia('(max-width: 760px)');
     const update = () => setMobile(query.matches);
     update(); query.addEventListener('change', update);

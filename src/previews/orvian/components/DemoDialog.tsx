@@ -83,7 +83,7 @@ export default function DemoDialog() {
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative w-full max-w-lg bg-stone-900 border border-onyx rounded-2xl shadow-2xl bg-[url('/noise.png')] bg-[length:120px_120px] bg-repeat" onClick={event => event.stopPropagation()}>
           <button ref={closeButton} type="button" aria-label="Close" aria-describedby="demo-close-tip" onClick={() => setOpen(false)} className="clone-tooltip-trigger absolute top-2 right-2 p-3 text-stone-400 hover:text-stone-100 transition-colors cursor-pointer"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg><span id="demo-close-tip" className="clone-tooltip" role="tooltip">Close</span></button>
-          <form noValidate className="p-6 pt-7 md:p-10" onSubmit={event => {
+          <form data-local-demo noValidate className="p-6 pt-7 md:p-10" onSubmit={event => {
             event.preventDefault();
             const nextErrors = validateDemo(values);
             setErrors(nextErrors);

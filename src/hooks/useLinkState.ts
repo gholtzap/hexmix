@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-import { isJson, matchesShape, readField, stateScope, stateWindow, writeField } from '../../browser/public/share-state';
+import { isJson, matchesShape, readField, privateField, registerRedactor, stateScope, stateWindow, writeField } from '../../browser/public/share-state';
 
-type Options = { validate?: (value: unknown) => boolean; sample?: unknown; private?: boolean; scope?: string };
+type Options = { validate?: (value: unknown) => boolean; sample?: unknown; private?: boolean; scope?: string; redact?: (value: unknown) => unknown };
 
 // The key is a stable URL field name. Keep it when a component moves or is renamed.
 export function useLinkState<T>(key: string, initial: T | (() => T), options: Options = {}): [T, Dispatch<SetStateAction<T>>] {
@@ -15,13 +15,16 @@ export function useLinkState<T>(key: string, initial: T | (() => T), options: Op
   const pageScope = typeof window === 'undefined' ? '' : stateScope();
   const scope = options.scope === 'shared' ? 'shared' : options.scope ? `${pageScope}:${options.scope}` : pageScope;
   const restore = useCallback(() => {
-    const candidate = readField(scope, key);
+    const raw = readField(scope, key);
+    const candidate = raw !== undefined && config.current.redact && !privateField(scope, key) ? config.current.redact(raw) : raw;
     const valid = config.current.validate ?? ((item: unknown) => matchesShape(item, config.current.sample ?? defaults.current!.value));
     const next = candidate !== undefined && valid(candidate) ? candidate as T : defaults.current!.value;
     if (Object.is(next, latest.current) || JSON.stringify(next) === JSON.stringify(latest.current)) return;
     latest.current = next;
     setValue(latest.current);
   }, [scope, key]);
+  const redacted = !!options.redact;
+  useEffect(() => { if (redacted) return registerRedactor(scope, key, value => config.current.redact!(value)); }, [scope, key, redacted]);
   useEffect(() => {
     restore();
     const host = stateWindow();
