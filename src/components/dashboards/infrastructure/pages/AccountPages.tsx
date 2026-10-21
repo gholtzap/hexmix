@@ -1,7 +1,7 @@
 "use client";
 import {useState} from 'react';
 import { useLinkState } from "@/hooks/useLinkState";
-import { nullable } from "@/lib/link-state";
+import { nullable, matchesShape } from "@/lib/link-state";
 import {TextResponse} from '@aicss/react/text-response';
 import {Action,Modal} from '../primitives';
 import {DataTable,PageHeading,Status} from './shared';
@@ -10,7 +10,7 @@ export default function AccountPage({page,initialTab='General'}:{page:PageId;ini
  const [tab,setTab]=useLinkState("AccountPages.AccountPage.tab", initialTab),[name,setName]=useLinkState("AccountPages.AccountPage.name", 'Design studio', { private: true }),[slug,setSlug]=useLinkState("AccountPages.AccountPage.slug", 'design-studio', { private: true }),[notice,setNotice]=useState(''),[error,setError]=useLinkState("AccountPages.AccountPage.error", ''),[dialog,setDialog]=useLinkState("AccountPages.AccountPage.dialog", '', { private: true }),[subject,setSubject]=useLinkState("AccountPages.AccountPage.subject", '', { private: true }),[message,setMessage]=useLinkState("AccountPages.AccountPage.message", '', { private: true }),[email,setEmail]=useLinkState("AccountPages.AccountPage.email", '', { private: true }),[role,setRole]=useLinkState("AccountPages.AccountPage.role", 'Member'),[answer,setAnswer]=useLinkState("AccountPages.AccountPage.answer", '', { private: true });
  const [caseId,setCaseId]=useLinkState<string|null>("AccountPages.AccountPage.caseId", null, { validate: nullable(value => typeof value === "string") });
  const [members,setMembers]=useLinkState("AccountPages.AccountPage.members", [{email:'jamie@example.com',role:'Owner',status:'Active'},{email:'alex@example.com',role:'Member',status:'Active'},{email:'sam@example.com',role:'Viewer',status:'Pending'}], { private: true });
- const [cases,setCases]=useLinkState<{id:string;title:string;status:string;updated:string;message?:string}[]>("AccountPages.AccountPage.cases", [{id:'SUP-1042',title:'Domain verification',status:'Open',updated:'2 hours ago'},{id:'SUP-1036',title:'Build cache question',status:'Closed',updated:'Yesterday'},{id:'SUP-1028',title:'Invoice address',status:'Closed',updated:'Oct 12'}], { private: true });
+ const [cases,setCases]=useLinkState<{id:string;title:string;status:string;updated:string;message?:string}[]>("AccountPages.AccountPage.cases", [{id:'SUP-1042',title:'Domain verification',status:'Open',updated:'2 hours ago'},{id:'SUP-1036',title:'Build cache question',status:'Closed',updated:'Yesterday'},{id:'SUP-1028',title:'Invoice address',status:'Closed',updated:'Oct 12'}], { private: true, validate: value => Array.isArray(value) && value.every(item => matchesShape(item, {id:'',title:'',status:'',updated:''}) && (item.message === undefined || typeof item.message === 'string')) });
  const [tasks,setTasks]=useLinkState("AccountPages.AccountPage.tasks", [{title:'Review deployment errors',status:'Completed',project:'acme-web'},{title:'Check request latency',status:'Running',project:'atlas'},{title:'Review cache settings',status:'Queued',project:'storefront'}], { private: true });
  function open(value:string,id?:string){setCaseId(id??null);setDialog(value);setError('');setSubject('');setMessage('');setEmail('');}
  return <div className="vp-page"><PageHeading title={page==='settings'?'Settings':page==='support'?'Support':'Agent'} actions={page==='support'?<Action className="primary" onClick={()=>open('New case')}>New case</Action>:undefined}/>{notice&&<p role="status">{notice}</p>}
