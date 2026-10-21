@@ -4,9 +4,10 @@
     const ready = () => {
         const dialog = document.createElement('dialog');
         dialog.className = 'tervix-dialog';
-        dialog.innerHTML = '<h2>Take the next step</h2><p>Leave a note for your team.</p><form method="dialog" data-local-demo><label for="tervix-email">Email</label><input id="tervix-email" name="email" type="email" autocomplete="email" required><label for="tervix-note">Note</label><textarea id="tervix-note" name="note" placeholder="What would you like to explore?"></textarea><div role="status" aria-live="polite"></div><div class="actions"><button value="cancel" formnovalidate>Close</button><button class="primary" value="submit">Continue</button></div></form>';
+        dialog.innerHTML = '<h2>Take the next step</h2><p>Leave a note for your team.</p><form method="dialog" data-local-demo><label for="tervix-email">Email</label><input id="tervix-email" name="email" type="email" autocomplete="email" required><label for="tervix-note">Note</label><textarea id="tervix-note" name="note" placeholder="What would you like to explore?"></textarea><div role="status" aria-live="polite"></div><div class="actions"><button type="button" value="cancel">Close</button><button class="primary" value="submit">Continue</button></div></form>';
         document.body.append(dialog);
         const form = dialog.querySelector<HTMLFormElement>('form');
+        form.querySelector<HTMLButtonElement>('[value=cancel]').addEventListener('click', () => dialog.close());
         form.addEventListener('submit', event => {
             if ((event.submitter as HTMLInputElement)?.value !== 'submit')
                 return;
