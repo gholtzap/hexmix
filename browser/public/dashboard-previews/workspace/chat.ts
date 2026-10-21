@@ -70,7 +70,7 @@ export function chatPage(view = 'chat') {
             input.value = draft;
             updateSend();
             input.oninput = updateSend;
-            input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) {
+            input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
                 e.preventDefault();
                 submit();
             } };

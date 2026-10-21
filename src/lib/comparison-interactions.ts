@@ -142,7 +142,7 @@ export function comparisonInteractions() {
             if (target.dispatchEvent(new view.Event('cancel', { cancelable: true })) && (target as HTMLDialogElement).open) (target as HTMLDialogElement).close();
           } else if (event.type === 'keydown') {
             const key = event as KeyboardEvent;
-            target.dispatchEvent(new view.KeyboardEvent('keydown', { key: key.key, code: key.code, shiftKey: key.shiftKey, ctrlKey: key.ctrlKey, altKey: key.altKey, metaKey: key.metaKey, bubbles: true, cancelable: true }));
+            target.dispatchEvent(new view.KeyboardEvent('keydown', { key: key.key, code: key.code, isComposing: key.isComposing, shiftKey: key.shiftKey, ctrlKey: key.ctrlKey, altKey: key.altKey, metaKey: key.metaKey, bubbles: true, cancelable: true }));
           } else if (event.type.startsWith('pointer')) {
             const pointer = event as PointerEvent;
             const rect = point ? target.getBoundingClientRect() : null;

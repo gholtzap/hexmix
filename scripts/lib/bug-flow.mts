@@ -11,7 +11,7 @@ export async function checkBug(id:string,paths:string|string[],test){
  await mkdir(out,{recursive:true});const browser=await chromium.launch(),reports=[],failures=[];
  try{for(const path of typeof paths==='string'?[paths]:paths)for(const width of [390,1440])for(const [theme,palette] of Object.entries({light:initialPalette,dark:defaultDarkPalette})){
   const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce',colorScheme:theme as 'light'|'dark'}),page=await context.newPage();page.setDefaultTimeout(10000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  const scans=[],prefix=typeof paths==='string'?'':path.replaceAll('/','-')+'-';
+  const scans=[],prefix=typeof paths==='string'?'':path.replace(/[^a-z0-9-]/gi,'-')+'-';
   try{
    await page.goto(`${base}${path}${path.includes('?')?'&':'?'}${paletteQuery(palette)}`);await page.locator('[data-app-ready]').waitFor();
    const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true],html[data-contrast-ready=true]').first().waitFor();
