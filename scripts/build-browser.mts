@@ -2,11 +2,17 @@ import {execFileSync} from 'node:child_process';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import ts from 'typescript';
+import {loadBindings, minify} from 'next/dist/build/swc/index.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 execFileSync(process.execPath, [fileURLToPath(new URL('../node_modules/typescript/bin/tsc', import.meta.url)), '-p', 'tsconfig.browser.json'], {cwd:root, stdio:'inherit'});
 const files: Record<string,string> = JSON.parse(readFileSync(new URL('browser-files.json', import.meta.url), 'utf8'));
 const compiled = new Map(Object.values(files).map(source => [source, readFileSync(new URL('../'+source.replace(/^browser\//, '').replace(/\.ts$/, '.js'), import.meta.url), 'utf8')]));
+await loadBindings();
+for (const [source, code] of compiled) {
+  const module = ts.isExternalModule(ts.createSourceFile(source, code, ts.ScriptTarget.ES2022));
+  compiled.set(source, (await minify(code, {module, compress:false, mangle:false})).code);
+}
 for (const [output, source] of Object.entries(files)) {
   const path = new URL('../'+output, import.meta.url);
   mkdirSync(new URL('.', path), {recursive:true});

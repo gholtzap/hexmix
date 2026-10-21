@@ -6,7 +6,7 @@ import SharedStateProvider from '@/components/SharedStateProvider';
 export const metadata: Metadata = {
   title: { default: "Hexmix", template: "%s | Hexmix" },
   applicationName: "Hexmix",
-  icons: { icon: "/hexmix-logo.png" },
+  icons: { icon: "/hexmix-icon.png" },
   description: "Choose colors and fonts, then see them on real designs.",
   openGraph: {
     siteName: "Hexmix",

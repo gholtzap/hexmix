@@ -22,7 +22,8 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const errors = [];
   let assetRequests = 0;
-  page.on("request", request => { if (request.url().includes("/preview-captures/")) assetRequests++; });
+  const assetURLs: string[] = [];
+  page.on("request", request => { if (request.url().includes("/preview-captures/")) { assetRequests++; assetURLs.push(request.url()); } });
   page.on('pageerror', error => errors.push(error.message));
   page.on('response', response => {
     if (response.url().includes('/preview-captures/') && response.status() !== 200) errors.push(`${response.status()} ${response.url()}`);
@@ -46,6 +47,8 @@ try {
   }
   assert.equal(await page.locator("iframe").count(), 0);
   const initialRequests = assetRequests;
+  assert.equal(await page.locator('.home-thumbnail feImage').count(), 0, 'Default colors must not load recoloring masks');
+  assert.ok(assetURLs.every(url => url.endsWith('/original.webp')), 'Default colors must load only the original screenshots');
   const target = page.locator('[data-capture="workspace"]');
   let previous = await sharp(await captureThumbnail(page, target)).removeAlpha().raw().toBuffer();
   for (const [role, value] of Object.entries({ Text: '243841', Primary: '147d92', Secondary: 'dfe9ef', Accent: '884dcc', Background: 'f3f7fa' })) {
@@ -62,7 +65,7 @@ try {
     results.push({ role, state: 'color changed', changedChannels: changed });
     previous = current;
   }
-  assert.equal(assetRequests, initialRequests, 'Color edits must not reload capture assets');
+  assert.equal(assetRequests, initialRequests + previewCatalog.length * 6, 'Color edits must load each recoloring image once');
   await page.screenshot({ path: `${directory}/recolored-desktop.png` });
   await clickToolbarAction(page, 'Use dark palette');
   await page.waitForFunction(() => [...document.querySelectorAll('.home-thumbnail image')].every(node => node.getAttribute('href').includes('/dark/')));
