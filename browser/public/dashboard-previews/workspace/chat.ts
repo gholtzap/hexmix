@@ -126,7 +126,7 @@ export function chatPage(view = 'chat') {
             };
             const fileInput = main.querySelector<HTMLElement>('#chat-files');
             const renderAttachments = () => { main.querySelector<HTMLElement>('.attachments').innerHTML = attachments.map(name => `<span class="attachment">${esc(name)}</span>`).join(''); };
-            fileInput.onchange = () => { attachments = [...(fileInput as HTMLInputElement).files].map(file => file.name); renderAttachments(); };
+            fileInput.onchange = () => { attachments.push(...[...(fileInput as HTMLInputElement).files].map(file => file.name)); renderAttachments(); };
             renderAttachments();
             function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
             registerSharedDialog('dictate', value => dictate(Boolean(value)), value => typeof value === 'boolean');
