@@ -156,3 +156,10 @@ test('demo returns the same valid sample for different prompts', async () => {
   assert.deepEqual(await boundary.json(), result);
 });
 test('demo bounds request body size', async () => { assert.equal((await post(JSON.stringify({ prompt: 'a'.repeat(17000) }))).status, 413); });
+
+test('the embedded demo uses its local stylesheet and script', async () => {
+  const html=await fetch(base+'/demo').then(response=>response.text());
+  assert(html.includes('href="/render-assets/tervix/demo.css"'));
+  assert(html.includes('src="/render-assets/tervix/demo.js"'));
+  assert.equal((await fetch(base+'/demo.css')).status,200);
+});
