@@ -81,7 +81,7 @@ export default function DemoDialog() {
   return createPortal(
     <div ref={overlay} data-orvian-dialog className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="demo-gate-title" onClick={() => setOpen(false)}>
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-lg bg-stone-900 border border-onyx rounded-2xl shadow-2xl bg-[url('/noise.png')] bg-[length:120px_120px] bg-repeat" onClick={event => event.stopPropagation()}>
+        <div data-preview-readable-artwork className="relative w-full max-w-lg bg-stone-900 border border-onyx rounded-2xl shadow-2xl bg-[url('/noise.png')] bg-[length:120px_120px] bg-repeat" onClick={event => event.stopPropagation()}>
           <button ref={closeButton} type="button" aria-label="Close" aria-describedby="demo-close-tip" onClick={() => setOpen(false)} className="clone-tooltip-trigger absolute top-2 right-2 p-3 text-stone-400 hover:text-stone-100 transition-colors cursor-pointer"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg><span id="demo-close-tip" className="clone-tooltip" role="tooltip">Close</span></button>
           <form data-local-demo noValidate className="p-6 pt-7 md:p-10" onSubmit={event => {
             event.preventDefault();

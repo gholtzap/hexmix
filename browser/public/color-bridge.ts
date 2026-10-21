@@ -193,16 +193,17 @@
     html[data-editor-palette="true"][data-editor-light="true"][data-editor-site="tervix"] main > section:first-child .rounded-2xl.mt-4 .text-center.max-w-4xl > div:first-child { color: var(--p-text) !important; background: color-mix(in srgb,var(--p-text) 10%,var(--p-background)) !important; }
     html[data-editor-palette="true"][data-editor-light="true"][data-editor-site="tervix"] main > section:first-child .rounded-2xl.mt-4 .text-center.max-w-4xl > div:first-child *, html[data-editor-palette="true"][data-editor-light="true"][data-editor-site="tervix"] main > section:first-child .rounded-2xl.mt-4 .flex.justify-center.mb-4 button { color: var(--p-text) !important; }
     html[data-editor-palette="true"][data-editor-light="true"][data-editor-site="tervix"] main > section:first-child .rounded-2xl.mt-4 .flex.justify-center.mb-4 button .bg-white { background-color: var(--p-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] { --p-surface-text: var(--p-on-background,var(--p-text)); --background: var(--p-background); --foreground: var(--p-surface-text); --color-coral: var(--p-primary); --color-amber-500: var(--p-accent); }
-    html[data-editor-palette="true"][data-editor-site="orvian"] body { color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] .bg-stone-900 { --p-surface-text: var(--p-on-background,var(--p-text)); background-color: var(--p-background) !important; background-image: none !important; color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] :is(.bg-stone-800,.bg-stone-700,[class~="bg-stone-600/25"],[class~="bg-stone-700/50"]) { --p-surface-text: var(--p-on-secondary,var(--p-text)); background-color: var(--p-secondary) !important; color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] :is(.text-stone-100,.text-stone-50,.text-stone-200,.text-stone-300,.text-stone-400,.text-coral,.text-peach) { color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] :is([class*="grid1.svg"],[class*="grid2.svg"]) { --p-surface-text: var(--p-on-background,var(--p-text)); background: var(--p-background) !important; color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] nav { --p-surface-text: var(--p-on-secondary,var(--p-text)); background-color: var(--p-secondary) !important; color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] nav :is(a,button) { color: var(--p-surface-text) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] [data-open-demo] { --p-surface-text: var(--p-on-primary,var(--p-text)); color: var(--p-surface-text) !important; background-image: none !important; background-color: var(--p-primary) !important; }
-    html[data-editor-palette="true"][data-editor-site="orvian"] [data-scene] { background: var(--p-background) !important; }
+    html[data-editor-site="orvian"] { --p-surface-text: var(--p-on-background,var(--p-text)); --background: var(--p-background); --foreground: var(--p-surface-text); --color-coral: var(--p-primary); --color-amber-500: var(--p-accent); }
+    html[data-editor-site="orvian"] body { color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] .bg-stone-900 { --p-surface-text: var(--p-on-background,var(--p-text)); background-color: var(--p-background) !important; background-image: none !important; color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] :is(.bg-stone-800,.bg-stone-700,[class~="bg-stone-600/25"],[class~="bg-stone-700/50"]) { --p-surface-text: var(--p-on-secondary,var(--p-text)); background-color: var(--p-secondary) !important; color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] :is(.text-stone-100,.text-stone-50,.text-stone-200,.text-stone-300,.text-stone-400,.text-coral,.text-peach) { color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] :is([class*="grid1.svg"],[class*="grid2.svg"]) { --p-surface-text: var(--p-on-background,var(--p-text)); background: var(--p-background) !important; color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] nav { --p-surface-text: var(--p-on-secondary,var(--p-text)); background-color: var(--p-secondary) !important; color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] nav > div { background-color: transparent !important; }
+    html[data-editor-site="orvian"] nav :is(a,button) { color: var(--p-surface-text) !important; }
+    html[data-editor-site="orvian"] :is([data-open-demo],[data-orvian-dialog] button[class*="bg-gradient"]) { --p-surface-text: var(--p-on-primary,var(--p-text)); color: var(--p-surface-text) !important; background-image: none !important; background-color: var(--p-primary) !important; }
+    html[data-editor-site="orvian"] [data-scene] { background: var(--p-background) !important; }
     html[data-editor-palette="true"][data-editor-site="nuvexa"] :is(.mh-header,#hero-dark) { background: var(--p-background) !important; }
     html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid), html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid) nav { background-color: var(--p-background, #fff) !important; }
     html[data-editor-site="nuvexa"] .mh-header a:has(img[data-editor-wordmark]) { filter: none !important; }
