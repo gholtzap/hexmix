@@ -132,9 +132,18 @@
                 }));
                 status.textContent = matches.length ? '' : 'No pages found';
             };
+            let background: [HTMLElement, boolean][] = [];
             const openSearch = () => {
-                input.value = ''; renderResults(); if (!search.open) search.showModal(); input.focus();
+                input.value = ''; renderResults();
+                if (!search.open) {
+                    background = [...document.body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && node !== search).map(node => [node, node.inert]);
+                    background.forEach(([node]) => { node.inert = true; });
+                    search.showModal();
+                }
+                input.focus();
             };
+            search.addEventListener('close', () => { background.forEach(([node, inert]) => { node.inert = inert; }); background = []; });
+            search.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); search.close(); } });
             renderResults();
             searchTriggers.forEach(button => button.addEventListener('click', openSearch));
             search.querySelector('button').addEventListener('click', () => search.close());
