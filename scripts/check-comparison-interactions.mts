@@ -16,10 +16,13 @@ async function show(page: Page, side: 'A' | 'B') {
 function outer(page: Page, side: 'A' | 'B') { return page.frameLocator(`iframe[title="Palette ${side} preview"]`); }
 function inner(page: Page, side: 'A' | 'B') { return outer(page, side).frameLocator('iframe'); }
 async function audit(page: Page, state: string, frames = true) {
+  await page.mouse.move(0, 0);
   reports.push({ state, width: page.viewportSize()!.width, report: await checkPage(page, policy), surface: 'comparison' });
   if (frames) for (const side of ['A', 'B'] as const) {
     await show(page, side);
     const frame = await (await inner(page, side).locator('html').elementHandle())!.ownerFrame();
+    await frame!.evaluate(async () => { await document.fonts.ready; await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))); });
+    await frame!.waitForFunction(() => document.documentElement.dataset.contrastReady !== 'false');
     reports.push({ state, width: page.viewportSize()!.width, report: await checkPage(frame!, policy), surface: side });
   }
   await page.screenshot({ path: `${output}/${page.viewportSize()!.width}-${state}.png` });

@@ -153,8 +153,8 @@ export function chatPage(view = 'chat') {
                         } paint(); });
                         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
                         paint();
-                        const point = e => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * 480 / r.width, (e.clientY - r.top) * 280 / r.height]; };
-                        canvas.onpointerdown = e => { drawing = true; canvas.setPointerCapture(e.pointerId); current = [point(e)]; strokes.push(current); };
+                        const point = e => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * 480 / (r.width || canvas.width), (e.clientY - r.top) * 280 / (r.height || canvas.height)]; };
+                        canvas.onpointerdown = e => { drawing = true; if (e.isTrusted) canvas.setPointerCapture(e.pointerId); current = [point(e)]; strokes.push(current); };
                         canvas.onpointermove = e => { if (drawing) {
                             current.push(point(e));
                             paint();
@@ -162,7 +162,7 @@ export function chatPage(view = 'chat') {
                         canvas.onpointerup = () => drawing = false;
                         canvas.onpointercancel = () => drawing = false;
                         d.querySelector<HTMLElement>('[data-clear]').onclick = () => { strokes.length = 0; paint(); };
-                        d.querySelector<HTMLElement>('[data-attach]').onclick = () => canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); fileInput.files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); });
+                        d.querySelector<HTMLElement>('[data-attach]').onclick = () => { if (document.documentElement.hasAttribute('data-comparison-replay')) { d.close(); return; } canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); fileInput.files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); }); };
                     }); };
             registerSharedDialog('sketch', () => openSketch(), value => value === null);
             main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => { if (!document.documentElement.hasAttribute('data-comparison-replay')) fileInput.click(); } }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: openAddPage }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: openSketch }, { label: 'Plugins', action: () => navigate('plugins') }]);

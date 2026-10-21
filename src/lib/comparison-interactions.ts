@@ -1,4 +1,4 @@
-const controls = 'a[href],button,input,textarea,select,summary,form,dialog,[role="dialog"],.scrim,.vc-modal,[data-orvian-dialog],[role="button"],[role="tab"],[role="menuitem"],[role="switch"],[role="checkbox"],[role="radio"],[contenteditable="true"]';
+const controls = 'a[href],button,input,textarea,select,summary,form,canvas,dialog,[role="dialog"],.scrim,.vc-modal,[data-orvian-dialog],[role="button"],[role="tab"],[role="menuitem"],[role="switch"],[role="checkbox"],[role="radio"],[contenteditable="true"]';
 const openMenus = (document: Document) => [...document.querySelectorAll('[role="menu"]')].filter(menu => {
   const style = document.defaultView!.getComputedStyle(menu);
   return menu.getAttribute('aria-hidden') !== 'true' && style.display !== 'none' && style.visibility !== 'hidden';
@@ -83,6 +83,7 @@ export function comparisonInteractions() {
         return;
       }
       if (element.matches('dialog,[role="dialog"]') && element !== source && event.type !== 'cancel') return;
+      if (['pointermove', 'pointercancel'].includes(event.type) && !element.matches('canvas')) return;
       const matching = counterpart(element, other);
       const view = other.defaultView;
       const mouse = event as MouseEvent;
@@ -104,6 +105,8 @@ export function comparisonInteractions() {
       const detailsOpen = element.closest('details')?.open;
       const checked = (element as HTMLInputElement).checked;
       const value = (element as HTMLInputElement).value;
+      const bounds = element.matches('canvas') ? element.getBoundingClientRect() : null;
+      const point = bounds ? { x: (mouse.clientX - bounds.left) / (bounds.width || (element as HTMLCanvasElement).width), y: (mouse.clientY - bounds.top) / (bounds.height || (element as HTMLCanvasElement).height) } : null;
       const files = element.matches('input[type="file"]') ? Array.from((element as HTMLInputElement).files ?? []) : null;
       // Let the original handler finish before running another app's handler.
       setTimeout(() => {
@@ -142,7 +145,8 @@ export function comparisonInteractions() {
             target.dispatchEvent(new view.KeyboardEvent('keydown', { key: key.key, code: key.code, shiftKey: key.shiftKey, ctrlKey: key.ctrlKey, altKey: key.altKey, metaKey: key.metaKey, bubbles: true, cancelable: true }));
           } else if (event.type.startsWith('pointer')) {
             const pointer = event as PointerEvent;
-            target.dispatchEvent(new view.PointerEvent(event.type, { bubbles: true, cancelable: true, button: pointer.button, pointerType: pointer.pointerType, pointerId: pointer.pointerId, isPrimary: pointer.isPrimary }));
+            const rect = point ? target.getBoundingClientRect() : null;
+            target.dispatchEvent(new view.PointerEvent(event.type, { bubbles: true, cancelable: true, button: pointer.button, ...(point && rect ? { buttons: pointer.buttons, clientX: rect.left + point.x * (rect.width || (target as HTMLCanvasElement).width), clientY: rect.top + point.y * (rect.height || (target as HTMLCanvasElement).height) } : {}), pointerType: pointer.pointerType, pointerId: pointer.pointerId, isPrimary: pointer.isPrimary }));
           } else target.dispatchEvent(new view.MouseEvent(event.type, { bubbles: true, cancelable: true, button: mouse.button }));
         } finally { other.documentElement.removeAttribute('data-comparison-replay'); replaying = false; }
       }, 0);
@@ -161,7 +165,7 @@ export function comparisonInteractions() {
         finally { replaying = false; }
       }, 0);
     };
-    const types = ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'input', 'change', 'submit', 'cancel'];
+    const types = ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'mousedown', 'mouseup', 'click', 'input', 'change', 'submit', 'cancel'];
     const host = document.defaultView!;
     types.forEach(type => host.addEventListener(type, mirror, true));
     host.addEventListener('keydown', escape, true);
