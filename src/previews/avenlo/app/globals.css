@@ -35,7 +35,7 @@
 @media(max-width:1199px){.footer .footer__top{grid-template-columns:1fr;gap:40px}.footer .footer__brand{max-width:320px}}
 @media(max-width:809px){.footer .footer__cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px}}
 
-.hero__type[data-astro-cid-dcwno5ig]{position:relative}
+.hero__type[data-astro-cid-dcwno5ig]{position:relative;min-height:1lh}
 .hero__sizer[data-astro-cid-dcwno5ig]{position:absolute}
 
 .hero__cta .hero__btn.shader-btn{background:var(--p-primary,var(--accent-coral));color:var(--p-on-primary,var(--text-primary));border-radius:8px;padding:16px 24px}
