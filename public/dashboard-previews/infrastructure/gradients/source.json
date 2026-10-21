@@ -1,0 +1,104 @@
+{
+  "source": "https://feralui.dev/gradients",
+  "export": "PNG, 128 × 128, text boxes removed, colour labels off",
+  "records": [
+    {
+      "file": "gradient-01.png",
+      "preset": "Iridescent cloud",
+      "shuffled": false,
+      "downloadName": "Iridescent cloud-128x128.png",
+      "sha256": "675277b76790418c6e8ae8235cd6fb8081a3dbf8dd0568b22e02c5d7de1fc615"
+    },
+    {
+      "file": "gradient-02.png",
+      "preset": "Opal",
+      "shuffled": false,
+      "downloadName": "Opal-128x128.png",
+      "sha256": "83e3e53cb5f17583c98aa73f7cd025c11f78435c2a76a2885991fa198a649f4c"
+    },
+    {
+      "file": "gradient-03.png",
+      "preset": "Lagoon",
+      "shuffled": false,
+      "downloadName": "Lagoon-128x128.png",
+      "sha256": "cb66373237ad2247e7bccff9eede48bbb06e6c3c91c2edc1fb28832b3fa342e5"
+    },
+    {
+      "file": "gradient-04.png",
+      "preset": "Emerald",
+      "shuffled": false,
+      "downloadName": "Emerald-128x128.png",
+      "sha256": "719e2cc4104a68b9c13f1d9beb9c4edaf023dd1e377aa40a396b75bb9e70f0cd"
+    },
+    {
+      "file": "gradient-05.png",
+      "preset": "Solar flare",
+      "shuffled": false,
+      "downloadName": "Solar flare-128x128.png",
+      "sha256": "2094b2be71ce23a51f2c9d85b46addc25d9a774a8dc19a69b4179fa9b76ab463"
+    },
+    {
+      "file": "gradient-06.png",
+      "preset": "Orchid",
+      "shuffled": false,
+      "downloadName": "Orchid-128x128.png",
+      "sha256": "8b3e685fb25d3ef030a1a22fe4eaf1b57ea508f7a5f7efde973d48a26c0ca515"
+    },
+    {
+      "file": "gradient-07.png",
+      "preset": "Peach glow",
+      "shuffled": false,
+      "downloadName": "Peach glow-128x128.png",
+      "sha256": "f1a685195775b3ddb199fdb4b5db4136f47cde079cacaec642557a4bdc085d11"
+    },
+    {
+      "file": "gradient-08.png",
+      "preset": "Electric tide",
+      "shuffled": false,
+      "downloadName": "Electric tide-128x128.png",
+      "sha256": "3a55eb2bf32e760ecb42a596a999cf2426672e0092b1e3e7884dc1ea96b71271"
+    },
+    {
+      "file": "gradient-09.png",
+      "preset": "Sunset",
+      "shuffled": false,
+      "downloadName": "Sunset-128x128.png",
+      "sha256": "e57dd8a8df4058366b2573f501574a6a4a95d27fb6fd629d30009845ac5cd912"
+    },
+    {
+      "file": "gradient-10.png",
+      "preset": "Mint ice",
+      "shuffled": false,
+      "downloadName": "Mint ice-128x128.png",
+      "sha256": "7ad362e49098b06ffcb4bf45630511369618676bdaff9b042d3d66239e06e37b"
+    },
+    {
+      "file": "gradient-11.png",
+      "preset": "Midnight bloom",
+      "shuffled": false,
+      "downloadName": "Midnight bloom-128x128.png",
+      "sha256": "d78bd5dcc39e200507d894cd42c30d8786ee2b28748e9c963fe4b0ab02b11f81"
+    },
+    {
+      "file": "gradient-12.png",
+      "preset": "Rose gold",
+      "shuffled": false,
+      "downloadName": "Rose gold-128x128.png",
+      "sha256": "32d73378590b779a87fff00007f6c6f1f382cec54dcd68c9436b8ca8bae3e38f"
+    },
+    {
+      "file": "gradient-13.png",
+      "preset": "Opal",
+      "shuffled": true,
+      "downloadName": "Untitled blend-128x128.png",
+      "sha256": "18699f4c3ba4a7f0caf59e5dce38b4e2732b5679fcf65a47213bda8fbb23a9bf"
+    },
+    {
+      "file": "gradient-14.png",
+      "preset": "Sunset",
+      "shuffled": true,
+      "downloadName": "Untitled blend-128x128.png",
+      "sha256": "984ebd3d5299bf60341ddf0783ca5e67f99ff96952537ba080166a817ff415a4"
+    }
+  ]
+}

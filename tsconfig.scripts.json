@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [
+      "node"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "useUnknownInCatchVariables": false
+  },
+  "include": [
+    "scripts/**/*.mts",
+    "avenlo/scripts/**/*.mts",
+    "orvian/scripts/**/*.mts",
+    "tervix/scripts/**/*.mts",
+    "nuvexa/scripts/**/*.mts",
+    "config/**/*.mts",
+    "browser/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

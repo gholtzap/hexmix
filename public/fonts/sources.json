@@ -1,0 +1,66 @@
+[
+  {
+    "family": "DM Sans",
+    "file": "dm-sans-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K4.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/dmsans/OFL.txt",
+    "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543",
+    "bytes": 36932
+  },
+  {
+    "family": "Inter",
+    "file": "inter-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/inter/OFL.txt",
+    "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+    "bytes": 48256
+  },
+  {
+    "family": "Lora",
+    "file": "lora-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/lora/v37/0QIvMX1D_JOuMwr7Iw.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/lora/OFL.txt",
+    "sha256": "ddb8c66035104e233fc024669183aad3738b6daa16deee2ebb1241bd0f98ace1",
+    "bytes": 37788
+  },
+  {
+    "family": "Manrope",
+    "file": "manrope-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/manrope/v20/xn7gYHE41ni1AdIRggexSg.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/manrope/OFL.txt",
+    "sha256": "a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972",
+    "bytes": 24836
+  },
+  {
+    "family": "Outfit",
+    "file": "outfit-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/outfit/OFL.txt",
+    "sha256": "6c18d579fd87c3776be068b762cbc83fde3acb543d49eabd3ade842eb987e887",
+    "bytes": 32292
+  },
+  {
+    "family": "Playfair Display",
+    "file": "playfair-display-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/playfairdisplay/OFL.txt",
+    "sha256": "e0c764a8e9e1cce92163c55bac4b2ad6cd4cf8c696ce2289ab5c41565e65b7e2",
+    "bytes": 38404
+  },
+  {
+    "family": "Plus Jakarta Sans",
+    "file": "plus-jakarta-sans-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/plusjakartasans/OFL.txt",
+    "sha256": "153fc85b70298beeb1d61a5f723331649e7f23bb77302a66e61cb3e2fbdb5e79",
+    "bytes": 27348
+  },
+  {
+    "family": "Space Grotesk",
+    "file": "space-grotesk-latin.woff2",
+    "source": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2",
+    "license": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/spacegrotesk/OFL.txt",
+    "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d",
+    "bytes": 22288
+  }
+]

@@ -1,0 +1,8 @@
+# Tervix
+
+A local color preview for planning pages and workflows.
+
+- Overview: /
+- Starting points: /templates
+- Business notes: /blog
+- Documentation: /quickstart/workflows

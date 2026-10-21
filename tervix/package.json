@@ -1,0 +1,17 @@
+{
+  "name": "tervix-clone",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/server.mts",
+    "start": "node scripts/server.mts",
+    "build": "node scripts/build.mts",
+    "test": "node --test scripts/server.test.mts",
+    "lint:ui": "../node_modules/.bin/lintapple http://127.0.0.1:3012 --ready 'html[data-home-ready=\"true\"]' --json",
+    "predev": "npm --prefix .. run build:browser",
+    "prebuild": "npm --prefix .. run build:browser",
+    "prestart": "npm --prefix .. run build:browser",
+    "pretest": "npm --prefix .. run build:browser"
+  }
+}

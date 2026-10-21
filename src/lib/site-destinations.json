@@ -1,0 +1,354 @@
+{
+  "avenlo": {
+    "website-demo": {
+      "title": "A fresh starting point",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "sales": {
+      "title": "New opportunities",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "onboarding": {
+      "title": "Getting started",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "internal-enablement": {
+      "title": "Team development",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "products/videocall-agent": {
+      "title": "Team planning",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "products/website-qualifier": {
+      "title": "Business overview",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "products/in-app-agent": {
+      "title": "Everyday work",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "products/slack-product-expert": {
+      "title": "Shared resources",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "products/presentation-agent": {
+      "title": "Project planning",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "products/video-copilot": {
+      "title": "Team support",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "products/knowledge-graph": {
+      "title": "Business insights",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "products/mcp": {
+      "title": "Connections",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "customers": {
+      "title": "Team stories",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "enterprise": {
+      "title": "Room to grow",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "blog": {
+      "title": "Business notes",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "research": {
+      "title": "Ideas for tomorrow",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "customers/story-2": {
+      "title": "A shared direction",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "customers/story-3": {
+      "title": "A fresh approach",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "customers/story-1": {
+      "title": "The next chapter",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "integrations": {
+      "title": "Connections",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "about": {
+      "title": "About us",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "careers": {
+      "title": "Work with us",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "media-kit": {
+      "title": "Brand resources",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "terms": {
+      "title": "Terms",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "dpa": {
+      "title": "Data handling",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "compare": {
+      "title": "Explore your options",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "compare/option-1": {
+      "title": "A different approach 1",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "compare/option-12": {
+      "title": "A different approach 2",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "compare/option-9": {
+      "title": "A different approach 3",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "compare/option-13": {
+      "title": "A different approach 4",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "compare/option-2": {
+      "title": "A different approach 5",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "compare/option-3": {
+      "title": "A different approach 6",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "fr": {
+      "title": "Explore our business",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "de": {
+      "title": "Explore our business",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "es": {
+      "title": "Explore our business",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "pt": {
+      "title": "Explore our business",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "tr": {
+      "title": "Explore our business",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "ja": {
+      "title": "Explore our business",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "zh": {
+      "title": "Explore our business",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    }
+  },
+  "tervix": {
+    "quickstart/workflows": {
+      "title": "A clear starting point",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "templates": {
+      "title": "Starting points",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "changelog": {
+      "title": "Latest updates",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "blog": {
+      "title": "Business notes",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "roadmap": {
+      "title": "Looking ahead",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "changelog/tervix-workflows": {
+      "title": "A new way forward",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "blog/topic-049": {
+      "title": "Make room for new possibilities",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "changelog/workflow-access-control-approvals": {
+      "title": "Bring your team together",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "workflows/cli": {
+      "title": "Ways to connect",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "workflows/sdk": {
+      "title": "Build on your ideas",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "workflows/mcp": {
+      "title": "Shared resources",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "changelog/workflow-cli-mcp": {
+      "title": "New ways to work",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "b/3YHSAVUHf1": {
+      "title": "Business planning idea 1",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "b/OFS0uu1avy": {
+      "title": "Business planning idea 2",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "b/vaFspyxyvB": {
+      "title": "Business planning idea 3",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "b/rrZAL03VqY": {
+      "title": "Business planning idea 4",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "b/2L3ETRCSDi": {
+      "title": "Business planning idea 5",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "b/LV9vzHEHaI": {
+      "title": "Business planning idea 6",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "forward-deployed": {
+      "title": "Support for your next step",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "blog/topic-059": {
+      "title": "Keep the bigger picture in view",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "blog/topic-057": {
+      "title": "Find your starting point",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "blog/topic-048": {
+      "title": "A shared plan for progress",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "compare/approach-1": {
+      "title": "A different approach 1",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "compare/approach-2": {
+      "title": "A different approach 2",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "compare/approach-3": {
+      "title": "A different approach 3",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "compare/approach-4": {
+      "title": "A different approach 4",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "compare/approach-5": {
+      "title": "A different approach 5",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "terms": {
+      "title": "Terms",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    }
+  },
+  "orvian": {
+    "blog": {
+      "title": "Business notes",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "terms": {
+      "title": "Terms",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "dpa": {
+      "title": "Data handling",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    }
+  },
+  "nuvexa": {
+    ".": {
+      "title": "A clearer path forward",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "./success-stories": {
+      "title": "Business stories",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "./success-stories/story-a": {
+      "title": "A fresh approach to everyday work",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "./products/quotes-and-tenders": {
+      "title": "Business planning",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "./products/order-processing": {
+      "title": "Team coordination",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "./integrations": {
+      "title": "Connections",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "./solutions/distributors": {
+      "title": "Growing teams",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "./solutions/manufacturers": {
+      "title": "Growing businesses",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "./success-stories/story-b": {
+      "title": "A shared view of progress",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    },
+    "./success-stories/story-c": {
+      "title": "A new chapter together",
+      "description": "A fresh approach to everyday work. Find a direction that fits your business."
+    },
+    "./privacy": {
+      "title": "Privacy",
+      "description": "Build on your shared goals. Take the next step together."
+    },
+    "./imprint": {
+      "title": "Business details",
+      "description": "See the bigger picture and explore new possibilities with your team."
+    },
+    "./terms": {
+      "title": "Terms",
+      "description": "Bring your people, plans, and ideas together. Make room for what comes next."
+    }
+  }
+}

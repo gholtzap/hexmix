@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [],
+    "strict": true,
+    "skipLibCheck": true,
+    "rootDir": "browser",
+    "outDir": ".",
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "useUnknownInCatchVariables": false
+  },
+  "include": [
+    "browser/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,61 @@
+html {
+  --p-text: #0c0a09;
+  --p-background: #fff;
+  --p-primary: #ff6467;
+  --p-secondary: #fbf9f5;
+  --p-accent: #db4f51;
+  --team-visual: radial-gradient(ellipse at 20% 25%, var(--p-primary), transparent 55%), radial-gradient(ellipse at 78% 70%, var(--p-accent), transparent 50%), linear-gradient(135deg, var(--p-secondary), var(--p-background));
+}
+
+html, body { scroll-behavior: auto !important; background: var(--p-background) !important; }
+html body *:not(code):not(pre):not(kbd):not(samp) { font-family: system-ui, sans-serif !important; }
+html body .vca-t { font-size: 18px !important; }
+html body .pwg__title { font-size: 20px !important; }
+html body :is(.pwg__desc, .pwg__link, .pwg__last) { font-size: 14px !important; }
+html body :is(.footer__link, .nav__link, .nav__cta, .email-cta__label, .email-cta input) { font-size: 16px !important; }
+html body .stb__value { font-size: 32px !important; }
+html * { animation: none !important; transition-duration: 0s !important; }
+[data-rv], [data-enter], [data-ent], .rv-word { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+.eyebrow, .htl__tagline { display: none !important; }
+
+/* Keep the source layout while replacing its illustrative media with color studies. */
+.vh__visual .ill, .vca-mock, .vca-tile, .pwg__art, .vm__canvas, .vsf__art, .cta__container, .footer__yc {
+  background: var(--team-visual) !important;
+  background-size: cover !important;
+}
+.vh__visual .ill > *, .vca-mock > *, .vca-tile > *, .pwg__art > *, .vm__canvas > *, .vsf__art > * { opacity: 0 !important; }
+.vca-mock svg, .vca-tile svg, .pwg__art svg { visibility: hidden !important; }
+.cta__bg { opacity: 0 !important; }
+img[data-placeholder] { background: var(--team-visual); background-size: cover; }
+.vh__logos img, .vsf__badges img { border-radius: 14px; }
+.vh__logos a { pointer-events: none; }
+.vh__logos img { object-fit: cover; min-height: 24px; }
+.vsf__badges img { object-fit: cover; }
+.vca-mock, .vca-tile, .pwg__art, .vm__canvas, .vsf__art { overflow: hidden; }
+.vsf__art img { opacity: 0 !important; }
+.footer__yc > * { opacity: 0 !important; }
+.vh__visual .ill { border-radius: 2px; }
+.vca-mock, .vca-tile, .pwg__art { border-radius: 2px; }
+
+.vsf__item:not(.is-open) .vsf__panel { display: none; }
+.vsf__item.is-open .vsf__panel { display: block; }
+.vsf__btn img { background: none !important; }
+.vh__hl, .vs__num, .pwg__link { color: color-mix(in srgb, var(--p-accent) 70%, var(--p-text)) !important; }
+.email-cta input { color: var(--p-text) !important; }
+.email-cta input::placeholder { color: color-mix(in srgb, var(--p-text) 70%, var(--p-background)) !important; }
+.team-nav-tip { display: none; position: absolute; z-index: 30; right: 12px; top: 100%; padding: 6px 9px; border-radius: 6px; background: var(--p-text); color: var(--p-background); font-size: 12px; }
+.nav__toggle:is(:hover, :focus-visible) + .team-nav-tip { display: block; }
+
+.team-dialog { border: 0; padding: 0; border-radius: 18px; max-width: min(90vw, 460px); color: var(--p-text); background: var(--p-background); box-shadow: 0 24px 90px #0003; }
+.team-dialog::backdrop { background: #0008; }
+.team-dialog__panel { padding: 32px; font-family: Inter, Arial, sans-serif; }
+.team-dialog__panel h2 { margin: 0 40px 10px 0; font: 32px/1.1 Arial, sans-serif; }
+.team-dialog__panel p { margin: 0 0 20px; font-size: 15px; line-height: 1.5; }
+.team-dialog__panel button { position: absolute; top: 14px; right: 18px; background: none; border: 0; color: var(--p-text); font-size: 28px; cursor: pointer; }
+.team-dialog__gradient { height: 160px; border-radius: 10px; background: var(--team-visual); }
+
+@media (max-width: 700px) {
+  html body .vh__title .rv-word { font-size: 40px !important; }
+  .team-dialog__panel { padding: 24px; }
+  .team-dialog__panel h2 { font-size: 26px; }
+}

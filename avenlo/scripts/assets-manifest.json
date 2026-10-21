@@ -1,0 +1,770 @@
+[
+  {
+    "url": "https://avenlo.ai/fonts/tiempos-headline-regular.woff2",
+    "path": "/fonts/tiempos-headline-regular.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-4b0039bf8ac054.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-4b0039bf8ac054.avif"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-latin-400-normal.BqEyEoaF.woff2",
+    "path": "/_astro/roboto-latin-400-normal.BqEyEoaF.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/inter-latin-400.woff2",
+    "path": "/fonts/inter-latin-400.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-91ebac4cdf4096.svg",
+    "path": "/assets/shared/media-91ebac4cdf4096.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-b3dea5ad5fa7ed.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-b3dea5ad5fa7ed.avif"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-chart-pie.svg",
+    "path": "/assets/home/hero-live/icon-chart-pie.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-rocket.svg",
+    "path": "/assets/home/hero-live/icon-rocket.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-chevron.svg",
+    "path": "/assets/home/hero-live/icon-chevron.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-c9e9ebd079d396.svg",
+    "path": "/assets/home/hero-live/media-c9e9ebd079d396.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-paperclip.svg",
+    "path": "/assets/home/hero-live/icon-paperclip.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-inbox.svg",
+    "path": "/assets/home/hero-live/icon-inbox.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-d21e0e101d73e3.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-d21e0e101d73e3.avif"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-info.svg",
+    "path": "/assets/home/hero-live/icon-info.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-7e2a999e99d315.svg",
+    "path": "/assets/home/hero-live/media-7e2a999e99d315.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-b0299b81434775.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-b0299b81434775.avif"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/cursor.svg",
+    "path": "/assets/home/hero-live/cursor.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-ef5b6e526c20e0.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-ef5b6e526c20e0.avif"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-9d2c9533f5f1e5.webp",
+    "path": "/assets/home/hero-live/media-9d2c9533f5f1e5.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-bolt.svg",
+    "path": "/assets/home/hero-live/icon-bolt.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-4ea9c4e6b7a939.svg",
+    "path": "/assets/home/hero-live/media-4ea9c4e6b7a939.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-b2ffaa4159c324.svg",
+    "path": "/assets/home/hero-live/media-b2ffaa4159c324.svg"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/inter-latin-600.woff2",
+    "path": "/fonts/inter-latin-600.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/geist-latin-500.woff2",
+    "path": "/fonts/geist-latin-500.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/inter-latin-500.woff2",
+    "path": "/fonts/inter-latin-500.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/inter-latin-700.woff2",
+    "path": "/fonts/inter-latin-700.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/geist-latin-400.woff2",
+    "path": "/fonts/geist-latin-400.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/geist-mono-latin.woff2",
+    "path": "/assets/home/hero-live/geist-mono-latin.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/geist-latin.woff2",
+    "path": "/assets/home/hero-live/geist-latin.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-600-normal.V-KvD_pi.woff2",
+    "path": "/_astro/geist-mono-latin-600-normal.V-KvD_pi.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-400-normal.DTRLJnHl.woff2",
+    "path": "/_astro/geist-mono-latin-400-normal.DTRLJnHl.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-symbols-400-normal.CB1Ce4Gk.woff2",
+    "path": "/_astro/roboto-symbols-400-normal.CB1Ce4Gk.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-0c4138e2da1070.svg",
+    "path": "/assets/home/media-0c4138e2da1070.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-22183a437a1595.webp",
+    "path": "/assets/home/media-22183a437a1595.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-1d044444c46a78.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-1d044444c46a78.avif"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-b0396179b7071c.webp?w=327&fit=max&auto=format",
+    "path": "/external/media-b0396179b7071c.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-db6bcbecfcf526.webp?w=345&fit=max&auto=format",
+    "path": "/external/media-db6bcbecfcf526.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-f6d326bdcdf767.webp?w=259&fit=max&auto=format",
+    "path": "/external/media-f6d326bdcdf767.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-6bada50b4e5b14.webp?w=377&fit=max&auto=format",
+    "path": "/external/media-6bada50b4e5b14.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-089b4b2b4ae9ca.webp",
+    "path": "/assets/home/media-089b4b2b4ae9ca.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-591d795cacdd2b.webp?w=330&fit=max&auto=format",
+    "path": "/external/media-591d795cacdd2b.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-3fd2134a115307.svg",
+    "path": "/external/media-3fd2134a115307.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-4a831677d4da4c.webp?w=148&fit=max&auto=format",
+    "path": "/external/media-4a831677d4da4c.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/customer-stories/media-644d8212663836.webp",
+    "path": "/assets/customer-stories/media-644d8212663836.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-3e99f5551d4bc7.webp?w=144&fit=max&auto=format",
+    "path": "/external/media-3e99f5551d4bc7.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-1ae5fca52397c2.svg",
+    "path": "/external/media-1ae5fca52397c2.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/case-studies/media-98668ff03bed91.webp",
+    "path": "/assets/shared/case-studies/media-98668ff03bed91.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/customer-stories/media-1c906ea9768903.webp",
+    "path": "/assets/customer-stories/media-1c906ea9768903.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-52f25928d8040f.svg",
+    "path": "/external/media-52f25928d8040f.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/media-5d1276cdb86c2a.webm",
+    "path": "/assets/home/hero-live/media-5d1276cdb86c2a.webm"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-811237fcb6ff6f.webp",
+    "path": "/assets/shared/media-811237fcb6ff6f.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-236b57b4744898.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-236b57b4744898.avif"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-aad362503b8a6b.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-aad362503b8a6b.avif"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-adb226251a95f6.avif?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-adb226251a95f6.avif"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/icon-check.svg",
+    "path": "/assets/home/icon-check.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/icon-arrow-right.svg",
+    "path": "/assets/home/icon-arrow-right.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-browser-dots.svg",
+    "path": "/assets/home/job-browser-dots.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-cursor-ring.svg",
+    "path": "/assets/home/job-cursor-ring.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-dots.svg",
+    "path": "/assets/home/vc-dots.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-cursor-ring.svg",
+    "path": "/assets/home/vc-cursor-ring.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-live-dot.svg",
+    "path": "/assets/home/vc-live-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-play.svg",
+    "path": "/assets/home/vc-play.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-mic.svg",
+    "path": "/assets/home/vc-mic.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/vc-record-dot.svg",
+    "path": "/assets/home/vc-record-dot.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-4d7338ebd01bc5.png?w=180&fit=max&auto=format",
+    "path": "/external/media-4d7338ebd01bc5.png"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-7dd81ba03e7a5d.svg",
+    "path": "/external/media-7dd81ba03e7a5d.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-8b6af7e493fb92.webp?w=381&fit=max&auto=format",
+    "path": "/external/media-8b6af7e493fb92.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-56f8f01097dbbc.webp?w=292&fit=max&auto=format",
+    "path": "/external/media-56f8f01097dbbc.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-3d5e51e6543cb2.svg",
+    "path": "/assets/home/media-3d5e51e6543cb2.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-dot.svg",
+    "path": "/assets/home/job-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-legend-1.svg",
+    "path": "/assets/home/job-legend-1.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-tooltip-dot.svg",
+    "path": "/assets/home/job-tooltip-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-dot-sm.svg",
+    "path": "/assets/home/job-dot-sm.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-legend-2.svg",
+    "path": "/assets/home/job-legend-2.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-legend-3.svg",
+    "path": "/assets/home/job-legend-3.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-send-dot.svg",
+    "path": "/assets/home/job-send-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-input-left.svg",
+    "path": "/assets/home/job-input-left.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/job-msg1.svg",
+    "path": "/assets/home/job-msg1.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-3f2e5582208892.svg",
+    "path": "/assets/home/media-3f2e5582208892.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-cc59cba6c737ec.svg",
+    "path": "/assets/home/media-cc59cba6c737ec.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-play-circle.svg",
+    "path": "/assets/home/if-play-circle.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-send-circle.svg",
+    "path": "/assets/home/if-send-circle.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-400-normal.HOLc17fK.woff",
+    "path": "/_astro/inter-cyrillic-400-normal.HOLc17fK.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-vietnamese-400-normal.DMkecbls.woff2",
+    "path": "/_astro/inter-vietnamese-400-normal.DMkecbls.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-9e6b0062e444ff.svg",
+    "path": "/assets/home/media-9e6b0062e444ff.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-014b06543a8e90.svg",
+    "path": "/assets/shared/media-014b06543a8e90.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-vietnamese-400-normal.D2PTxGxD.woff2",
+    "path": "/_astro/roboto-vietnamese-400-normal.D2PTxGxD.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-b60613f6b222ab.webp",
+    "path": "/assets/home/media-b60613f6b222ab.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-ext-600-normal.Dfes3d0z.woff2",
+    "path": "/_astro/inter-cyrillic-ext-600-normal.Dfes3d0z.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-aefa2a6c02ce8b.svg",
+    "path": "/assets/home/media-aefa2a6c02ce8b.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-vietnamese-400-normal.Bbgyi5SW.woff",
+    "path": "/_astro/inter-vietnamese-400-normal.Bbgyi5SW.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-ext-700-normal.BjwYoWNd.woff2",
+    "path": "/_astro/inter-cyrillic-ext-700-normal.BjwYoWNd.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-400-normal.C51Di1Mf.woff2",
+    "path": "/_astro/geist-mono-cyrillic-400-normal.C51Di1Mf.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-window-dots.svg",
+    "path": "/assets/home/if-window-dots.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-f6b1ce0486e37b.svg",
+    "path": "/assets/home/media-f6b1ce0486e37b.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-symbols-400-normal.C7tGlxgb.woff",
+    "path": "/_astro/roboto-symbols-400-normal.C7tGlxgb.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-500-normal.D2cXvDHF.woff2",
+    "path": "/_astro/geist-mono-cyrillic-500-normal.D2cXvDHF.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-symbols2-600-normal.D7I4D0GJ.woff",
+    "path": "/_astro/geist-mono-symbols2-600-normal.D7I4D0GJ.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-ext-600-normal.BLvyY6Bq.woff",
+    "path": "/_astro/geist-mono-cyrillic-ext-600-normal.BLvyY6Bq.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-3ddc22b0e5971e.webp?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-3ddc22b0e5971e.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-ext-400-normal.BQZuk6qB.woff2",
+    "path": "/_astro/inter-cyrillic-ext-400-normal.BQZuk6qB.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-greek-400-normal.D904r64h.woff",
+    "path": "/_astro/roboto-greek-400-normal.D904r64h.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-latin-ext-400-normal.CIveymTr.woff",
+    "path": "/_astro/roboto-latin-ext-400-normal.CIveymTr.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-500-normal.DfuvdVgn.woff",
+    "path": "/_astro/geist-mono-cyrillic-500-normal.DfuvdVgn.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-500-normal.BL9OpVg8.woff",
+    "path": "/_astro/inter-latin-500-normal.BL9OpVg8.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-85f7d7d9086f31.svg",
+    "path": "/assets/home/media-85f7d7d9086f31.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-45b9c5e879e5d5.webp?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-45b9c5e879e5d5.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-latin-ext-400-normal.C3tdtHj3.woff2",
+    "path": "/_astro/roboto-latin-ext-400-normal.C3tdtHj3.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-2a1b68d2e8fa09.webp",
+    "path": "/assets/home/media-2a1b68d2e8fa09.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-ext-500-normal.BxGbmqWO.woff",
+    "path": "/_astro/inter-latin-ext-500-normal.BxGbmqWO.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-12f77041e598e0.svg",
+    "path": "/assets/home/media-12f77041e598e0.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-500-normal.YINYabwD.woff2",
+    "path": "/_astro/geist-mono-latin-500-normal.YINYabwD.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-vietnamese-500-normal.Dx9-epDo.woff",
+    "path": "/_astro/geist-mono-vietnamese-500-normal.Dx9-epDo.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-600-normal.bZn07FKM.woff",
+    "path": "/_astro/geist-mono-latin-600-normal.bZn07FKM.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-400-normal.C38fXH4l.woff2",
+    "path": "/_astro/inter-latin-400-normal.C38fXH4l.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-ext-600-normal.BD1CN43b.woff2",
+    "path": "/_astro/geist-mono-cyrillic-ext-600-normal.BD1CN43b.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/hero-live/icon-check.svg",
+    "path": "/assets/home/hero-live/icon-check.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-ext-500-normal.2j5mBUwD.woff",
+    "path": "/_astro/inter-greek-ext-500-normal.2j5mBUwD.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-ext-600-normal.B8X0CLgF.woff",
+    "path": "/_astro/inter-greek-ext-600-normal.B8X0CLgF.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-ext-500-normal.C4iEst2y.woff2",
+    "path": "/_astro/inter-greek-ext-500-normal.C4iEst2y.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-8a38f30df414ca.svg",
+    "path": "/assets/shared/media-8a38f30df414ca.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-vietnamese-400-normal.Bf76hAzZ.woff",
+    "path": "/_astro/roboto-vietnamese-400-normal.Bf76hAzZ.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-cb431e586d62a0.webp",
+    "path": "/assets/shared/media-cb431e586d62a0.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-d6ae37a53c495d.webp",
+    "path": "/assets/shared/media-d6ae37a53c495d.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-700-normal.CjBOestx.woff2",
+    "path": "/_astro/inter-cyrillic-700-normal.CjBOestx.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-ext-700-normal.BoQ6DsYi.woff",
+    "path": "/_astro/inter-greek-ext-700-normal.BoQ6DsYi.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-greek-ext-400-normal.DSIYbWsP.woff",
+    "path": "/_astro/roboto-greek-ext-400-normal.DSIYbWsP.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-bd7c3484c6bca2.webp?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-bd7c3484c6bca2.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-ext-600-normal.Bcila6Z-.woff",
+    "path": "/_astro/inter-cyrillic-ext-600-normal.Bcila6Z-.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-live-dot.svg",
+    "path": "/assets/home/if-live-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-ext-400-normal.C1nco2VV.woff2",
+    "path": "/_astro/inter-latin-ext-400-normal.C1nco2VV.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-math-400-normal.D6sS4O5l.woff",
+    "path": "/_astro/roboto-math-400-normal.D6sS4O5l.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-600-normal.plRanbMR.woff2",
+    "path": "/_astro/inter-greek-600-normal.plRanbMR.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-ext-400-normal.CfzLURNc.woff",
+    "path": "/_astro/geist-mono-latin-ext-400-normal.CfzLURNc.woff"
+  },
+  {
+    "url": "https://avenlo.ai/fonts/newsreader-opsz.woff2",
+    "path": "/fonts/newsreader-opsz.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-400-normal.B4URO6DV.woff2",
+    "path": "/_astro/inter-greek-400-normal.B4URO6DV.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-910e294883c685.svg",
+    "path": "/assets/home/media-910e294883c685.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/media-cb979c12666364.png?dpl=dpl_5HfGCo1WJc3z4bCkuSN4km2LLXn4",
+    "path": "/_astro/media-cb979c12666364.png"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-a670da1d0b0a99.svg",
+    "path": "/assets/shared/media-a670da1d0b0a99.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-vietnamese-500-normal.mJboJaSs.woff",
+    "path": "/_astro/inter-vietnamese-500-normal.mJboJaSs.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-d6669549c9a6c8.svg",
+    "path": "/assets/shared/media-d6669549c9a6c8.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-vietnamese-600-normal.BuLX-rYi.woff",
+    "path": "/_astro/inter-vietnamese-600-normal.BuLX-rYi.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-700-normal.BUv2fZ6O.woff",
+    "path": "/_astro/inter-greek-700-normal.BUv2fZ6O.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-ext-700-normal.Ca8adRJv.woff2",
+    "path": "/_astro/inter-latin-ext-700-normal.Ca8adRJv.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-latin-400-normal.D27F5sTu.woff",
+    "path": "/_astro/roboto-latin-400-normal.D27F5sTu.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-symbols2-500-normal.CmnCPGa0.woff",
+    "path": "/_astro/geist-mono-symbols2-500-normal.CmnCPGa0.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-700-normal.Yt3aPRUw.woff2",
+    "path": "/_astro/inter-latin-700-normal.Yt3aPRUw.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-ext-500-normal.CrWEgvU_.woff",
+    "path": "/_astro/geist-mono-latin-ext-500-normal.CrWEgvU_.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-1e08d292145cc4.webp",
+    "path": "/assets/home/media-1e08d292145cc4.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-ext-600-normal.DRtmH8MT.woff2",
+    "path": "/_astro/inter-greek-ext-600-normal.DRtmH8MT.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-math-400-normal.BEFej5gc.woff2",
+    "path": "/_astro/roboto-math-400-normal.BEFej5gc.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-symbols2-500-normal.Q_ksOahU.woff2",
+    "path": "/_astro/geist-mono-symbols2-500-normal.Q_ksOahU.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-cyrillic-600-normal.Dfv53e6N.woff2",
+    "path": "/_astro/geist-mono-cyrillic-600-normal.Dfv53e6N.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-cyrillic-400-normal.obahsSVq.woff2",
+    "path": "/_astro/inter-cyrillic-400-normal.obahsSVq.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-81912e355cb009.webp",
+    "path": "/assets/home/media-81912e355cb009.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-latin-600-normal.LgqL8muc.woff2",
+    "path": "/_astro/inter-latin-600-normal.LgqL8muc.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-39c16333be448f.webp",
+    "path": "/assets/home/media-39c16333be448f.webp"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/inter-greek-400-normal.q2sYcFCs.woff",
+    "path": "/_astro/inter-greek-400-normal.q2sYcFCs.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-cyrillic-ext-400-normal.DhDk0Xwi.woff",
+    "path": "/_astro/roboto-cyrillic-ext-400-normal.DhDk0Xwi.woff"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/roboto-cyrillic-400-normal.CBPI_iaY.woff2",
+    "path": "/_astro/roboto-cyrillic-400-normal.CBPI_iaY.woff2"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/icon-chevron-down.svg",
+    "path": "/assets/home/icon-chevron-down.svg"
+  },
+  {
+    "url": "https://avenlo.ai/_astro/geist-mono-latin-500-normal.D-GG86Jb.woff",
+    "path": "/_astro/geist-mono-latin-500-normal.D-GG86Jb.woff"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-ecd19765031c02.webp",
+    "path": "/assets/home/media-ecd19765031c02.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-9c0c5371bf3a2f.mp4",
+    "path": "/assets/home/media-9c0c5371bf3a2f.mp4"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-fb4c2f1e22d084.svg",
+    "path": "/assets/home/media-fb4c2f1e22d084.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-play.svg",
+    "path": "/assets/home/if-play.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-8b7313506379a6.webp",
+    "path": "/assets/home/media-8b7313506379a6.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-3d0d41306279f0.webp",
+    "path": "/assets/shared/media-3d0d41306279f0.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-8bb6736b6da9b8.webp",
+    "path": "/assets/home/media-8bb6736b6da9b8.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-ab860fc674c3bf.webp",
+    "path": "/assets/home/media-ab860fc674c3bf.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-bottom-icons.svg",
+    "path": "/assets/home/if-bottom-icons.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-9a91128828a8f6.webp",
+    "path": "/assets/home/media-9a91128828a8f6.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-15ced51309576e.webp",
+    "path": "/assets/shared/media-15ced51309576e.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-7080ab24c18c17.svg",
+    "path": "/assets/shared/media-7080ab24c18c17.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-send-dot.svg",
+    "path": "/assets/home/if-send-dot.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/media-af4c0709c5a40b.svg",
+    "path": "/assets/shared/media-af4c0709c5a40b.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-9a102cb650fe9e.webp",
+    "path": "/assets/home/media-9a102cb650fe9e.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/if-spinner.svg",
+    "path": "/assets/home/if-spinner.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-35014a4022ca02.svg",
+    "path": "/assets/home/media-35014a4022ca02.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-97af3f5ec38ba3.webp",
+    "path": "/assets/home/media-97af3f5ec38ba3.webp"
+  },
+  {
+    "url": "https://avenlo.ai/assets/shared/icon-cookie.svg",
+    "path": "/assets/shared/icon-cookie.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-eea391ef199f13.svg",
+    "path": "/assets/home/media-eea391ef199f13.svg"
+  },
+  {
+    "url": "https://avenlo.ai/assets/home/media-e048840d0e3f29.svg",
+    "path": "/assets/home/media-e048840d0e3f29.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-cdcdb6b9cbd0ba.svg",
+    "path": "/external/media-cdcdb6b9cbd0ba.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-f8b50b882dffb8.webp?w=342&fit=max&auto=format",
+    "path": "/external/media-f8b50b882dffb8.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-f8e3aba2df122b.webp?fit=max&auto=format",
+    "path": "/external/media-f8e3aba2df122b.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-2849960212d4b9.webp?fit=max&auto=format",
+    "path": "/external/media-2849960212d4b9.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-dfe2baca85f6b8.webp?fit=max&auto=format",
+    "path": "/external/media-dfe2baca85f6b8.webp"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-9bbf19f7349dd6.svg",
+    "path": "/external/media-9bbf19f7349dd6.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-a67dded89b5d37.svg",
+    "path": "/external/media-a67dded89b5d37.svg"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-0951e1a99780e7.png?w=240&fit=max&auto=format",
+    "path": "/external/media-0951e1a99780e7.png"
+  },
+  {
+    "url": "https://cdn.sanity.io/images/jd4qqmte/production/media-3f9df960e73b65.png?w=276&fit=max&auto=format",
+    "path": "/external/media-3f9df960e73b65.png"
+  }
+]
