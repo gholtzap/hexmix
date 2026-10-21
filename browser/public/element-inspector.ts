@@ -9,6 +9,7 @@
   };
   let page = "";
   let inspecting = false;
+  let roleMap = false;
   let assignments: Assignment[] = [];
   let hovered: Element | null = null;
   let selectedSelector = "";
@@ -20,6 +21,87 @@
   outline.dataset.hexmixInspectorOutline = "true";
   outline.style.cssText = "position:fixed;z-index:2147483647;pointer-events:none;border:2px solid var(--p-accent,#3578e5);border-radius:4px;background:color-mix(in srgb,var(--p-accent,#3578e5) 12%,transparent);display:none;box-sizing:border-box";
   document.body.append(outline);
+  const mapLayer = document.createElement("div");
+  mapLayer.dataset.hexmixRoleMap = "true";
+  mapLayer.setAttribute("aria-hidden", "true");
+  mapLayer.style.cssText = "position:fixed;inset:0;z-index:2147483646;pointer-events:none;display:none";
+  document.body.append(mapLayer);
+  let mapProperties = new WeakMap<Element, Property>();
+  let mapTimer = 0;
+
+  function mappedTarget(source: EventTarget | null) {
+    if (!(source instanceof Element)) return null;
+    for (let element: Element | null = source; element && element !== document.body; element = element.parentElement) {
+      if (mapProperties.has(element)) return element;
+    }
+    return null;
+  }
+
+  function drawRoleMap() {
+    if (!roleMap) return;
+    const roleNames = ["text", "background", "primary", "secondary", "accent"];
+    const rootStyle = getComputedStyle(document.documentElement);
+    const colors = new Map<string, string>();
+    const values = new Map<string, string>();
+    const rgbByRole = new Map<string, string>();
+    for (const role of roleNames) {
+      const hex = rootStyle.getPropertyValue(`--p-${role}`).trim();
+      if (!/^#[0-9a-f]{6}$/i.test(hex)) continue;
+      const rgb = `rgb(${[1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16)).join(",")})`;
+      colors.set(role, hex);
+      values.set(rgb, role);
+      rgbByRole.set(role, rgb);
+    }
+    const match = (value: string) => values.get(value.toLowerCase().replace(/\s+/g, ""));
+    const markers: HTMLElement[] = [];
+    const seen = new Set<string>();
+    mapProperties = new WeakMap();
+    for (const element of document.body.querySelectorAll("*")) {
+      if (mapLayer.contains(element) || element === outline) continue;
+      const box = element.getBoundingClientRect();
+      if (box.width < 24 || box.height < 18 || box.right < 0 || box.bottom < 0 || box.left > innerWidth || box.top > innerHeight) continue;
+      if (box.width > innerWidth * .95 && box.height > innerHeight * .8) continue;
+      const style = getComputedStyle(element);
+      let role: string | undefined, property: Property = "background";
+      if (element instanceof HTMLImageElement && element.dataset.editorGradientRole) {
+        role = element.dataset.editorGradientRole;
+        property = "image";
+      } else if (element instanceof SVGElement) {
+        if (element.localName !== "svg") continue;
+        role = match(style.fill);
+        property = "fill";
+        if (!role) { role = match(style.stroke); property = "stroke"; }
+      } else {
+        role = match(style.backgroundColor);
+        if (!role && style.backgroundImage !== "none") {
+          const image = style.backgroundImage.toLowerCase().replace(/\s+/g, "");
+          role = ["primary", "secondary", "accent", "text", "background"].find(name => image.includes(rgbByRole.get(name) ?? "\0"));
+        }
+        if (!role && (element.matches("h1,h2,h3,h4,h5,h6,p,a,button,label") || element.matches("span,strong,em,b,i") && isText(element) && style.color !== getComputedStyle(element.parentElement!).color)) {
+          role = match(style.color); property = "color";
+        }
+        if (!role && style.borderTopWidth !== "0px") { role = match(style.borderTopColor); property = "border"; }
+      }
+      if (!role || !colors.has(role)) continue;
+      const key = `${role}:${Math.round(box.left)}:${Math.round(box.top)}:${Math.round(box.width)}:${Math.round(box.height)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      mapProperties.set(element, property);
+      const marker = document.createElement("div");
+      marker.dataset.hexmixRole = role;
+      marker.style.cssText = `position:absolute;left:${box.left}px;top:${box.top}px;width:${box.width}px;height:${box.height}px;box-sizing:border-box;border:1px solid color-mix(in srgb,${colors.get(role)} 45%,transparent);border-radius:${style.borderRadius};background:color-mix(in srgb,${colors.get(role)} 4%,transparent)`;
+      markers.push(marker);
+      // shortcut: Limit overlays to 120; use viewport batching if a dense page needs more.
+      if (markers.length >= 120) break;
+    }
+    mapLayer.replaceChildren(...markers);
+  }
+
+  function scheduleRoleMap() {
+    if (!roleMap) return;
+    clearTimeout(mapTimer);
+    mapTimer = window.setTimeout(drawRoleMap, 100);
+  }
 
   function selectorFor(element: Element) {
     if (element === document.body || element === document.documentElement) return element.localName;
@@ -67,14 +149,7 @@
     const name = cssProperty[property];
     const style = (element as HTMLElement | SVGElement).style;
     const original = applied.get(element)?.get(name);
-    const visibleColor = () => {
-      if (property === "background") {
-        for (let surface: Element | null = element; surface; surface = surface.parentElement) {
-          if (hasBackground(surface)) return getComputedStyle(surface).backgroundColor;
-        }
-      }
-      return getComputedStyle(element).getPropertyValue(name).trim();
-    };
+    const visibleColor = () => getComputedStyle(element).getPropertyValue(name).trim();
     if (!original) return visibleColor();
     const appliedValue = { value: style.getPropertyValue(name), priority: style.getPropertyPriority(name) };
     if (original.value) style.setProperty(name, original.value, original.priority);
@@ -158,14 +233,20 @@
       if (image.dataset.editorGradientRole !== role) image.dataset.editorGradientRole = role;
       appliedImages.add(image);
     }
+    scheduleRoleMap();
   }
 
   let queued = false;
   new MutationObserver(records => {
-    if (queued || !assignments.length || !records.some(record => record.type === "childList" || applied.has(record.target as Element))) return;
+    if (queued || !assignments.length || !records.some(record => record.target !== mapLayer && !mapLayer.contains(record.target) && (record.type === "childList" || applied.has(record.target as Element)))) return;
     queued = true;
     requestAnimationFrame(() => { queued = false; applyAssignments(); });
   }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+
+  new MutationObserver(records => {
+    if (records.some(record => record.target !== mapLayer && !mapLayer.contains(record.target))) scheduleRoleMap();
+  }).observe(document.body, { childList: true, subtree: true });
+  new MutationObserver(scheduleRoleMap).observe(document.documentElement, { attributes: true, attributeFilter: ["style"] });
 
   document.addEventListener("pointermove", event => {
     if (!inspecting) return;
@@ -177,17 +258,17 @@
     event.preventDefault();
     event.stopImmediatePropagation();
   }, true);
-  document.addEventListener("scroll", () => setOutline(hovered), true);
-  window.addEventListener("resize", () => setOutline(hovered));
-  function selectElement(source: EventTarget | null, x?: number, y?: number) {
-    const target = source instanceof Element ? targetFor(source) : null;
+  document.addEventListener("scroll", () => { setOutline(hovered); scheduleRoleMap(); }, true);
+  window.addEventListener("resize", () => { setOutline(hovered); scheduleRoleMap(); });
+  function selectElement(source: EventTarget | null, x?: number, y?: number, fromMap = false) {
+    const target = fromMap ? mappedTarget(source) : source instanceof Element ? targetFor(source) : null;
     if (!target) return;
     const selector = selectorFor(target);
     if (!selector) return;
     const name = (target.getAttribute("aria-label") || target.textContent || "").trim().replace(/\s+/g, " ");
     const kind = /^h[1-6]$/.test(target.localName) ? "Heading" : target.localName === "button" ? "Button" : target.localName === "a" ? "Link" : target instanceof HTMLImageElement ? "Image" : target instanceof SVGElement ? "Graphic" : "Element";
     const label = name && name.length <= 40 ? `${kind}: ${name}` : kind;
-    const property = assignments.find(item => item.path === page && item.selector === selector)?.property ?? propertyFor(target);
+    const property = assignments.find(item => item.path === page && item.selector === selector)?.property ?? (fromMap ? mapProperties.get(target) : undefined) ?? propertyFor(target);
     const oldImage = property === "background" ? getComputedStyle(target).backgroundImage : "none";
     const box = target.getBoundingClientRect();
     const anchor = property === "image" && x !== undefined && y !== undefined && (box.width > 240 || box.height > 240)
@@ -201,11 +282,12 @@
       bounds: anchor,
     } }, editorOrigin);
   }
-  document.addEventListener("click", event => {
-    if (!inspecting && !event.altKey) return;
+  window.addEventListener("click", event => {
+    const fromMap = roleMap && !event.altKey && !inspecting && Boolean(mappedTarget(event.target));
+    if (!inspecting && !event.altKey && !fromMap) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    selectElement(event.target, event.clientX, event.clientY);
+    selectElement(event.target, event.clientX, event.clientY, fromMap);
   }, true);
   document.addEventListener("focusin", event => {
     if (inspecting) setOutline(event.target instanceof Element ? targetFor(event.target) : null);
@@ -227,10 +309,14 @@
     page = typeof event.data.page === "string" ? event.data.page : "";
     assignments = Array.isArray(event.data.assignments) ? event.data.assignments : [];
     inspecting = event.data.inspecting === true;
+    roleMap = event.data.roleMap === true;
+    mapLayer.style.display = roleMap ? "block" : "none";
+    if (!roleMap) { clearTimeout(mapTimer); mapLayer.replaceChildren(); mapProperties = new WeakMap(); }
     selectedSelector = typeof event.data.selectedSelector === "string" ? event.data.selectedSelector : "";
     document.documentElement.style.cursor = inspecting ? "crosshair" : "";
     setOutline(inspecting ? hovered : null);
     applyAssignments();
+    scheduleRoleMap();
   });
   window.parent.postMessage({ type: "hexmix-inspector-ready" }, editorOrigin);
 })();

@@ -7,8 +7,9 @@ export function usePreviewToolbarClearance(frame: RefObject<HTMLIFrameElement | 
     const child = frame.current;
     const anchor = toolbar?.closest<HTMLElement>('.toolbar-anchor');
     if (!child || !toolbar || !anchor) return;
+    const studio = anchor.closest<HTMLElement>('.studio');
     let disconnect = () => {};
-    const clear = () => { anchor.style.removeProperty('bottom'); anchor.removeAttribute('data-preview-toolbar-hidden'); };
+    const clear = () => { anchor.style.removeProperty('bottom'); anchor.removeAttribute('data-preview-toolbar-hidden'); studio?.style.removeProperty('--toolbar-clearance'); };
     const connect = () => {
       disconnect();
       const document = child.contentDocument, view = document?.defaultView;
@@ -34,6 +35,7 @@ export function usePreviewToolbarClearance(frame: RefObject<HTMLIFrameElement | 
         for (const box of boxes.sort((a, b) => b.top - a.top)) {
           if (box.left < base.right && box.right > base.left && box.top < innerHeight - bottom && box.bottom > innerHeight - bottom - base.height) bottom = Math.max(bottom, innerHeight - box.top + 8);
         }
+        studio?.style.setProperty('--toolbar-clearance', `${bottom + base.height + 8}px`);
         if (bottom + base.height > innerHeight - 8) anchor.setAttribute('data-preview-toolbar-hidden', '');
         else if (bottom > baseline + 1) anchor.style.setProperty('bottom', `${bottom}px`, 'important');
       };
