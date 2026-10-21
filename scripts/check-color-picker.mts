@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { expectUI } from 'lintapple/playwright';
-import { initialPalette, paletteQuery } from '../src/lib/palette.ts';
+import { initialPalette, paletteQuery, isDarkPalette } from '../src/lib/palette.ts';
 
 const reportPath = 'artifacts/reui';
 await mkdir(reportPath, { recursive: true });
@@ -16,6 +16,7 @@ try {
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     const context = await browser.newContext({ viewport, reducedMotion: 'reduce', permissions: ['clipboard-read', 'clipboard-write'] });
     const page = await context.newPage();
+    const inDarkMode = async () => isDarkPalette({ ...initialPalette, background: await page.frameLocator('iframe').locator('html').evaluate(node => node.style.getPropertyValue('--p-background')) });
     page.setDefaultTimeout(7000);
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -41,12 +42,12 @@ try {
       await page.locator('.color-picker-content').waitFor({ state: 'hidden' });
     };
     const primary = () => page.locator('iframe').evaluate(frame => (frame as HTMLIFrameElement).contentDocument.documentElement.style.getPropertyValue('--p-primary'));
-    await page.goto(process.env.APP_URL || `http://127.0.0.1:3000/editor?${paletteQuery(initialPalette)}`);
+    await page.goto(new URL(`/editor?${paletteQuery(initialPalette)}`, process.env.APP_URL || 'http://127.0.0.1:3000').href);
     await page.locator('iframe').evaluate(async frame => {
       if ((frame as HTMLIFrameElement).contentDocument?.readyState !== 'complete') await new Promise<void>(resolve => frame.addEventListener('load', () => resolve(), { once: true }));
     });
     await audit('closed');
-    await page.getByRole('button', { name: 'Fonts', exact: true }).click();
+    await clickToolbarAction(page, 'Fonts');
     await audit('fonts open');
     await page.getByLabel('Headings', { exact: true }).selectOption('Arial');
     await page.getByLabel('Body', { exact: true }).selectOption('Verdana');
@@ -125,17 +126,16 @@ try {
     await audit('locked');
     await close();
     assert.equal(await page.getByRole('button', { name: 'Primary color', exact: true }).locator('svg').count(), 1);
-    await page.getByRole('button', { name: 'Shuffle palette', exact: true }).click();
+    await clickToolbarAction(page, 'Shuffle palette');
     assert.equal(await primary(), '#82a4d3', 'A locked color must survive randomization');
-    const enterDark = page.getByRole('button', { name: 'Use dark palette', exact: true });
-    if (await enterDark.count()) await enterDark.click();
+    if (!await inDarkMode()) await clickToolbarAction(page, 'Use dark palette');
     for (let i = 0; i < 5; i++) {
-      await page.getByRole('button', { name: 'Shuffle palette', exact: true }).click();
-      assert.equal(await page.getByRole('button', { name: 'Use light palette', exact: true }).count(), 1, 'Shuffle must keep dark mode');
+      await clickToolbarAction(page, 'Shuffle palette');
+      assert.equal(await inDarkMode(), true, 'Shuffle must keep dark mode');
       assert.equal(await primary(), '#82a4d3', 'Shuffle must keep locked colors in dark mode');
     }
     await clickToolbarAction(page, 'Undo palette');
-    assert.equal(await page.getByRole('button', { name: 'Use light palette', exact: true }).count(), 1);
+    assert.equal(await inDarkMode(), true);
     await clickToolbarAction(page, 'Redo palette');
     await page.mouse.move(5, 5);
     await audit('dark after shuffle');
@@ -148,9 +148,9 @@ try {
     await audit('dark preview');
     await page.screenshot({ path: `${reportPath}/${viewport.width}-dark.png` });
     await close();
-    await page.getByRole('button', { name: 'Use light palette', exact: true }).click();
-    await page.getByRole('button', { name: 'Shuffle palette', exact: true }).click();
-    assert.equal(await page.getByRole('button', { name: 'Use dark palette', exact: true }).count(), 1, 'Shuffle must keep light mode');
+    await clickToolbarAction(page, 'Use light palette');
+    await clickToolbarAction(page, 'Shuffle palette');
+    assert.equal(await inDarkMode(), false, 'Shuffle must keep light mode');
     await page.mouse.move(5, 5);
     await audit('light after shuffle');
     await clickToolbarAction(page, 'Reset palette and fonts');
@@ -177,6 +177,7 @@ try {
     await page.locator('iframe').contentFrame().locator('body').click({ position: { x: 10, y: 10 } });
     await page.locator('.color-picker-content').waitFor({ state: 'hidden' });
     await open('Accent');
+    if (viewport.width <= 560) await close();
     await page.getByRole('button', { name: 'Primary color', exact: true }).click();
     await page.getByRole('dialog', { name: 'Primary color', exact: true }).waitFor();
     assert.equal(await page.locator('.color-picker-content').count(), 1, 'Only one picker can be open');

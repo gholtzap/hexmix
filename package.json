@@ -44,7 +44,9 @@
     "prebuild": "npm run typecheck && npm run build:browser",
     "prestart": "npm run build:browser",
     "pretest": "npm run build:browser",
-    "check:typescript": "node scripts/check-typescript.mts"
+    "check:typescript": "node scripts/check-typescript.mts",
+    "test:mobile": "node scripts/check-mobile.mts",
+    "test:mobile:previews": "node scripts/check-mobile-previews.mts"
   },
   "dependencies": {
     "@aicss/react": "0.1.3",

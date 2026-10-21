@@ -1,3 +1,4 @@
+import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
@@ -35,7 +36,7 @@ try {
       reports.push(report);
     };
     const open = async () => {
-      await page.getByRole('button', { name: 'Palettes', exact: true }).click();
+      await clickToolbarAction(page, 'Palettes');
       await page.getByRole('dialog', { name: 'Palettes', exact: true }).waitFor();
     };
     const close = async () => {
@@ -56,7 +57,7 @@ try {
       assert.equal(await page.locator('.palette-panel').isVisible(), true);
     };
 
-    await page.goto(`http://127.0.0.1:3000/editor?${paletteQuery(initialPalette)}`);
+    await page.goto(`${process.env.APP_URL || "http://127.0.0.1:3000"}/editor?${paletteQuery(initialPalette)}`);
     await page.locator('[data-app-ready]').waitFor();
     await open();
     assert.equal(await tab('Presets').getAttribute('aria-selected'), 'true');
@@ -146,18 +147,20 @@ try {
     await audit('last palette removed');
     await page.keyboard.press('Escape');
     await page.locator('.palette-panel').waitFor({ state: 'hidden' });
-    await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'Palettes');
+    await page.waitForFunction((label) => document.activeElement?.getAttribute('aria-label') === label,
+      viewport.width <= 560 ? 'More tools' : 'Palettes');
 
-    await page.getByRole('button', { name: 'Use dark palette', exact: true }).click();
+    await clickToolbarAction(page, 'Use dark palette');
     await open();
     await tab('Presets').click();
     await page.mouse.move(5, 5);
     await audit('dark preview');
     await close();
     await page.getByRole('button', { name: 'Primary color', exact: true }).click();
-    await page.getByRole('button', { name: 'Palettes', exact: true }).click();
+    await clickToolbarAction(page, 'Palettes');
     await page.locator('.palette-panel').waitFor();
     assert.equal(await page.locator('.color-picker-content').count(), 0);
+    if (viewport.width <= 560) await close();
     await page.getByRole('button', { name: 'Primary color', exact: true }).click();
     await page.locator('.color-picker-content').waitFor();
     assert.equal(await page.locator('.palette-panel').count(), 0);
@@ -204,11 +207,13 @@ try {
     await page.getByRole('button', { name: 'Load more', exact: true }).click();
     assert.equal(await page.locator('.palette-card:visible').count(), 48);
     await apply('Collection 48').click();
-    const scrollBefore = await page.getByRole('tabpanel').evaluate(node => node.scrollTop);
+    const scrollArea = viewport.width <= 560 ? page.locator('.palette-panel-body') : page.getByRole('tabpanel');
+    const scrollBefore = await scrollArea.evaluate(node => node.scrollTop);
+    assert(scrollBefore > 0, 'The palette list must scroll to the last loaded palette');
     await close();
     await open();
     assert.equal(await page.locator('.palette-card:visible').count(), 48);
-    assert.equal(await page.getByRole('tabpanel').evaluate(node => node.scrollTop), scrollBefore);
+    assert.equal(await scrollArea.evaluate(node => node.scrollTop), scrollBefore);
     await page.getByRole('searchbox', { name: 'Search palettes', exact: true }).fill('blue pastel');
     await page.getByLabel('Color', { exact: true }).selectOption('blue');
     await page.getByLabel('Theme', { exact: true }).selectOption('light');

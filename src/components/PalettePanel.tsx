@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type ReactElement } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactElement, type RefObject } from "react";
 import { Check, Heart, Plus, X } from "lucide-react";
 import { isDarkPalette, matchesPalette, presetForTheme, presets, roles, type Palette, type SavedPalette } from "@/lib/palette";
 import { samePalette } from "@/lib/palette";
@@ -31,11 +31,13 @@ type Props = {
   onSave: (name: string) => void;
   onRename: (id: string, name: string) => void;
   onRemove: (id: string) => void;
+  notice?: string;
   restoreFocus: boolean;
+  returnFocus?: RefObject<HTMLButtonElement | null>;
 };
 
 export default function PalettePanel({
-  trigger, initialBrowse = false, open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus,
+  trigger, initialBrowse = false, open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice,
 }: Props) {
   const [editing, setEditing] = useState<{ id?: string; name: string } | null>(null);
   const [nameError, setNameError] = useState("");
@@ -44,6 +46,12 @@ export default function PalettePanel({
   const [filters, setFilters] = useState({ query: "", color: "", mode: "", style: "" });
   const [limit, setLimit] = useState(24);
   const scroll = useRef<Record<string, number>>({});
+  const restoreBodyScroll = useCallback((node: HTMLDivElement | null) => {
+    if (node) node.scrollTop = scroll.current[String(tab)] ?? 0;
+  }, [tab]);
+  const restoreListScroll = useCallback((node: HTMLDivElement | null) => {
+    if (node) node.scrollTop = scroll.current[node.dataset.collection ?? ""] ?? 0;
+  }, []);
   const dark = isDarkPalette(palette);
   const collections = useMemo(() => [
     { value: "presets", items: presets.map(item => presetForTheme(item, dark)) },
@@ -73,6 +81,10 @@ export default function PalettePanel({
         aria-label="Palettes"
         onCloseAutoFocus={(event) => {
           if (!restoreFocus) event.preventDefault();
+          else if (returnFocus?.current && window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) {
+            event.preventDefault();
+            returnFocus.current.focus();
+          }
         }}
       >
         <div className="palette-panel-header">
@@ -93,6 +105,10 @@ export default function PalettePanel({
             <X size={17} />
           </IconButton>
         </div>
+        <div className="palette-panel-body"
+          ref={restoreBodyScroll}
+          onScroll={event => { scroll.current[String(tab)] = event.currentTarget.scrollTop; }}>
+        {notice && <p className="palette-notice" role="status">{notice}</p>}
         {editing && <form className="palette-name-form" noValidate onSubmit={(event) => {
           event.preventDefault();
           const name = editing.name.trim();
@@ -119,7 +135,7 @@ export default function PalettePanel({
         </form>}
         {browse && <div className="palette-filters">
           <label className="palette-search">Search palettes
-            <input type="search" placeholder="Name, color, or style" value={filters.query} onChange={(event) => changeFilter("query", event.target.value)} />
+            <input type="search" value={filters.query} onChange={(event) => changeFilter("query", event.target.value)} />
           </label>
           <div className="palette-filter-row">
             {([
@@ -141,7 +157,7 @@ export default function PalettePanel({
           </TabsList>
           {collections.map(({ value, items, results }) => (
             <TabsContent value={value} key={value}
-              ref={(node) => { if (node) node.scrollTop = scroll.current[value] ?? 0; }}
+              data-collection={value} ref={restoreListScroll}
               onScroll={(event) => { scroll.current[value] = event.currentTarget.scrollTop; }}>
               {browse && <p className="palette-result-count" role="status">{results.length} {results.length === 1 ? "palette" : "palettes"}</p>}
               {results.length ? (
@@ -222,6 +238,7 @@ export default function PalettePanel({
         <Button variant="outline" className="palette-browse-toggle" onClick={() => { setBrowse(!browse); scroll.current = {}; }}>
           {browse ? "Quick picks" : "Browse all palettes"}
         </Button>
+        </div>
       </PopoverContent>
     </Popover>
   );

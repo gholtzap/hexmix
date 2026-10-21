@@ -1,3 +1,4 @@
+import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium, type Page, type Frame, type FrameLocator } from 'playwright';
@@ -32,7 +33,7 @@ async function run(id:string,path:string,width:number,theme:string,test:(p:Page,
 }
 try{for(const {width,theme}of combinations){
  await run('palettes','/',width,theme,async(p)=>{
-  const save=async(page:Page,name:string)=>{await page.getByRole('button',{name:'Browse palettes',exact:true}).click();await page.getByRole('button',{name:'Save palette',exact:true}).click();await page.getByLabel('Palette name',{exact:true}).fill(name);await page.getByRole('button',{name:'Save',exact:true}).click();};
+  const save=async(page:Page,name:string)=>{await clickToolbarAction(page, 'Palettes');await page.getByRole('button',{name:'Save palette',exact:true}).click();await page.getByLabel('Palette name',{exact:true}).fill(name);await page.getByRole('button',{name:'Save',exact:true}).click();};
   const second=await p.context().newPage();await second.goto(base+'/?colors=111111-eeeeee-ffaa00-aa00ff-00aaff');await second.locator('[data-app-ready]').waitFor();
   await save(p,'Palette A');await save(second,'Palette B');await second.waitForFunction(()=>JSON.parse(localStorage.getItem('hue-palettes-v1')||'[]').some(p=>p.name==='Palette B'));
   assert.equal((await second.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1')||'[]'))).length,2);
@@ -43,7 +44,7 @@ try{for(const {width,theme}of combinations){
   const pages=await Promise.all([333333,444444].map(async value=>{const page=await p.context().newPage();await page.goto(`${base}/?colors=171717-ffffff-${value}-eeeeee-aaaaaa`);await page.locator('[data-app-ready]').waitFor();return page;}));
   await Promise.all(pages.map((page,i)=>save(page,`Concurrent ${i}`)));await p.waitForFunction(()=>JSON.parse(localStorage.getItem('hue-palettes-v1')||'[]').length===3);
   const storage=await p.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1')||'[]'));assert.deepEqual(storage.map(p=>p.name).sort(),['Concurrent 0','Concurrent 1','Renamed A']);
-  await p.getByRole('button',{name:'Close palettes',exact:true}).click();const color=p.locator('.home-color').first();await color.scrollIntoViewIfNeeded();await color.hover();assert.equal(await color.locator('[role=tooltip]').evaluate(e=>getComputedStyle(e).visibility),'visible');await p.mouse.move(1,1);await color.focus();assert.equal(await color.locator('[role=tooltip]').evaluate(e=>getComputedStyle(e).visibility),'visible');await audit(p,'color-tooltip',width,theme,false);
+  await p.getByRole('button',{name:'Close palettes',exact:true}).click();const color=p.getByRole('button',{name:'Text color',exact:true});await color.click();await p.getByRole('textbox',{name:'Hex',exact:true}).waitFor();await audit(p,'toolbar-color-picker',width,theme,false);
  });
  await run('project-names','/dashboards/infra-dashboard',width,theme,async(p,f)=>{
   await f.getByRole('button',{name:'Project Menu · acme-web',exact:true}).click();await f.getByRole('menuitem',{name:'Settings',exact:true}).click();await f.getByLabel('Project name',{exact:true}).fill('atlas-commerce');await f.getByRole('button',{name:'Save changes',exact:true}).click();assert.match(await f.getByRole('dialog').getByRole('alert').innerText(),/already exists/);await audit(p,'duplicate-project-error',width,theme);

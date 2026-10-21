@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowDownToLine,
@@ -21,8 +21,10 @@ import {
   UnlockKeyhole,
   X,
 } from "lucide-react";
+import Link from "next/link";
+import { useVisibleViewport } from "@/hooks/useVisibleViewport";
 import IconButton from "./IconButton";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
@@ -61,9 +63,11 @@ import {
 } from "@/lib/palette";
 import { fonts, type FontName } from "@/lib/fonts";
 
-type StudioProps = { preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
+type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
 
-export default function Studio({ preview = "/preview/index.html", defaultPalette = defaultDarkPalette, waitForPreview = false, capture }: StudioProps) {
+export default function Studio({ children, preview = "/preview/index.html", defaultPalette = defaultDarkPalette, waitForPreview = false, capture }: StudioProps) {
+  useVisibleViewport();
+  const toolsTrigger = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const [history, setHistory] = useState<Palette[]>([defaultPalette]);
   const [index, setIndex] = useState(0);
@@ -101,6 +105,9 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
     if (h && Object.hasOwn(fonts, h)) setHeading(h as FontName);
     if (b && Object.hasOwn(fonts, b)) setBody(b as FontName);
   }, [capture?.id, defaultPalette]);
+  useEffect(() => {
+    if (children && storageReady) window.history.replaceState(null, "", previewHref(window.location.pathname, palette, heading, body));
+  }, [children, storageReady, palette, heading, body]);
   function updateFrame() {
     const target = frame.current?.contentWindow;
     if (!target) return;
@@ -124,6 +131,13 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
       script.src = "/preview-contrast.js";
       script.dataset.previewContrast = "true";
       root.ownerDocument.head.append(script);
+    }
+    if (!root.ownerDocument.querySelector('link[data-mobile-preview]')) {
+      const link = root.ownerDocument.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "/mobile-preview.css";
+      link.dataset.mobilePreview = "true";
+      root.ownerDocument.head.append(link);
     }
     if (!root.ownerDocument.querySelector('link[data-preview-fonts]')) {
       const link = root.ownerDocument.createElement("link");
@@ -184,7 +198,7 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
       setPreviewPalette(null);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && panel === "fonts") close();
+      if (event.key === "Escape" && panel === "fonts") { close(); focusMobileTools(); }
     };
     const onPointer = (event: PointerEvent) => {
       if (panel === "fonts" && !toolbarElement?.contains(event.target as Node)) close();
@@ -252,6 +266,11 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
     URL.revokeObjectURL(url);
     setNotice(`${format.label} file downloaded.`);
   }
+  function focusMobileTools() {
+    if (window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) toolsTrigger.current?.focus();
+  }
+  function closeFonts() { setPanel(null); focusMobileTools(); }
+  useEffect(() => { if (panel === "fonts") document.getElementById("heading-font")?.focus(); }, [panel]);
   function togglePanel(next: "fonts" | "saved") {
     setActiveColor(null);
     setPreviewPalette(null);
@@ -266,8 +285,8 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
   const dark = isDarkPalette(palette);
   const capturePreview = previewCatalog.find(item=>item.id===capture?.id);
   return (
-    <main className={collapsed ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
-      {showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
+    <main className={collapsed ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
+      {children ? children({ palette, heading, body }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
         <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
         <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body)}>{label}</a>)}</nav></div>
       </div> : <iframe
@@ -298,7 +317,7 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
                 <IconButton
                   className="icon-button"
                   aria-label="Close fonts"
-                  onClick={() => setPanel(null)}
+                  onClick={closeFonts}
                 >
                   <X size={17} />
                 </IconButton>
@@ -365,7 +384,7 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
                             : "#000000",
                       }}
                     >
-                      <span>{role === "background" ? <>Back<wbr />ground</> : role === "secondary" ? <>Second<wbr />ary</> : role === "primary" ? <>Pri<wbr />mary</> : role[0].toUpperCase() + role.slice(1)}</span>
+                      <span className="color-trigger-name">{role === "background" ? <>Backg<wbr />round</> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
                       {locked.includes(role) && <LockKeyhole size={12} aria-hidden="true" />}
                     </ColorPickerTrigger>
                     <ColorPickerContent
@@ -491,6 +510,8 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
                 onApply={apply}
                 onSave={(name) => save(palette, name)} onRename={rename}
                 onRemove={remove}
+                notice={notice}
+                returnFocus={toolsTrigger}
                 restoreFocus={!activeColor && panel !== "fonts"}
               />
               <IconButton
@@ -515,14 +536,30 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
                 <RotateCcw size={16} />
               </IconButton>
               <DropdownMenu modal={false} onOpenChange={open => { if (open) { setPanel(null); setActiveColor(null); setPreviewPalette(null); } }}>
-                <DropdownMenuTrigger asChild><IconButton className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /></IconButton></DropdownMenuTrigger>
-                <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed) event.preventDefault(); }}>
+                <DropdownMenuTrigger asChild><IconButton ref={toolsTrigger} className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /><span className="mobile-tools-label">Tools</span></IconButton></DropdownMenuTrigger>
+                <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed || panel) event.preventDefault(); }}>
+                  <DropdownMenuGroup className="mobile-tools">
+                    <DropdownMenuItem onSelect={randomize}>Shuffle palette</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => apply({ ...palette, text: palette.background, background: palette.text })}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </DropdownMenuGroup>
                   <DropdownMenuItem disabled={index === 0} onSelect={() => setIndex(index - 1)}>Undo palette</DropdownMenuItem>
                   <DropdownMenuItem disabled={index === history.length - 1} onSelect={() => setIndex(index + 1)}>Redo palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={share}>Share palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={openExport}>Export palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={reset}>Reset palette and fonts</DropdownMenuItem>
                   <DropdownMenuItem onSelect={hideToolbar}>Hide color toolbar</DropdownMenuItem>
+                  <DropdownMenuGroup className="mobile-tools">
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>Previews</DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent className="palette-menu mobile-preview-menu" aria-label="Previews">
+                        {previewCatalog.map(site => <DropdownMenuItem asChild key={site.id}><Link prefetch={false} href={previewHref(site.path, palette, heading, body)}>{site.name}</Link></DropdownMenuItem>)}
+                        <DropdownMenuItem asChild><Link prefetch={false} href={previewHref("/", palette, heading, body)}>All sites</Link></DropdownMenuItem>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
               <IconButton
@@ -536,7 +573,7 @@ export default function Studio({ preview = "/preview/index.html", defaultPalette
           </div>
         </div>
       )}
-      {notice && (
+      {notice && panel !== "saved" && (
         <div className="toast" role="status">
           <Check size={15} />
           {notice}

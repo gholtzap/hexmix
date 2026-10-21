@@ -19,7 +19,7 @@ try{
   const context=await browser.newContext({viewport:{width,height:width===390?844:900},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
   const colors=theme==='light'?'171717-ffffff-e98878-ffe291-a8655f':'ededed-171717-e98878-333333-a8655f';
   await page.goto('http://127.0.0.1:3000/?colors='+colors);await page.locator('[data-app-ready]').waitFor();
-  if(width===1440){const gap=await page.locator('.home-intro h1').evaluate(e=>document.querySelector('.home-palette-heading h2').getBoundingClientRect().top-e.getBoundingClientRect().bottom);assert.ok(gap>=32);}
+  if(width===1440){const gap=await page.locator('.home-intro h1').evaluate(e=>document.querySelector('.home-gallery-heading h2').getBoundingClientRect().top-e.getBoundingClientRect().bottom);assert.ok(gap>=32);}
   await audit(page,'home alignment',width,theme);await page.screenshot({path:`${output}/home-${width}-${theme}.png`});
   for(const [name,path] of [['avenlo','/avenlo'],['chat','/dashboards/ai-chatbot'],['infra','/dashboards/infra-dashboard']] as const){
    await page.goto(`http://127.0.0.1:3000${path}?colors=${colors}`);await page.locator('[data-app-ready]').waitFor();const frame=page.frames().find(f=>f.parentFrame());await frame.locator('[data-app-ready]').waitFor();
@@ -35,11 +35,11 @@ try{
     if(width===390){await page.getByRole('button',{name:'More tools',exact:true}).click();await audit(page,'more tools menu',width,theme);await page.getByRole('menuitem',{name:'Undo palette',exact:true}).waitFor();assert.equal(await page.getByRole('menuitem',{name:'Undo palette',exact:true}).getAttribute('aria-disabled'),'true');await page.keyboard.press('Escape');}
     else assert.equal(await page.getByRole('button',{name:'More tools',exact:true}).isVisible(),false);
     const primary=()=>frame.locator('html').evaluate(e=>e.style.getPropertyValue('--p-primary'));
-    const original=await primary();await page.getByRole('button',{name:'Shuffle palette',exact:true}).click();await page.waitForFunction(original=>document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--p-primary')!==original,original);const shuffled=await primary();await clickToolbarAction(page,'Undo palette');assert.equal(await primary(),original);await clickToolbarAction(page,'Redo palette');assert.equal(await primary(),shuffled);
+    const original=await primary();await clickToolbarAction(page, 'Shuffle palette');await page.waitForFunction(original=>document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--p-primary')!==original,original);const shuffled=await primary();await clickToolbarAction(page,'Undo palette');assert.equal(await primary(),original);await clickToolbarAction(page,'Redo palette');assert.equal(await primary(),shuffled);
     await clickToolbarAction(page,'Share palette');assert.equal(new URL(await page.evaluate(()=>navigator.clipboard.readText())).pathname,path);
     await clickToolbarAction(page,'Export palette');await page.getByRole('dialog',{name:'Export',exact:true}).waitFor();assert.ok(await page.getByRole('dialog',{name:'Export',exact:true}).evaluate(e=>e.contains(document.activeElement)));await audit(page,'export from tools',width,theme);await page.keyboard.press('Escape');
     await clickToolbarAction(page,'Reset palette and fonts');
-    await page.getByRole('button',{name:'Fonts',exact:true}).click();await audit(page,'font panel',width,theme);await page.getByRole('button',{name:'Close fonts',exact:true}).click();
+    await clickToolbarAction(page, 'Fonts');await audit(page,'font panel',width,theme);await page.getByRole('button',{name:'Close fonts',exact:true}).click();
     await page.getByRole('button',{name:'Primary color',exact:true}).click();await audit(page,'color picker',width,theme);await page.getByRole('button',{name:'Close color picker',exact:true}).click();
     await clickToolbarAction(page,'Hide color toolbar');await page.getByRole('button',{name:'Open color toolbar',exact:true}).waitFor();const height=await page.locator('iframe').evaluate(e=>e.getBoundingClientRect().height);assert.ok(Math.abs(height-(width===390?844:900))<1);await audit(page,'toolbar hidden',width,theme);await page.getByRole('button',{name:'Open color toolbar',exact:true}).click();await fullscreenPreview(page,width);
    }

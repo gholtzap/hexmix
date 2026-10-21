@@ -1,3 +1,4 @@
+import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
@@ -34,6 +35,7 @@ try {
     });
     await page.goto('http://127.0.0.1:3000/');
     await page.locator('[data-app-ready]').waitFor();
+    await clickToolbarAction(page, 'Fonts');
     for (const name of Object.keys(fonts)) {
       await page.getByRole('combobox', { name: 'Headings', exact: true }).selectOption(name);
       await page.getByRole('combobox', { name: 'Body', exact: true }).selectOption(name);
@@ -45,14 +47,16 @@ try {
     }
     await page.getByRole('combobox', { name: 'Headings', exact: true }).selectOption('Playfair Display');
     await page.getByRole('combobox', { name: 'Body', exact: true }).selectOption('DM Sans');
-    assert.equal(await page.getByRole('combobox', { name: 'Font pair', exact: true }).inputValue(), 'custom');
+    assert.equal(new URL(page.url()).searchParams.get('heading'), 'Playfair Display');
+    assert.equal(new URL(page.url()).searchParams.get('body'), 'DM Sans');
     await page.reload();
     await page.locator('[data-app-ready]').waitFor();
+    await clickToolbarAction(page, 'Fonts');
     assert.equal(await page.getByRole('combobox', { name: 'Headings', exact: true }).inputValue(), 'Playfair Display');
     assert.equal(await page.getByRole('combobox', { name: 'Body', exact: true }).inputValue(), 'DM Sans');
     await loadFont(page, 'Playfair Display');
     await loadFont(page, 'DM Sans');
-    await page.locator('.home-fonts').screenshot({ path: `${directory}/${width}-homepage.png` });
+    await page.locator('.font-panel').screenshot({ path: `${directory}/${width}-homepage.png` });
     reports.push({ width, path: '/', state: 'custom pair restored', ...await checkPage(page, uiPolicy) });
     for (const [theme, palette] of [['dark', defaultDarkPalette], ['light', initialPalette]] as const) {
       for (const preview of previewCatalog) {
@@ -66,7 +70,7 @@ try {
         assert.equal(normalize(await heading.evaluate(el => getComputedStyle(el).fontFamily)), normalize(fonts['Playfair Display']), `${preview.name} heading`);
         const nested = await heading.locator('span').all();
         for (const span of nested) assert.equal(normalize(await span.evaluate(el => getComputedStyle(el).fontFamily)), normalize(fonts['Playfair Display']));
-        await page.getByRole('button', { name: 'Fonts', exact: true }).click();
+        await clickToolbarAction(page, 'Fonts');
         assert.deepEqual(await page.getByLabel('Headings', { exact: true }).locator('option').allTextContents(), Object.keys(fonts));
         assert.deepEqual(await page.getByLabel('Body', { exact: true }).locator('option').allTextContents(), Object.keys(fonts));
         reports.push({ width, theme, path: preview.path, state: 'font selectors open', ...await checkPage(page, uiPolicy) });

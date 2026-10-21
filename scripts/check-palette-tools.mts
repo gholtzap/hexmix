@@ -36,7 +36,7 @@ try{
   }
   await page.screenshot({path:`${output}/export-${width}-${theme}.png`});
   await dialog.getByRole('button',{name:'Close export',exact:true}).click();
-  await page.getByRole('button',{name:'Palettes',exact:true}).click();await page.getByRole('tab',{name:'Saved',exact:true}).click();await audit(page,'no saved palettes',width,theme);
+  await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();await audit(page,'no saved palettes',width,theme);
   await page.getByRole('button',{name:'Save palette',exact:true}).click();
   const name=page.getByRole('textbox',{name:'Palette name',exact:true});
   await name.fill('   ');await page.getByRole('button',{name:'Save',exact:true}).click();await page.getByRole('alert').filter({hasText:'Enter a palette name.'}).waitFor();await audit(page,'name validation',width,theme);
@@ -47,12 +47,12 @@ try{
   await page.getByRole('menuitem',{name:'Rename palette',exact:true}).click();await name.fill('Team colors');await audit(page,'rename palette',width,theme);await page.getByRole('button',{name:'Save name',exact:true}).click();
   await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   const record=await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0]);assert.equal(record.name,'Team colors');assert.deepEqual(record.colors,palette);
-  await page.reload();await page.locator('[data-app-ready]').waitFor();await page.getByRole('button',{name:'Palettes',exact:true}).click();await page.getByRole('tab',{name:'Saved',exact:true}).click();await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
+  await page.reload();await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0].id),record.id);
   await page.getByRole('button',{name:'Browse all palettes',exact:true}).click();const search=page.getByRole('searchbox',{name:'Search palettes',exact:true});await search.fill('team');assert.equal(await page.locator('.saved-row').count(),1);await search.fill('missing');await page.getByText('No palettes match your search.',{exact:true}).waitFor();await audit(page,'empty saved search',width,theme);await page.getByRole('button',{name:'Clear filters',exact:true}).click();
-  await page.goto('http://127.0.0.1:3000/avenlo?'+query);await page.locator('[data-app-ready]').waitFor();await page.getByRole('button',{name:'Palettes',exact:true}).click();await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=avenlo]').count(),1);await audit(page,'Avenlo saved preview',width,theme);await page.screenshot({path:`${output}/saved-${width}-${theme}.png`});
+  await page.goto('http://127.0.0.1:3000/avenlo?'+query);await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=avenlo]').count(),1);await audit(page,'Avenlo saved preview',width,theme);await page.screenshot({path:`${output}/saved-${width}-${theme}.png`});
   await page.getByRole('button',{name:'Apply Team colors',exact:true}).click();
-  await page.getByRole('button',{name:'Close palettes',exact:true}).click();await page.goto('http://127.0.0.1:3000/?'+paletteQuery(palette));await page.locator('[data-app-ready]').waitFor();await page.getByRole('button',{name:'Browse palettes',exact:true}).click();await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=workspace]').count(),1);await audit(page,'home saved preview',width,theme);
+  await page.getByRole('button',{name:'Close palettes',exact:true}).click();await page.goto('http://127.0.0.1:3000/?'+paletteQuery(palette));await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=workspace]').count(),1);await audit(page,'home saved preview',width,theme);
   actions.push({width,theme,exports:3,savedId:record.id});await context.close();
  }
  assert.deepEqual(errors,[]);completed=true;

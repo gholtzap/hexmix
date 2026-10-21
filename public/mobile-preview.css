@@ -1,0 +1,12 @@
+@media (pointer: coarse), (max-width: 560px) {
+  :is(button, [role="button"], [role="menuitem"], [role="tab"], summary, select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), nav a, header a, a[class*="button"], a[class*="btn"], a[class*="inline-flex"]) {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  :is(nav, header) a { display: inline-flex; align-items: center; }
+  :is(input, textarea, select) { font-size: 16px !important; }
+  html, body { overflow-x: clip !important; }
+  body > .page, body > main { overflow-x: clip; }
+  html { scroll-padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  body { zoom: 1 !important; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+}

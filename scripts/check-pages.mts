@@ -145,7 +145,7 @@ try {
       }
       if (originalMotionBackground) assert.notEqual(await motionBackground(), originalMotionBackground, `${site} video or canvas placeholder must follow the color picker`);
       await page.getByRole('button', { name: 'Close color picker' }).click();
-      await page.getByRole('button', { name: 'Fonts', exact: true }).click();
+      await clickToolbarAction(page, 'Fonts');
       await page.getByLabel('Headings').selectOption('Arial');
       await frame.locator('html').evaluate(element => new Promise<void>(resolve => { const check = () => element.style.getPropertyValue('--p-heading-font').startsWith('Arial') ? resolve() : setTimeout(check, 20); check(); }));
       assert.match(await frame.locator('html').evaluate(element => element.style.getPropertyValue('--p-heading-font')), /^Arial/);
@@ -168,7 +168,7 @@ try {
       await frame.locator(`html[data-editor-light="${theme !== 'Use light palette'}"]`).waitFor();
       await waitForPalette();
       assert.equal(await surfaceStyle(), beforeMode, `${site} must restore its page surface when the mode changes back`);
-      await page.getByRole('button', { name: 'Palettes', exact: true }).click();
+      await clickToolbarAction(page, 'Palettes');
       await audit('palettes open');
       await page.getByRole('button', { name: 'Close palettes' }).click();
       await clickToolbarAction(page, 'Export palette');

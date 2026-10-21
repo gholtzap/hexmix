@@ -95,6 +95,11 @@
         document.documentElement.dataset.editorSite = site;
     };
     const startBrand = () => {
+        const touchStyle = document.createElement('link');
+        touchStyle.rel = 'stylesheet';
+        touchStyle.href = `${editorOrigin}/mobile-preview.css`;
+        touchStyle.dataset.mobilePreview = 'true';
+        document.head.append(touchStyle);
         const copyStyle = document.createElement('style');
         copyStyle.textContent = '[data-business-copy]{text-transform:none!important}' + (site === 'avenlo' ? '.hero__typed{background-size:100% 100%!important}' : '') + (site === 'tervix' ? 'html,body{overflow-x:clip}' : '');
         document.head.append(copyStyle);

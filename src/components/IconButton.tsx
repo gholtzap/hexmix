@@ -1,9 +1,9 @@
 "use client";
-import { useId, type ButtonHTMLAttributes } from "react";
+import { useId, type ComponentPropsWithRef } from "react";
 export default function IconButton({
   children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ComponentPropsWithRef<"button">) {
   const id = useId();
   return (
     <button {...props} aria-describedby={id}>

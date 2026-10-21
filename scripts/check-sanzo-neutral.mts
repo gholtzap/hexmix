@@ -1,3 +1,4 @@
+import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
@@ -15,7 +16,7 @@ try{
   const page=await browser.newPage({viewport:{width,height:width===390?844:900},reducedMotion:'reduce'});page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
   const text=theme==='light'?'#171717':'#ededed',background=theme==='light'?'#ffffff':'#171717';
   await page.goto(`http://127.0.0.1:3000${path}?colors=${text.slice(1)}-${background.slice(1)}-e98878-ffe291-a8655f`);await page.locator('[data-app-ready]').waitFor();
-  await page.getByRole('button',{name:path==='/'?'Browse palettes':'Palettes',exact:true}).click();if(path!=='/')await page.getByRole('button',{name:'Browse all palettes',exact:true}).click();
+  await clickToolbarAction(page, 'Palettes');await page.getByRole('button',{name:'Browse all palettes',exact:true}).click();
   const search=page.getByRole('searchbox',{name:'Search palettes',exact:true});
   for(const number of [1,121,241,348]){
    await search.fill(`Sanzo Wada ${number}`);const button=page.getByRole('button',{name:`Apply Sanzo Wada ${number}`,exact:true});await button.click();

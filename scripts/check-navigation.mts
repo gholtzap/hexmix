@@ -1,3 +1,4 @@
+import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import type {Page} from 'playwright';
 import { surfaceForegrounds } from '../src/lib/palette.ts';
 import {sitePreviews} from '../src/lib/previews.ts';
@@ -96,7 +97,7 @@ try {
       assert.equal(await page.locator('.vc-sidebar-footer,.vc-upgrade-notice').count(),0);
       await audit(page,'Infrastructure simplified sidebar',width);
       await page.goto(`${base}/dashboards/infra-dashboard`);const frame=page.frameLocator('iframe');await frame.locator('[data-app-ready]').waitFor();
-      await page.getByRole('button',{name:'Use light palette',exact:true}).click();
+      await clickToolbarAction(page, 'Use light palette');
       assert.notEqual(await frame.locator('html').evaluate(e=>e.style.getPropertyValue('--p-background')),'#000000');
 
     });

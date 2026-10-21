@@ -64,7 +64,7 @@ try {
   }
   assert.equal(assetRequests, initialRequests, 'Color edits must not reload capture assets');
   await page.screenshot({ path: `${directory}/recolored-desktop.png` });
-  await page.getByRole('button', { name: 'Use dark palette', exact: true }).click();
+  await clickToolbarAction(page, 'Use dark palette');
   await page.waitForFunction(() => [...document.querySelectorAll('.home-thumbnail image')].every(node => node.getAttribute('href').includes('/dark/')));
   for (const preview of previewCatalog) {
     await page.locator(`[data-capture="${preview.id}"]`).screenshot({ path: `${directory}/${preview.id}-dark.png` });
