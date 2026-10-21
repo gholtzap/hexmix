@@ -15,7 +15,9 @@
             // Use the surface token so an image does not freeze a color transition mid-frame.
             const parentStyle = getComputedStyle(image.parentElement);
             const color = mediaPalette?.[image.dataset.editorGradientRole] || parentStyle.getPropertyValue("--p-surface-text").trim() || mediaPalette?.text || (site === "nuvexa" ? "#1d1d1b" : parentStyle.color);
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${compact ? 32 : 140} 34"><text x="0" y="28" fill="${color}" font-family="Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="-1">${compact ? brand[0] : brand}</text></svg>`;
+            const svg = site === "tervix" && compact
+                ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 34"/>'
+                : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${compact ? 32 : 140} 34"><text x="0" y="28" fill="${color}" font-family="Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="-1">${compact ? brand[0] : brand}</text></svg>`;
             const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
             image.dataset.editorWordmark = "true";
             if (site === "nuvexa") image.style.objectFit = "contain";
