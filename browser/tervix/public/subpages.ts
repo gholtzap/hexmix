@@ -160,6 +160,8 @@
         const sidebar = document.getElementById('sidebar');
         const navigationTrigger = [...document.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent.trim().startsWith('Navigation'));
         if (sidebar && navigationTrigger) {
+            const content = sidebar.querySelector<HTMLElement>('#sidebar-content');
+            const position = content?.style.getPropertyValue('position') ?? '', priority = content?.style.getPropertyPriority('position') ?? '';
             const marker = document.createComment('Documentation navigation position');
             sidebar.before(marker);
             const navigation = document.createElement('dialog');
@@ -171,13 +173,14 @@
             navigationTrigger.setAttribute('aria-expanded', 'false');
             navigationTrigger.addEventListener('click', () => {
                 if (navigation.open) return;
+                content?.style.setProperty('position', 'static', 'important');
                 navigation.append(sidebar); showDocDialog(navigation);
                 navigationTrigger.setAttribute('aria-expanded', 'true');
                 sidebar.querySelector<HTMLElement>('a[href]')?.focus();
             });
             navigation.querySelector('button').addEventListener('click', () => closeDocDialog());
             navigation.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeDocDialog(); } });
-            navigation.addEventListener('close', () => { marker.parentNode?.insertBefore(sidebar, marker.nextSibling); navigationTrigger.setAttribute('aria-expanded', 'false'); });
+            navigation.addEventListener('close', () => { content?.style.setProperty('position', position, priority); marker.parentNode?.insertBefore(sidebar, marker.nextSibling); navigationTrigger.setAttribute('aria-expanded', 'false'); });
             matchMedia('(min-width: 1024px)').addEventListener('change', event => { if (event.matches && navigation.open) closeDocDialog(); });
         }
         document.addEventListener('click', event => {
