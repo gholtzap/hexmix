@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';
+import {runBugCheck} from './lib/confirmed-bug.mts';
+await runBugCheck('HX-041','/orvian',async({frame,share,open,audit})=>{
+ const first=frame.locator('#faq button').first();await first.waitFor();assert.equal(await first.getAttribute('aria-expanded'),'true');await first.click();assert.equal(await first.getAttribute('aria-expanded'),'false');const link=await share();const recipient=await open(link);assert.equal(await recipient.frame.locator('#faq button').first().getAttribute('aria-expanded'),'false');await recipient.frame.locator('#faq button').first().scrollIntoViewIfNeeded();await audit(recipient.frame,'closed-shared-faq');
+ const second=recipient.frame.locator('#faq button').nth(1);await second.click();assert.equal(await second.getAttribute('aria-expanded'),'true');assert.equal(await recipient.frame.locator('#faq button').first().getAttribute('aria-expanded'),'false');await audit(recipient.frame,'opened-second-answer');
+ const url=new URL(link);const id=/\/s\/([a-f0-9]{32})/.exec(url.pathname)?.[1];const state=id?(await(await recipient.page.request.get(new URL(`/api/shares/${id}`,url.origin).href)).json()).state:JSON.parse(Buffer.from(url.searchParams.get('state')!,'base64url').toString('utf8'));const scope=Object.keys(state.views).find(key=>key.endsWith('|Page preview'))!;const view=state.views[scope]['document.view'];delete view.collapsed;view.expanded=['#faq-question-1'];url.pathname='/orvian';url.hash='';url.searchParams.delete('snapshot');url.searchParams.set('state',Buffer.from(JSON.stringify(state)).toString('base64url'));const legacy=await open(url.href);assert.equal(await legacy.frame.locator('#faq button').nth(1).getAttribute('aria-expanded'),'true');
+
+});
