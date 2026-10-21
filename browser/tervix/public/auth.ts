@@ -27,6 +27,7 @@
         $('form-status').textContent = register ? 'This local preview did not create an account.' : 'This local preview did not sign you in.';
         ($('account-form') as HTMLFormElement).reset();
     });
-    $('confirm').addEventListener('input', () => ($('confirm') as HTMLInputElement).setCustomValidity(''));
+    for (const id of ['password', 'confirm'])
+        $(id).addEventListener('input', () => ($('confirm') as HTMLInputElement).setCustomValidity(''));
     $('display').addEventListener('click', () => document.documentElement.classList.toggle('alternate-display'));
 })();
