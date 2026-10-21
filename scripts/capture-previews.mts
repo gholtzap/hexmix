@@ -47,7 +47,12 @@ try {
         if (ready()) return;
         await new Promise<void>(resolve => { const observer = new MutationObserver(() => { if (ready()) { observer.disconnect(); resolve(); } }); observer.observe(node, { attributes:true }); });
       }, palette);
-      await page.locator('.toolbar-anchor, .toolbar-reopen').evaluateAll(nodes => nodes.forEach(node => { node.style.visibility = 'hidden'; }));
+      if (preview.id === 'nuvexa') await frame.locator('html').evaluate(async () => {
+        await Promise.all(document.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {})));
+        window.scrollTo({ top: 220, behavior: 'instant' });
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      });
+      await page.locator('.toolbar-anchor, .toolbar-reopen, .preview-site-switcher').evaluateAll(nodes => nodes.forEach(node => { node.style.visibility = 'hidden'; }));
       const image = await page.screenshot({ clip: { x: 0, y: 0, width, height }, animations: 'disabled' });
       const directory = `public/preview-captures/${preview.id}/${mode}`;
       await mkdir(directory, { recursive: true });

@@ -18,6 +18,7 @@
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${compact ? 32 : 140} 34"><text x="0" y="28" fill="${color}" font-family="Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="-1">${compact ? brand[0] : brand}</text></svg>`;
             const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
             image.dataset.editorWordmark = "true";
+            if (site === "nuvexa") image.style.objectFit = "contain";
             if (image.alt !== brand)
                 image.alt = brand;
             image.removeAttribute("srcset");
@@ -201,9 +202,12 @@
     html[data-editor-palette="true"][data-editor-site="orvian"] [data-open-demo] { --p-surface-text: var(--p-on-primary,var(--p-text)); color: var(--p-surface-text) !important; background-image: none !important; background-color: var(--p-primary) !important; }
     html[data-editor-palette="true"][data-editor-site="orvian"] [data-scene] { background: var(--p-background) !important; }
     html[data-editor-palette="true"][data-editor-site="nuvexa"] :is(.mh-header,#hero-dark) { background: var(--p-background) !important; }
+    html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid), html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid) nav { background-color: var(--p-background, #fff) !important; }
     html[data-editor-site="nuvexa"] .mh-header a:has(img[data-editor-wordmark]) { filter: none !important; }
     html[data-editor-site="nuvexa"] [data-framer-name="Eyebrow"] { display: none !important; }
-    html[data-editor-palette="true"][data-editor-site="nuvexa"] :is([data-framer-name="Hero Background Video"],#hero-dark > [data-framer-name="Image Overlay"]) { background: none !important; }
+    html[data-editor-site="nuvexa"] #hero-dark { --nuvexa-artwork-surface: var(--p-background, #fff); background: var(--nuvexa-artwork-surface) !important; }
+    html[data-editor-site="nuvexa"] #hero-dark > [data-framer-name="Image Overlay"] { background: linear-gradient(90deg, var(--nuvexa-artwork-surface) 0 24%, color-mix(in srgb, var(--nuvexa-artwork-surface) 96%, transparent) 48%, color-mix(in srgb, var(--nuvexa-artwork-surface) 34%, transparent) 100%), linear-gradient(0deg, var(--nuvexa-artwork-surface) 0 8%, transparent 36%), linear-gradient(180deg, var(--nuvexa-artwork-surface), transparent 28%) !important; }
+    html[data-editor-site="nuvexa"] [data-framer-name="Hero Background Video"] { background-color: var(--p-background) !important; opacity: .88; }
     html[data-editor-palette="true"][data-editor-site="nuvexa"] { --token-191a909c-39a6-4338-a0c0-e8ded1c807a1: var(--p-background); --token-342d9927-e734-41b4-ab8a-084d58f25db1: var(--p-secondary); --token-40cb148b-bccc-4fdf-9c63-df9e44ae9fdc: var(--p-text); --token-578e4386-7d5c-4bb3-8976-d6f23303e340: var(--p-primary); --token-85e5e52d-e014-4a75-a577-73d2c96330ac: var(--p-accent); }
     html[data-editor-palette="true"][data-editor-light="false"][data-editor-site="nuvexa"] #hero-dark video { filter: brightness(.48) saturate(.8); }
     html[data-editor-palette="true"][data-editor-light="false"][data-editor-site="nuvexa"] [data-framer-name="Site Navigation"] { background: var(--p-background) !important; }
@@ -525,7 +529,13 @@
             if (!parent)
                 continue;
             parent.dataset.editorMediaContainer = "true";
-            const background = `url("${gradient(mediaId(element))}")`;
+            const id = mediaId(element);
+            const hero = site === "nuvexa" && parent.matches('#hero-dark > [data-framer-name="Hero Background Video"]');
+            if (hero)
+                for (const content of document.querySelectorAll('.mh-header, #hero-dark [data-framer-name="Opening Content"]'))
+                    content.setAttribute('data-preview-readable-artwork', '');
+            // Keep the hero's primary color toward the lower right.
+            const background = `url("${gradient(hero ? 3 : id)}")`;
             if (parent.style.backgroundImage !== background)
                 parent.style.backgroundImage = background;
             parent.style.backgroundSize = "cover";
