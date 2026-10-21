@@ -103,7 +103,7 @@ export function chatPage(view = 'chat') {
             }
             main.querySelector<HTMLElement>('.dictate').onclick = () => dictate();
             window.dashboardComponents.mode(main.querySelector<HTMLElement>('[data-mode-control]'), work, navigate);
-            main.querySelector<HTMLElement>('.temporary').onclick = e => { temporary = !temporary; if (temporary) { messages = [...messages]; activeChat = null; } (e.currentTarget as Element).setAttribute('aria-pressed', String(temporary)); main.querySelector<HTMLElement>('h1').textContent = temporary ? 'Temporary chat' : work ? 'What should we work on?' : 'What’s on your mind today?'; };
+            main.querySelector<HTMLElement>('.temporary').onclick = () => { temporary = !temporary; newChat(view); };
             main.querySelector<HTMLElement>('.model-button').onclick = e => {
                 const anchor = e.currentTarget;
                 document.querySelectorAll<HTMLElement>('.menu').forEach(m => m.remove());
