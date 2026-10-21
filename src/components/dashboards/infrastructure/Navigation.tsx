@@ -9,9 +9,10 @@ const groups = [
  ['Projects','Deployments','Logs','Analytics','Speed Insights','Observability','Firewall','CDN'],
  ['Environment Variables','Domains','Connect','Integrations','Storage','Flags','Agent','AI Gateway'],
 ];
-type NavigationProps = {team:string;activePage?:PageId;open:boolean;onClose:()=>void;onOpen:()=>void;onAction:(title:string)=>void;onFind:()=>void};
+type NavigationProps = {team:string;teamNames?:Record<string,string>;activePage?:PageId;open:boolean;onClose:()=>void;onOpen:()=>void;onAction:(title:string)=>void;onFind:()=>void};
 
-export function Navigation({team,activePage='projects',open,onClose,onOpen,onAction,onFind}:NavigationProps){
+export function Navigation({team,teamNames={},activePage='projects',open,onClose,onOpen,onAction,onFind}:NavigationProps){
+ const teamName=teamNames[team]??team;
  const sidebar=useRef<HTMLElement>(null);
  useEffect(()=>{
   if(!open || !matchMedia('(max-width: 1099px)').matches)return;
@@ -35,8 +36,8 @@ export function Navigation({team,activePage='projects',open,onClose,onOpen,onAct
   {open&&<div className="vc-sidebar-backdrop" aria-hidden="true" onClick={onClose}/>}
   <aside ref={sidebar} className={`vc-sidebar${open?' is-open':''}`} aria-label="Workspace navigation">
    <header className="vc-sidebar-header">
-    <Menu label={`${team} Pro · Switch team`} className="vc-team-menu" items={['Design studio','Personal'].map(label=>({label,onClick:()=>onAction(label)}))}>
-     <span className="vc-avatar vc-team-avatar" aria-hidden="true"/><span>{team}</span>{" "}<span className="vc-plan">Pro</span><Icon name="chevron"/>
+    <Menu label={`${teamName} Pro · Switch team`} className="vc-team-menu" items={['Design studio','Personal'].map(label=>({label:teamNames[label]??label,onClick:()=>onAction(label)}))}>
+     <span className="vc-avatar vc-team-avatar" aria-hidden="true"/><span>{teamName}</span>{" "}<span className="vc-plan">Pro</span><Icon name="chevron"/>
     </Menu>
     <Action className="vc-find" onClick={onFind}><Icon name="FindF"/><span>Find</span><kbd>F</kbd></Action>
    </header>
