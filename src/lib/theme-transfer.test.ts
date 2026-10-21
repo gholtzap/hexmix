@@ -27,3 +27,18 @@ test('AI prompt includes exact tokens, fonts, contrast rules and element assignm
  const prompt=themePrompt({...theme,elements:[...theme.elements]});
  for(const expected of ['#e98878','--color-primary','Inter','Lora','4.5:1','body > main:nth-of-type(1)','Keep the existing layout'])assert(prompt.includes(expected));
 });
+
+test('shared theme links resolve only same-origin validated snapshots', async () => {
+ const {readTheme}=await import('./theme-transfer.ts');
+ const original=globalThis.fetch;let calls=0;
+ try {
+  globalThis.fetch=async()=>{calls++;return Response.json({v:1,href:'/editor?colors=111111-eeeeee-aabbcc-ddeeff-112233&heading=Arial&body=Verdana',state:{v:1,views:{}}});};
+  const origin='https://hexmix.example',path='/s/'+'a'.repeat(32);
+  const imported=await readTheme(origin+path,origin);
+  assert.equal(imported.colors.primary,'#aabbcc');assert.deepEqual(imported.fonts,{heading:'Arial',body:'Verdana'});
+  await assert.rejects(()=>readTheme('https://other.example'+path,origin));assert.equal(calls,1);
+  globalThis.fetch=async()=>Response.json({v:1,href:'https://other.example/editor',state:{v:1,views:{}}});
+  await assert.rejects(()=>readTheme(origin+path,origin));
+  globalThis.fetch=async()=>new Response('',{status:404});await assert.rejects(()=>readTheme(origin+path,origin));
+ }finally{globalThis.fetch=original;}
+});

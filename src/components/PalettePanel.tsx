@@ -85,7 +85,7 @@ export default function PalettePanel({
         aria-label="Palettes"
         onCloseAutoFocus={(event) => {
           if (!restoreFocus) event.preventDefault();
-          else if (returnFocus?.current && window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) {
+          else if (returnFocus?.current?.getClientRects().length && !anchor?.querySelector('button[aria-label="Palettes"]')?.getClientRects().length) {
             event.preventDefault();
             returnFocus.current.focus();
           }

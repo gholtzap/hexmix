@@ -63,3 +63,9 @@ test('linked interactions default to on and can be disabled in a shared comparis
   assert.deepEqual(readComparison(new URL(comparisonHref(value), 'https://example.com').search), value);
   assert.equal(readComparison('?linked=invalid').unlinked, undefined);
 });
+
+test('comparison links retain validated element roles',()=>{
+ const value={...readComparison(''),elements:[{path:'/avenlo',selector:'body > main:nth-of-type(1)',property:'color' as const,role:'accent' as const}]};
+ assert.deepEqual(readComparison(new URL(comparisonHref(value),'https://example.com').search),value);
+ assert.equal(readComparison('?elements='+encodeURIComponent(JSON.stringify([{path:'/avenlo',selector:'*',property:'color',role:'accent'}]))).elements,undefined);
+});
