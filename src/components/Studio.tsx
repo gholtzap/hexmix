@@ -86,7 +86,7 @@ const siteLogoSelectors: Record<string, string> = {
   orvian: 'img[alt="Orvian"]',
   nuvexa: 'nav img[alt="Nuvexa"]',
   workspace: '.side-title, .mobile-toggle',
-  infrastructure: '[aria-label*="Switch team"], .vc-topbar-team',
+  infrastructure: '[data-site-switcher-slot], .vc-topbar-team',
 };
 // Generated wordmark images have transparent space after the visible letters.
 const wordmarkWidths: Record<string, number> = { avenlo: 0.66, orvian: 0.63, nuvexa: 0.72 };
@@ -325,12 +325,15 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const frameBox = iframe.getBoundingClientRect();
     const box = logo.getBoundingClientRect();
     const scale = frameBox.width / iframe.clientWidth;
+    const slot = logo.hasAttribute('data-site-switcher-slot');
     const next = {
-      left: frameBox.left + (box.left + box.width * (wordmarkWidths[previewId ?? ""] ?? 1) + 4) * scale,
-      top: frameBox.top + (box.top + box.height / 2) * scale - 14,
+      width: slot ? box.width * scale : undefined,
+      height: slot ? box.height * scale : undefined,
+      left: slot ? frameBox.left + box.left * scale : frameBox.left + (box.left + box.width * (wordmarkWidths[previewId ?? ""] ?? 1) + 4) * scale,
+      top: slot ? frameBox.top + box.top * scale : frameBox.top + (box.top + box.height / 2) * scale - 14,
       color: previewId === "nuvexa" ? palette.text : document.defaultView?.getComputedStyle(logo).color,
     };
-    setSiteSwitcherPosition(previous => previous?.left === next.left && previous?.top === next.top && previous?.color === next.color ? previous : next);
+    setSiteSwitcherPosition(previous => previous?.left === next.left && previous?.top === next.top && previous?.color === next.color && previous?.width === next.width && previous?.height === next.height ? previous : next);
   }, [previewId, palette.text]);
   useEffect(() => {
     updateSiteSwitcherPosition();
@@ -339,10 +342,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const schedule = () => { if (!frameId) frameId = requestAnimationFrame(() => { frameId = 0; updateSiteSwitcherPosition(); }); };
     const observer = !siteSwitcherPosition && document?.documentElement ? new MutationObserver(schedule) : null;
     if (observer && document?.documentElement) observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
+    const resizeObserver = new ResizeObserver(schedule);
+    if (document && previewId) document.querySelectorAll(siteLogoSelectors[previewId]).forEach(logo => resizeObserver.observe(logo));
     document?.addEventListener("scroll", schedule, true);
     window.addEventListener("resize", schedule);
-    return () => { observer?.disconnect(); document?.removeEventListener("scroll", schedule, true); window.removeEventListener("resize", schedule); cancelAnimationFrame(frameId); };
-  }, [updateSiteSwitcherPosition, preview, readyPreview, frameLoaded, siteSwitcherPosition]);
+    return () => { observer?.disconnect(); resizeObserver.disconnect(); document?.removeEventListener("scroll", schedule, true); window.removeEventListener("resize", schedule); cancelAnimationFrame(frameId); };
+  }, [updateSiteSwitcherPosition, previewId, preview, readyPreview, frameLoaded, siteSwitcherPosition]);
   useEffect(() => {
     const onReady = (event: MessageEvent) => {
       if (embedded && event.source === window.parent && event.origin === window.location.origin && event.data?.type === "hexmix-comparison-colors" && isPalette(event.data.palette)) {
@@ -622,7 +627,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
         onLoad={() => { updateFrame(); updateSiteSwitcherPosition(); setFrameLoaded(count => count + 1); }}
       />}
-      {!children && !embedded && <div className="preview-site-switcher" data-integrated={Boolean(siteSwitcherPosition) || undefined} style={siteSwitcherPosition && (!capture || readyPreview === preview) ? siteSwitcherPosition : previewId && !showCapture ? { visibility: "hidden" } : { left: 8, top: 8 }}>
+      {!children && !embedded && <div className="preview-site-switcher" data-slot={Boolean(siteSwitcherPosition?.width) || undefined} data-integrated={Boolean(siteSwitcherPosition) || undefined} style={siteSwitcherPosition && (!capture || readyPreview === preview) ? siteSwitcherPosition : previewId && !showCapture ? { visibility: "hidden" } : { left: 8, top: 8 }}>
         <SiteSwitcher palette={palette} heading={heading} body={body} elementRoles={elementRoles} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);setSelection(null);setInspecting(false);}}/>
       </div>}
       {selection && frame.current && (

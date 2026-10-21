@@ -91,8 +91,7 @@ try {
       await project.getByRole('button', { name: 'Select widget · acme-web', exact: true }).click(); await page.getByRole('menuitem', { name: 'Disable widget', exact: true }).click(); assert.equal(await project.getByRole('button', { name: 'Select widget · acme-web', exact: true }).count(), 0);
       await menu('Transfer Project'); await dialog().getByLabel('Destination workspace', { exact: true }).selectOption('Personal'); await audit(page, 'Infrastructure transfer form', width); await dialog().getByRole('button', { name: 'Transfer project', exact: true }).click(); assert.equal(await project.count(), 0);
       if (width === 390) await page.locator('.vc-mobile-tools').getByRole('button', { name: 'Open sidebar', exact: true }).click();
-      await page.getByRole('button', { name: 'Design studio Pro · Switch team', exact: true }).click(); await page.getByRole('menuitem', { name: 'Personal', exact: true }).click(); await project.waitFor();
-      if (width === 390) await page.locator('.vc-mobile-tools').getByRole('button', { name: 'Open sidebar', exact: true }).click();
+      assert.equal(await page.locator('[data-site-switcher-slot]').textContent(),'Design studio Pro');
       assert.equal(await page.locator('.vc-sidebar-links .vc-nav-link').last().innerText(),'AI Gateway');
       assert.equal(await page.locator('.vc-sidebar-footer,.vc-upgrade-notice').count(),0);
       await audit(page,'Infrastructure simplified sidebar',width);

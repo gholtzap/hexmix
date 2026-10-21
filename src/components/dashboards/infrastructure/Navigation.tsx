@@ -36,9 +36,9 @@ export function Navigation({team,teamNames={},activePage='projects',open,onClose
   {open&&<div className="vc-sidebar-backdrop" aria-hidden="true" onClick={onClose}/>}
   <aside ref={sidebar} className={`vc-sidebar${open?' is-open':''}`} aria-label="Workspace navigation">
    <header className="vc-sidebar-header">
-    <Menu label={`${teamName} Pro · Switch team`} className="vc-team-menu" items={['Design studio','Personal'].map(label=>({label:teamNames[label]??label,onClick:()=>onAction(label)}))}>
-     <span className="vc-avatar vc-team-avatar" aria-hidden="true"/><span>{teamName}</span>{" "}<span className="vc-plan">Pro</span><Icon name="chevron"/>
-    </Menu>
+    <div className="vc-site-switcher-slot" data-site-switcher-slot>
+     <span className="vc-avatar vc-team-avatar" aria-hidden="true"/><span>{teamName}</span>{" "}<span className="vc-plan">Pro</span>
+    </div>
     <Action className="vc-find" onClick={onFind}><Icon name="FindF"/><span>Find</span><kbd>F</kbd></Action>
    </header>
    <nav className="vc-sidebar-links" aria-label="Team">

@@ -91,6 +91,7 @@ a:focus-visible {
 .dashboard-frame { --preview-scale: 0.9; transform: scale(var(--preview-scale)); transform-origin: top left; }
 .preview-site-switcher { position: absolute; z-index: 30; }
 .preview-site-switcher[data-integrated] .site-switcher-trigger { width: 28px; min-height: 28px; padding: 0; justify-content: center; gap: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; box-shadow: none; }
+.preview-site-switcher[data-slot] .site-switcher-trigger { width: 100%; height: 100%; padding: 0 8px; justify-content: flex-end; }
 .preview-site-switcher[data-integrated] .site-switcher-trigger:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 .preview-site-switcher[data-integrated] .site-switcher-name { display: none; }
 .preview-site-switcher .control-tooltip { top: calc(100% + 6px); bottom: auto; }
