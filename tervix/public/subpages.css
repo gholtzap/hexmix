@@ -91,3 +91,13 @@ html[data-tervix-contact] h2 { font-size: 24px !important; }
 html[data-tervix-contact] h3 { font-size: 20px !important; }
 @media (min-width: 768px) { html[data-tervix-contact] h1 { font-size: 64px !important; } }
 html[data-tervix-contact] .tervix-dialog { z-index: 1000; }
+
+html[data-static-source-page] .tervix-doc-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+html[data-static-source-page] .tervix-doc-head h2 { margin: 0; }
+html[data-static-source-page] .tervix-doc-close { position: relative; display: grid; place-items: center; flex: none; width: 44px; padding: 8px; color: var(--p-text); background: var(--p-background); }
+html[data-static-source-page] .tervix-doc-close svg { width: 20px; height: 20px; fill: currentColor; }
+html[data-static-source-page] .tervix-doc-close [role=tooltip] { display: none; position: absolute; right: 0; top: calc(100% + 8px); width: max-content; padding: 4px 8px; border: 1px solid currentColor; border-radius: 4px; font-size: 14px; color: var(--p-text); background: var(--p-background); z-index: 1; }
+html[data-static-source-page] .tervix-doc-close:is(:hover,:focus-visible) [role=tooltip] { display: block; }
+html[data-static-source-page] .tervix-doc-results { display: grid; gap: 8px; list-style: none; margin: 16px 0 0; padding: 0; }
+html[data-static-source-page] .tervix-doc-results a { display: block; padding: 12px; border: 1px solid color-mix(in srgb, var(--p-text) 25%, transparent); border-radius: 8px; color: var(--p-text); background: var(--p-background); font-size: 16px; text-decoration: none; }
+html[data-static-source-page] .tervix-doc-results a:is(:hover,:focus-visible) { outline: 2px solid var(--p-primary); outline-offset: 2px; }
