@@ -1,5 +1,5 @@
 (() => {
-    const path = location.pathname;
+    const path = location.pathname.replace(/^\/(?:render\/)?nuvexa(?=\/|$)/, '') || '/';
     const titles = {
         '/products/quotes-and-tenders': 'Turn every request into a clear next step.',
         '/products/order-processing': 'Move work forward without retyping.',
