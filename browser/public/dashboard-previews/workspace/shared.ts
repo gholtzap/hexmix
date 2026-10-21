@@ -7,7 +7,7 @@ export function linkPreviewData<T>(name: string, read: () => T, restore: (value:
     validate: options.validate ?? (value => matchesShape(value, sample)),
     private: options.private ?? true,
     active: () => {
-      const view = stateWindow().location.pathname.split('/')[3] ?? 'chat';
+      const view = (window.parent === window ? new URLSearchParams(location.search).get('view') : window.parent.location.pathname.split('/')[3]) ?? 'chat';
       if (name === 'chat') return ['chat', 'work'].includes(view);
       if (name === 'tasks' || name === 'taskFilter') return view === 'scheduled';
       if (name.startsWith('space') || name === 'siteView') return ['space', 'sites'].includes(view);
