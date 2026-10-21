@@ -474,6 +474,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     setHistory([...history.slice(0, index + 1), next]);
     setIndex(index + 1);
   }
+  function undoPalette() { if (index > 0) { setPreviewPalette(null); setIndex(index - 1); } }
+  function redoPalette() { if (index < history.length - 1) { setPreviewPalette(null); setIndex(index + 1); } }
   function randomize() {
     const next = randomPalette(isDarkPalette(palette));
     locked.forEach((role) => (next[role] = palette[role]));
@@ -809,6 +811,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <IconButton
                 className="icon-button"
                 aria-label="Shuffle palette"
+                data-quick-action=""
                 onClick={randomize}
               >
                 <Shuffle size={17} />
@@ -816,8 +819,9 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <IconButton
                 className="icon-button toolbar-secondary"
                 aria-label="Undo palette"
+                data-quick-action=""
                 disabled={index === 0}
-                onClick={() => setIndex(index - 1)}
+                onClick={undoPalette}
               >
                 <ArrowLeft size={17} />
               </IconButton>
@@ -825,7 +829,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 className="icon-button toolbar-secondary"
                 aria-label="Redo palette"
                 disabled={index === history.length - 1}
-                onClick={() => setIndex(index + 1)}
+                onClick={redoPalette}
               >
                 <ArrowRight size={17} />
               </IconButton>
@@ -906,8 +910,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
-                  <DropdownMenuItem disabled={index === 0} onSelect={() => setIndex(index - 1)}>Undo palette</DropdownMenuItem>
-                  <DropdownMenuItem disabled={index === history.length - 1} onSelect={() => setIndex(index + 1)}>Redo palette</DropdownMenuItem>
+                  <DropdownMenuItem disabled={index === 0} onSelect={undoPalette}>Undo palette</DropdownMenuItem>
+                  <DropdownMenuItem disabled={index === history.length - 1} onSelect={redoPalette}>Redo palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={startComparison}>Compare palettes</DropdownMenuItem>
                   <DropdownMenuItem onSelect={share}>Share palette</DropdownMenuItem>
                   <DropdownMenuGroup className="clipboard-tools">
