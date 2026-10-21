@@ -1,5 +1,6 @@
 (() => {
-    const path = location.pathname.replace(/^\/render\/tervix(?=\/|$)/, '') || '/';
+    const localPath = (pathname: string) => pathname.replace(/^\/(?:render\/)?tervix(?=\/|$)/, '') || '/';
+    const path = localPath(location.pathname);
     const ready = () => {
         const dialog = document.createElement('dialog');
         dialog.className = 'tervix-dialog';
@@ -61,20 +62,27 @@
             }
             link.removeAttribute('target');
         }
-        if (location.pathname === '/contact') {
+        if (path === '/contact') {
+            document.documentElement.dataset.tervixContact = 'true';
             document.title = 'Start a conversation | Tervix';
             const heading = document.querySelector<HTMLElement>('h1');
             if (heading)
                 heading.textContent = 'Start a conversation';
+            for (const link of document.querySelectorAll<HTMLAnchorElement>('a[href]')) {
+                if (localPath(new URL(link.href).pathname) !== '/contact') continue;
+                link.dataset.localDemo = 'true';
+                delete link.dataset.previewPath;
+                link.addEventListener('click', event => { event.preventDefault(); showDialog('Schedule a conversation'); });
+            }
             showDialog('Schedule a conversation');
         }
-        else if (location.pathname === '/about') {
+        else if (path === '/about') {
             document.title = 'How we work | Tervix';
             const heading = document.querySelector<HTMLElement>('h1');
             if (heading)
                 heading.textContent = 'How we work';
         }
-        else if (location.pathname === '/developers') {
+        else if (path === '/developers') {
             document.title = 'Ways to connect | Tervix';
         }
         for (const button of document.querySelectorAll<HTMLElement>('nav button')) {

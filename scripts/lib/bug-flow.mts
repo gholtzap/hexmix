@@ -13,7 +13,7 @@ export async function checkBug(id:string,path:string,test){
   const scans=[];
   try{
    await page.goto(`${base}${path}${path.includes('?')?'&':'?'}${paletteQuery(palette)}`);await page.locator('[data-app-ready]').waitFor();
-   const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true]').first().waitFor();
+   const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true],html[data-contrast-ready=true]').first().waitFor();
    const audit=async(state,child=frame)=>{await page.mouse.move(0,0);await page.waitForTimeout(150);for(const [surface,target] of [['editor',page],['preview',child]] as const){if(!target)continue;const report=await checkPage(target,policy);scans.push({state,surface,report});}await page.screenshot({path:`${out}/${width}-${theme}-${state}.png`});};
    await test({page,frame,context,width,theme,audit});assert.deepEqual(errors,[]);reports.push({width,theme,actions:'passed',scans});
   }catch(error){failures.push({width,theme,error:String(error),errors});reports.push({width,theme,actions:'failed',scans});await page.screenshot({path:`${out}/${width}-${theme}-failure.png`});}
