@@ -5,7 +5,32 @@
         return;
     const brand = { avenlo: "Avenlo", tervix: "Tervix", orvian: "Orvian", nuvexa: "Nuvexa" }[site];
     let mediaPalette;
-    const rename = (value: string, _prose?: boolean) => value;
+    const nuvexaLabels: Record<string,string> = {
+        'products':'Platform', 'solutions':'Ways to work', 'success stories':'Stories', 'book a demo':'Talk to us',
+        'industries':'Business areas', 'your industry':'Your team', 'customer story':'Team story',
+        'quotes & tenders':'Business planning', 'order processing':'Team coordination',
+        'hvac / shk':'Operations', 'electrical':'Sales teams', 'building materials':'Customer teams',
+        'building services (tga)':'Project teams', 'industrial supplies':'Growing businesses',
+        'sanitary, heating and air conditioning':'Keep everyday work moving',
+        'electrical wholesale and components':'Make room for new opportunities',
+        'building materials trade':'Build stronger working relationships',
+        'building services engineering':'Bring plans and people together',
+        'industrial supplies and mro':'Support your next stage',
+        'built for the way your trade sells.':'Built for the way your business works.',
+        'customer stories by industry →':'Explore business stories →', 'read the case study →':'Explore the story →',
+        'for distributors':'For teams', 'for manufacturers':'For growing teams',
+        'in minutes, not hours.':'At a pace that fits your team.',
+    };
+    const rename = (value: string, prose = false) => {
+        if (site !== 'nuvexa' || !prose) return value;
+        const text=value.trim(); if (!text) return value;
+        const label=nuvexaLabels[text.replace(/\s+/g,' ').toLowerCase()];
+        if (label) return value.replace(text,label);
+        if (/\b(?:quotes?|quoting|tenders?|ERP|BoQs?|distributors?|manufacturers?|HVAC|SHK|catalogues?|technical wholesale|inside.sales)\b|order (?:entry|processing)/i.test(text))
+            return value.replace(text,text.length<25?'Team work':'Bring people, plans, and next steps into one clear view.');
+        if (/^[A-Z][A-Z\s&+]+$/.test(text) && text.length>3) return value.replace(text,text.toLowerCase().replace(/^./,letter=>letter.toUpperCase()));
+        return value;
+    };
     const updateWordmarks = () => {
         const selector = { avenlo: ".nav__logo img, .footer__brand img", orvian: "img[alt='Orvian'], img[alt='Logo'], img[data-editor-wordmark]", tervix: "img[alt='Tervix']", nuvexa: "img[alt='Nuvexa']" }[site];
         if (!selector)
@@ -67,7 +92,7 @@
         if (site === 'nuvexa') {
             // The source animation splits the headline into words after page load.
             for (const heading of document.querySelectorAll<HTMLElement>('h1')) {
-                const words = { new: 'clearer', sales: 'path', standard: 'forward', technical: 'your', 'suppliers.': 'business.' };
+                const words = { The: 'A', new: 'clearer', sales: 'path', standard: 'forward', technical: 'your', 'suppliers.': 'business.' };
                 const headline = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
                 let word;
                 while ((word = headline.nextNode())) {
@@ -89,7 +114,7 @@
         while ((node = walker.nextNode())) {
             if (node.parentElement?.closest("script, style, noscript, template"))
                 continue;
-            const next = rename(node.nodeValue, !node.parentElement?.closest("pre, code"));
+            const next = rename(node.nodeValue, !node.parentElement?.closest("pre, code, form, textarea, [contenteditable]"));
             if (next !== node.nodeValue) {
                 node.nodeValue = next;
                 node.parentElement.dataset.businessCopy = 'true';

@@ -1,0 +1,9 @@
+import assert from 'node:assert/strict';
+import {runBugCheck} from './lib/confirmed-bug.mts';
+const sourceCopy=/\b(?:quotes?|tenders?|ERP|BoQs?|distributors?|manufacturers?|HVAC|SHK|technical wholesale)\b/i;
+await runBugCheck('HX-055','/nuvexa',async({page,frame,audit})=>{
+ const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));const verify=async()=>{await frame.waitForTimeout(300);assert.doesNotMatch(await frame.locator('body').innerText(),sourceCopy);};await page.waitForLoadState('networkidle');await verify();await audit(page,'loaded-copy');
+ const menu=frame.locator('.mh-header').getByRole('button').filter({visible:true}).first();if(await menu.count()){await menu.click();await verify();await audit(page,'mobile-menu');await menu.click();}else{for(const label of ['Platform','Ways to work']){await frame.locator('.mh-header').getByText(label,{exact:true}).first().hover();await verify();await audit(page,label==='Platform'?'platform-menu':'solutions-menu');}}
+ await page.reload();await page.locator('iframe[data-preview-ready=true]').waitFor();const current=await(await page.locator('iframe').elementHandle()).contentFrame();await page.waitForLoadState('networkidle');assert.doesNotMatch(await current.locator('body').innerText(),sourceCopy);await audit(page,'reloaded-copy');
+ const target=new URL(page.url());target.pathname='/nuvexa/contact';await page.goto(target.href);await page.locator('iframe[data-preview-ready=true]').waitFor();const contact=await(await page.locator('iframe').elementHandle()).contentFrame();const email=contact.locator('input[type=email]').first();await email.fill('quotes@example.com');await contact.waitForTimeout(300);assert.equal(await email.inputValue(),'quotes@example.com');await audit(page,'contact-input-preserved');assert.deepEqual(errors,[]);
+});
