@@ -20,9 +20,10 @@ function openChat(title: string, view = 'chat') {
     ]);
     messages = conversations.get(title);
     draft = '';
+    attachments = [];
     navigate(view);
 }
-function newChat(view: string) { messages = []; project = ''; draft = ''; navigate(view); }
+function newChat(view: string) { messages = []; project = ''; draft = ''; attachments = []; navigate(view); }
 const powers = ['Light', 'Medium', 'High', 'Extra high', 'Maximum'];
 export function chatPage(view = 'chat') {
     const work = view === 'work';
