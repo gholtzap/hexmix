@@ -104,7 +104,7 @@ function settings() {
             d.querySelector<HTMLElement>('[role=status]').textContent = 'Settings could not be saved. Allow browser storage and try again.';
         } };
         d.querySelector<HTMLElement>('[data-context]').onclick = () => { d.close(); contextDialog(); };
-        d.querySelector<HTMLElement>('[data-theme]').onclick = () => { window.parent.postMessage({ type: 'preview-toggle-theme' }, location.origin); d.close(); };
+        d.querySelector<HTMLElement>('[data-theme]').onclick = () => { if (!document.documentElement.hasAttribute('data-comparison-replay')) window.parent.postMessage({ type: 'preview-toggle-theme' }, location.origin); d.close(); };
     });
 }
 window.addEventListener('dashboard:navigate', e => render((e as CustomEvent).detail, true));

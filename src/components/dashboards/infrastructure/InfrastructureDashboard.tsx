@@ -38,7 +38,7 @@ export default function InfrastructureDashboard({initialPage='projects'}:{initia
   if(title==='Log out'){setSignedOut(true);return;}
   if(title==='Theme'){
    const host=window.parent;
-   if(host!==window)host.postMessage({type:'preview-toggle-theme'},location.origin);
+   if(host!==window){if(!document.documentElement.hasAttribute('data-comparison-replay'))host.postMessage({type:'preview-toggle-theme'},location.origin);}
    else {const root=document.documentElement;const light=root.dataset.theme!=='light';root.style.setProperty('--p-background',light?'#ffffff':'#000000');root.style.setProperty('--p-text',light?'#171717':'#ededed');root.style.setProperty('--p-secondary',light?'#f5f5f5':'#1f1f1f');root.style.setProperty('--p-accent',light?'#666666':'#a1a1a1');}
    return;
   }
