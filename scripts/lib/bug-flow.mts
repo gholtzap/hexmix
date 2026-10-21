@@ -26,4 +26,4 @@ export async function checkBug(id:string,paths:string|string[],test){
 export async function openInfraPage(frame,name){
  const control=frame.getByRole('navigation',{name:'Team',exact:true}).getByRole('button',{name,exact:false});if(!await control.isVisible())await frame.getByRole('button',{name:'Open sidebar',exact:true}).filter({visible:true}).first().click();await control.click();
 }
-export async function openChatSidebar(frame){const control=frame.getByRole('button',{name:'Open sidebar',exact:true});if(await control.isVisible())await control.click();}
+export async function openChatSidebar(frame){await frame.locator('html[data-app-ready=true]').waitFor();const control=frame.getByRole('button',{name:'Open sidebar',exact:true});if(await control.isVisible())await control.click();}
