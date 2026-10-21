@@ -1,5 +1,4 @@
 "use client";
-import Link from 'next/link';
 import {useEffect,useRef} from 'react';
 import {useLinkState} from "@/hooks/useLinkState";
 import {PreviewCard} from '@base-ui/react/preview-card';
@@ -20,8 +19,8 @@ export default function SiteSwitcher({palette,heading,body,elementRoles=[],onOpe
  useEffect(()=>{if(!open)return;const studio=document.querySelector<HTMLElement>('main.studio');if(!studio)return;const previous=studio.inert;studio.inert=true;return()=>{studio.inert=previous;};},[open]);
  const current=previewCatalog.find(site=>path===site.path||path.startsWith(site.path+'/'));
  const href=(path:string)=>previewHref(path,palette,heading,body,elementRoles);
- const option=(site?:SitePreview)=><DropdownMenuItem key={site?.path??'/'} asChild><PreviewCard.Trigger payload={site} delay={120} closeDelay={80} render={<Link prefetch={false} href={href(site?.path??'/')} aria-current={site===current&&site?'page':undefined}/>}><span>{site?.name??'All sites'}</span>{site&&site===current&&<Check size={16} aria-hidden="true"/>}</PreviewCard.Trigger></DropdownMenuItem>;
- return <DropdownMenu open={open} onOpenChange={value=>{setOpen(value);if(value)onOpen();}}><DropdownMenuTrigger asChild><Button variant="ghost" className="site-switcher-trigger" aria-label={`Switch site: ${current?.name??'Preview'}`}><span>{current?.name??'Preview'}</span><ChevronDown size={16}/></Button></DropdownMenuTrigger><DropdownMenuContent ref={menu} className="site-switcher-menu" align="start" side="top" sideOffset={12} collisionPadding={12}>
+ const option=(site?:SitePreview)=><DropdownMenuItem key={site?.path??'/'} asChild><PreviewCard.Trigger payload={site} delay={120} closeDelay={80} render={<a href={href(site?.path??'/')} aria-current={site===current&&site?'page':undefined}/>}><span>{site?.name??'All sites'}</span>{site&&site===current&&<Check size={16} aria-hidden="true"/>}</PreviewCard.Trigger></DropdownMenuItem>;
+ return <DropdownMenu open={open} onOpenChange={value=>{setOpen(value);if(value)onOpen();}}><DropdownMenuTrigger asChild><Button variant="ghost" className="site-switcher-trigger" aria-label={`Switch site: ${current?.name??'Preview'}`} aria-describedby="site-switcher-tooltip"><span className="site-switcher-name">{current?.name??'Preview'}</span><ChevronDown size={16}/><span className="control-tooltip" id="site-switcher-tooltip" role="tooltip">Switch site</span></Button></DropdownMenuTrigger><DropdownMenuContent ref={menu} className="site-switcher-menu" align="start" side="bottom" sideOffset={8} collisionPadding={12}>
   <PreviewCard.Root<SitePreview>>{({payload})=><>
    {['Homepages','Dashboards'].map(category=><DropdownMenuGroup key={category}><DropdownMenuLabel>{category}</DropdownMenuLabel>{previewCatalog.filter(site=>site.category===category).map(site=>option(site))}</DropdownMenuGroup>)}
    <DropdownMenuSeparator/>{option()}

@@ -80,6 +80,16 @@ import { fonts, type FontName } from "@/lib/fonts";
 import { isElementSelection, isElementRole, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
 
 type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
+const siteLogoSelectors: Record<string, string> = {
+  avenlo: '.nav__logo img',
+  tervix: 'nav a[data-preview-path="/"]',
+  orvian: 'img[alt="Orvian"]',
+  nuvexa: 'nav img[alt="Nuvexa"]',
+  workspace: '.side-title, .mobile-toggle',
+  infrastructure: '[aria-label*="Switch team"], .vc-topbar-team',
+};
+// Generated wordmark images have transparent space after the visible letters.
+const wordmarkWidths: Record<string, number> = { avenlo: 0.66, orvian: 0.63, nuvexa: 0.72 };
 
 function elementPanelPosition(selection: ElementSelection, frame: HTMLIFrameElement): CSSProperties {
   const frameBox = frame.getBoundingClientRect();
@@ -164,10 +174,14 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [showCapture, setShowCapture] = useState(false);
   const [readyPreview, setReadyPreview] = useState<string | null>(null);
+  const [frameLoaded, setFrameLoaded] = useState(0);
+  const [siteSwitcherPosition, setSiteSwitcherPosition] = useState<CSSProperties | null>(null);
+  const previewId = capture?.id ?? (preview.startsWith("/dashboard-previews/infrastructure") ? "infrastructure" : preview.startsWith("/dashboard-previews/workspace") ? "workspace" : null);
   usePreviewToolbarClearance(frame, showCapture ? null : toolbarElement, preview);
   const attachFrame = useCallback((element: HTMLIFrameElement | null) => {
     frame.current = element;
     setReadyPreview(null);
+    setSiteSwitcherPosition(null);
   }, []);
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -299,6 +313,36 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     style.setProperty("--p-body-font", fonts[body]);
   }
   useEffect(updateFrame, [palette, heading, body, preview, defaultPalette, waitForPreview]);
+  const updateSiteSwitcherPosition = useCallback(() => {
+    const iframe = frame.current;
+    const document = iframe?.contentDocument;
+    const selector = previewId && siteLogoSelectors[previewId];
+    const logo = selector && [...(document?.querySelectorAll(selector) ?? [])].find(element => {
+      const box = element.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && box.top >= 0 && box.top < 100;
+    });
+    if (!iframe || !document || !logo) { setSiteSwitcherPosition(null); return; }
+    const frameBox = iframe.getBoundingClientRect();
+    const box = logo.getBoundingClientRect();
+    const scale = frameBox.width / iframe.clientWidth;
+    const next = {
+      left: frameBox.left + (box.left + box.width * (wordmarkWidths[previewId ?? ""] ?? 1) + 4) * scale,
+      top: frameBox.top + (box.top + box.height / 2) * scale - 14,
+      color: previewId === "nuvexa" ? palette.text : document.defaultView?.getComputedStyle(logo).color,
+    };
+    setSiteSwitcherPosition(previous => previous?.left === next.left && previous?.top === next.top && previous?.color === next.color ? previous : next);
+  }, [previewId, palette.text]);
+  useEffect(() => {
+    updateSiteSwitcherPosition();
+    const document = frame.current?.contentDocument;
+    let frameId = 0;
+    const schedule = () => { if (!frameId) frameId = requestAnimationFrame(() => { frameId = 0; updateSiteSwitcherPosition(); }); };
+    const observer = !siteSwitcherPosition && document?.documentElement ? new MutationObserver(schedule) : null;
+    if (observer && document?.documentElement) observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
+    document?.addEventListener("scroll", schedule, true);
+    window.addEventListener("resize", schedule);
+    return () => { observer?.disconnect(); document?.removeEventListener("scroll", schedule, true); window.removeEventListener("resize", schedule); cancelAnimationFrame(frameId); };
+  }, [updateSiteSwitcherPosition, preview, readyPreview, frameLoaded, siteSwitcherPosition]);
   useEffect(() => {
     const onReady = (event: MessageEvent) => {
       if (embedded && event.source === window.parent && event.origin === window.location.origin && event.data?.type === "hexmix-comparison-colors" && isPalette(event.data.palette)) {
@@ -576,8 +620,11 @@ export default function Studio({ children, preview = "/preview/index.html", defa
         data-preview-ready={!capture || readyPreview === preview}
         style={{ visibility: capture && readyPreview !== preview ? "hidden" : "visible" }}
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
-        onLoad={updateFrame}
+        onLoad={() => { updateFrame(); updateSiteSwitcherPosition(); setFrameLoaded(count => count + 1); }}
       />}
+      {!children && !embedded && <div className="preview-site-switcher" data-integrated={Boolean(siteSwitcherPosition) || undefined} style={siteSwitcherPosition && (!capture || readyPreview === preview) ? siteSwitcherPosition : previewId && !showCapture ? { visibility: "hidden" } : { left: 8, top: 8 }}>
+        <SiteSwitcher palette={palette} heading={heading} body={body} elementRoles={elementRoles} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);setSelection(null);setInspecting(false);}}/>
+      </div>}
       {selection && frame.current && (
         <div className="element-panel" role="dialog" aria-label={`Colors for ${selection.label}`} style={elementPanelPosition(selection, frame.current)}>
           <button type="button" className="element-swatch-field" aria-label="Use old color" disabled={!selectedRole} onClick={restoreElement}>
@@ -642,7 +689,6 @@ export default function Studio({ children, preview = "/preview/index.html", defa
             role="region"
             aria-label="Color toolbar"
           >
-            <SiteSwitcher palette={palette} heading={heading} body={body} elementRoles={elementRoles} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);setSelection(null);setInspecting(false);}}/>
             <div className="toolbar-colors">
               {roles.map((role) => (
                 <div className="toolbar-color" key={role}>

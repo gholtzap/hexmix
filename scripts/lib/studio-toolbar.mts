@@ -7,6 +7,7 @@ export async function clickToolbarAction(page, name) {
 
 export async function openSiteSwitcher(page) {
   const trigger = page.getByRole('button', {name: /^Switch site:/});
+  await trigger.waitFor({state:'visible',timeout:10000}).catch(()=>{});
   if (await trigger.isVisible()) return activate(trigger);
   await openToolsMenu(page);
   await activate(page.getByRole('menuitem', {name: 'Previews', exact: true}));

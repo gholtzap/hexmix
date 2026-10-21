@@ -89,6 +89,13 @@ a:focus-visible {
   background: var(--color-card);
 }
 .dashboard-frame { --preview-scale: 0.9; transform: scale(var(--preview-scale)); transform-origin: top left; }
+.preview-site-switcher { position: absolute; z-index: 30; }
+.preview-site-switcher[data-integrated] .site-switcher-trigger { width: 28px; min-height: 28px; padding: 0; justify-content: center; gap: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; box-shadow: none; }
+.preview-site-switcher[data-integrated] .site-switcher-trigger:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+.preview-site-switcher[data-integrated] .site-switcher-name { display: none; }
+.preview-site-switcher .control-tooltip { top: calc(100% + 6px); bottom: auto; }
+.preview-site-switcher .site-switcher-trigger:hover > .control-tooltip, .preview-site-switcher .site-switcher-trigger:focus-visible > .control-tooltip { opacity: 1; visibility: visible; }
+.studio-collapsed .preview-site-switcher { display: none; }
 .toolbar-anchor {
   position: fixed;
   bottom: 24px;
