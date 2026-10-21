@@ -15,7 +15,7 @@ async function startSelecting(page: import("playwright").Page) {
   if (await button.isVisible()) await button.click();
   else {
     await page.getByRole("button", { name: "More tools" }).click();
-    await page.getByRole("menuitem", { name: "Select an element" }).click();
+    await page.getByRole("menuitem", { name: "Edit element" }).click();
   }
 }
 try {
