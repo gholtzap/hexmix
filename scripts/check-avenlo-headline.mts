@@ -24,15 +24,16 @@ try {
   }
   if(heading==='System')await page.screenshot({path:`${output}/${width}-${theme}-empty.png`});await page.close();
  }
- for(const theme of ['light','dark'] as const){
-  const page=await browser.newPage({viewport:{width:390,height:844},colorScheme:theme,reducedMotion:'no-preference'});
+ for(const width of [390,1440])for(const theme of ['light','dark'] as const){
+  const page=await browser.newPage({viewport:{width,height:900},colorScheme:theme,reducedMotion:'no-preference'});
   await page.goto(`${base}/avenlo?colors=${theme==='light'?'171717-ffffff-e98878-ffe291-a8655f':'ededed-171717-e98878-333333-a8655f'}`);
   const frame=page.frameLocator('iframe');await frame.locator('html[data-contrast-ready=true]').waitFor();
   const motion=await frame.locator('.hero__typed').evaluate(async typed=>{
-   await document.fonts.ready;const samples=[],start=performance.now();
+   await document.fonts.ready;const samples=[],words=[...document.querySelectorAll('.hero__sizer')].map(node=>node.textContent),start=performance.now();
    await new Promise<void>(resolve=>{function sample(){samples.push({word:typed.textContent,top:document.querySelector('.hero__lede').getBoundingClientRect().top});if(performance.now()-start<7200)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
-   return {emptySeen:samples.some(s=>s.word===''),words:[...new Set(samples.map(s=>s.word))],min:Math.min(...samples.map(s=>s.top)),max:Math.max(...samples.map(s=>s.top))};
-  });assert(!motion.emptySeen,'The editor must keep the changing word clickable');assert(motion.words.length>=3);assert(motion.max-motion.min<1,JSON.stringify(motion));
+   return {partialSeen:samples.some(s=>s.word&&!words.includes(s.word)),emptySeen:samples.some(s=>s.word===''),words:[...new Set(samples.map(s=>s.word))],min:Math.min(...samples.map(s=>s.top)),max:Math.max(...samples.map(s=>s.top))};
+  });assert(motion.partialSeen,'The hero must type and delete letters inside the preview');assert(motion.emptySeen,'The hero must finish deleting each word');assert(motion.words.length>=3);assert(motion.max-motion.min<1,JSON.stringify(motion));
+  await page.screenshot({path:`${output}/${width}-${theme}-animated.png`});
   await frame.locator('.hero__typed').hover();
   await frame.locator('.hero__typed').click({modifiers:['Alt']});
   await page.locator('.element-panel').waitFor();
@@ -40,8 +41,11 @@ try {
   assert(await frame.locator('.hero__sizer').allTextContents().then(words=>words.includes(selected)));
   await page.mouse.move(1,100);await page.waitForTimeout(2400);
   assert.equal(await frame.locator('.hero__typed').textContent(),selected,'The selected word must stay in place');
+  let report={findings:[]};try{await expectUI(page,{attach:async(_,a)=>{report=JSON.parse(String(a.body));}},policy);}finally{reports.push({width,theme,heading:'System',state:'selected',report});}
+  await page.screenshot({path:`${output}/${width}-${theme}-selected.png`});
   await page.keyboard.press('Escape');await frame.locator('[data-hexmix-selected]').waitFor({state:'detached'});
-  results.push({theme,motion,selected});await page.close();
+  await page.waitForFunction(selected=>document.querySelector<HTMLIFrameElement>('iframe')!.contentDocument!.querySelector('.hero__typed')!.textContent!==selected,selected);
+  results.push({width,theme,motion,selected});await page.close();
  }
 }finally{await browser.close();await writeFile(`${output}/report.json`,JSON.stringify({results,reports},null,2));}
-console.log(`${results.length-2} layouts, ${reports.length} UI checks, and two live animation checks passed.`);
+console.log(`${results.length-4} layouts, ${reports.length} UI checks, and four live animation checks passed.`);
