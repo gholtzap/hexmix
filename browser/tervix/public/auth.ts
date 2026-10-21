@@ -1,5 +1,5 @@
 (() => {
-    const register = location.pathname === '/register';
+    const register = /\/register\/?$/.test(location.pathname);
     const $ = id => document.getElementById(id);
     document.title = `${register ? 'Create an account' : 'Sign in'} | Tervix`;
     $('page-heading').textContent = register ? 'Welcome to Tervix' : 'Sign in to Tervix';
