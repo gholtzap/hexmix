@@ -19,6 +19,7 @@ import {
   Undo2,
   Columns2,
   LockKeyhole,
+  LoaderCircle,
   Moon,
   MousePointer2,
   MoreHorizontal,
@@ -176,6 +177,15 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [showCapture, setShowCapture] = useState(false);
   const [readyPreview, setReadyPreview] = useState<string | null>(null);
+  const [previewAttempt, setPreviewAttempt] = useState(0);
+  const [slowPreview, setSlowPreview] = useState(false);
+  const loadingPreview = !children && !showCapture && readyPreview !== preview;
+  useEffect(() => {
+    setSlowPreview(false);
+    if (!loadingPreview) return;
+    const timer = setTimeout(() => setSlowPreview(true), 15000);
+    return () => clearTimeout(timer);
+  }, [loadingPreview, preview, previewAttempt]);
   const [frameLoaded, setFrameLoaded] = useState(0);
   const [siteSwitcherPosition, setSiteSwitcherPosition] = useState<CSSProperties | null>(null);
   const previewId = capture?.id ?? (preview.startsWith("/dashboard-previews/infrastructure") ? "infrastructure" : preview.startsWith("/dashboard-previews/workspace") ? "workspace" : null);
@@ -629,16 +639,22 @@ export default function Studio({ children, preview = "/preview/index.html", defa
         <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body,elementRoles)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
         <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body,elementRoles)}>{label}</a>)}</nav></div>
       </div> : <iframe
-        key={preview}
+        key={`${preview}:${previewAttempt}`}
         ref={attachFrame}
         className={preview.startsWith("/dashboard-previews/") ? "website-frame dashboard-frame" : "website-frame"}
         src={preview}
         title="Page preview"
-        data-preview-ready={!capture || readyPreview === preview}
+        data-preview-ready={readyPreview === preview}
+        aria-busy={loadingPreview}
         style={{ visibility: capture && readyPreview !== preview ? "hidden" : "visible" }}
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
-        onLoad={() => { updateFrame(); updateSiteSwitcherPosition(); setFrameLoaded(count => count + 1); }}
+        onLoad={() => { updateFrame(); updateSiteSwitcherPosition(); setFrameLoaded(count => count + 1); if (!capture) setReadyPreview(preview); }}
       />}
+      {loadingPreview && <div className="preview-loading" role="status" aria-label="Page preview loading" style={{background:palette.background,color:surfaceForegrounds(palette).background}}>
+        <LoaderCircle className="preview-loading-spinner" size={24} aria-hidden="true"/>
+        <span>{slowPreview ? "The preview is taking longer to load." : "Loading preview"}</span>
+        {slowPreview && <IconButton className="icon-button" aria-label="Reload preview" onClick={() => { setSlowPreview(false); setPreviewAttempt(attempt => attempt + 1); }}><RotateCcw size={18}/></IconButton>}
+      </div>}
       {!children && !embedded && <div className="preview-site-switcher" data-slot={Boolean(siteSwitcherPosition?.width) || undefined} data-integrated={Boolean(siteSwitcherPosition) || undefined} style={siteSwitcherPosition && (!capture || readyPreview === preview) ? siteSwitcherPosition : previewId && !showCapture ? { visibility: "hidden" } : { left: 8, top: 8 }}>
         <SiteSwitcher palette={palette} heading={heading} body={body} elementRoles={elementRoles} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);setSelection(null);setInspecting(false);}}/>
       </div>}

@@ -1230,3 +1230,10 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 }
 .toast:has(> .icon-button) { display: flex; align-items: center; gap: 16px; }
 .toast > .icon-button { width: 44px; height: 44px; }
+
+.preview-loading { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; text-align: center; font-size: 14px; }
+.preview-loading > .icon-button { width: 44px; height: 44px; color: inherit; }
+.preview-loading-spinner { animation: preview-loading-turn 1s linear infinite; }
+@keyframes preview-loading-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .preview-loading-spinner { animation: none; } }
+.preview-loading > .icon-button:is(:hover, :focus-visible) { background: color-mix(in srgb, currentColor 10%, transparent); }
