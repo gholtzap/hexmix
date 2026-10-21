@@ -275,6 +275,25 @@ a:focus-visible {
   background: var(--color-muted);
   box-shadow: inset 0 0 0 1px var(--color-border);
 }
+.role-map-key {
+  position: fixed;
+  z-index: 39;
+  top: 16px;
+  right: 16px;
+  width: min(380px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-card);
+  color: var(--color-foreground);
+  box-shadow: 0 8px 28px #00000026;
+}
+.role-map-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 500; }
+.role-map-title .icon-button { width: 28px; height: 28px; }
+.role-map-roles { display: flex; flex-wrap: wrap; gap: 6px 4px; margin-top: 6px; }
+.role-map-roles span { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.role-map-roles i { width: 10px; height: 10px; border: 1px solid var(--color-border); border-radius: 3px; }
+.role-map-key p { margin: 6px 0 0; color: var(--color-muted-foreground); font-size: 12px; }
 .element-panel {
   position: fixed;
   z-index: 40;
@@ -457,6 +476,7 @@ dialog::backdrop {
   }
 }
 @media (max-width: 560px) {
+  .role-map-key { top: auto; right: 8px; bottom: var(--toolbar-clearance, calc(var(--toolbar-height) + 24px)); left: 8px; width: auto; }
   .toolbar-anchor {
     width: calc(100% - 24px);
     max-width: calc(100% - 24px);
@@ -1149,7 +1169,7 @@ body:has(.studio[data-comparison-toolbar]) .toolbar-actions > .icon-button > .co
 .manual-copy textarea { width: 100%; min-height: 240px; padding: 12px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-background); color: var(--color-foreground); font: 14px/1.5 system-ui, sans-serif; }
 @media (max-width: 560px) { .manual-copy textarea { font-size: 16px; } }
 @media (max-width: 1200px) {
-  [data-radix-popper-content-wrapper]:has(> .palette-menu[aria-label="More tools"]) { bottom: calc(var(--keyboard-inset, 0px) + var(--toolbar-height, 60px) + 16px + env(safe-area-inset-bottom)) !important; }
+  [data-radix-popper-content-wrapper]:has(> .palette-menu[aria-label="More tools"]) { bottom: var(--tools-menu-bottom, calc(var(--keyboard-inset, 0px) + var(--toolbar-height, 60px) + 16px)) !important; }
   .palette-menu[aria-label="More tools"] { max-height: calc(var(--visible-height, 100dvh) - var(--toolbar-height, 60px) - 24px - env(safe-area-inset-bottom)); }
 }
 .color-toolbar { flex-wrap: nowrap; }
@@ -1193,9 +1213,16 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 .comparison-link-toggle input { width: 16px; height: 16px; accent-color: var(--color-foreground); }
 
 .toolbar-anchor[data-preview-toolbar-hidden] { visibility: hidden; pointer-events: none; }
+.studio:has(.toolbar-anchor[data-preview-toolbar-hidden]) .role-map-key { display: none; }
 
 .color-trigger { position: relative; }
 .color-trigger > .swatch-tooltip { display: none; }
+.background-name-narrow { display: none; }
+.background-name-narrow::after { content: "bg"; }
+@media (max-width: 1500px) {
+  .background-name-wide { display: none; }
+  .background-name-narrow { display: inline; }
+}
 @media (max-width: 1200px) {
   .toolbar-color > .color-trigger > .color-trigger-name { display: none; }
   .toolbar-color > .color-trigger:has(> svg) { height: 44px; }

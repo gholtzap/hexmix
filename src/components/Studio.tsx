@@ -18,6 +18,7 @@ import {
   Sparkles,
   Undo2,
   Columns2,
+  Layers,
   LockKeyhole,
   LoaderCircle,
   Moon,
@@ -160,6 +161,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [manualCopy, setManualCopy] = useLinkState<string | null>("Studio.manualCopy", null, { private: true, validate: value => value === null || typeof value === "string" });
   const [exportFormat, setExportFormat] = useLinkState<PaletteExportFormat>("Studio.Studio.exportFormat", "css", { validate: value => typeof value === "string" && Object.hasOwn(paletteExportFormats, value) });
   const [inspecting, setInspecting] = useLinkState("Studio.inspecting", false);
+  const [roleMap, setRoleMap] = useState(false);
   const [selection, setSelection] = useLinkState<ElementSelection | null>("Studio.selection", null, { private: true, validate: value => value === null || isElementSelection(value) && value.path === window.location.pathname });
   const [elementRoles, setElementRolesState] = useLinkState<ElementRole[]>("Studio.elements", [], { validate: value => Array.isArray(value) && value.length <= maxElementRoles && value.every(isElementRole) });
   const [rolesReadyPath, setRolesReadyPath] = useState("");
@@ -230,11 +232,11 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   }, [children, storageReady, palette, heading, body, elementRoles, rolesReadyPath]);
   function updateInspector() {
     frame.current?.contentWindow?.postMessage({
-      type: "hexmix-inspector-state", page: window.location.pathname, inspecting, assignments: elementRoles,
+      type: "hexmix-inspector-state", page: window.location.pathname, inspecting, roleMap, assignments: elementRoles,
       selectedSelector: selection?.path === window.location.pathname ? selection.selector : null,
     }, new URL(preview, window.location.origin).origin);
   }
-  useEffect(updateInspector, [inspecting, elementRoles, preview, selection?.path, selection?.selector]);
+  useEffect(updateInspector, [inspecting, roleMap, elementRoles, preview, selection?.path, selection?.selector]);
   useEffect(() => {
     if (selection) newColorButton.current?.focus();
   }, [selection?.path, selection?.selector]);
@@ -381,7 +383,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       if (event.source !== frame.current?.contentWindow || event.origin !== new URL(preview, window.location.origin).origin) return;
       if (event.data?.type === "color-editor-ready") updateFrame();
       if (event.data?.type === "hexmix-inspector-ready") updateInspector();
-      if (event.data?.type === "hexmix-inspect-exit") { setInspecting(false); setSelection(null); }
+      if (event.data?.type === "hexmix-inspect-exit") { setInspecting(false); setRoleMap(false); setSelection(null); }
       if (event.data?.type === "hexmix-element-selected" && isElementSelection(event.data.selection)) {
         setSelection(event.data.selection);
         setPanel(null);
@@ -673,6 +675,11 @@ export default function Studio({ children, preview = "/preview/index.html", defa
           </DropdownMenu>
         </div>
       )}
+      {roleMap && !showCapture && !children && <div className="role-map-key" role="region" aria-label="Color map">
+        <div className="role-map-title"><span>Color map</span><IconButton className="icon-button" aria-label="Hide color map" onClick={() => setRoleMap(false)}><X size={16} /></IconButton></div>
+        <div className="role-map-roles">{roles.map(role => <span key={role}><i aria-hidden="true" style={{ backgroundColor: palette[role] }} />{role[0].toUpperCase() + role.slice(1)}</span>)}</div>
+        <p>Click an outline to edit.</p>
+      </div>}
       {(!embedded || comparisonToolbar) && (collapsed ? (
         <IconButton
           className="toolbar-reopen icon-button"
@@ -757,7 +764,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                             : "#000000",
                       }}
                     >
-                      <span className="color-trigger-name">{role === "background" ? <>Backg<wbr />round</> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
+                      <span className="color-trigger-name">{role === "background" ? <><span className="background-name-wide">Background</span><span className="background-name-narrow" aria-hidden="true" /></> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
                       {locked.includes(role) && <LockKeyhole size={12} aria-hidden="true" />}
                       <span className="control-tooltip swatch-tooltip" role="tooltip" id={`${swatchTooltip}-${role}`}>
                         {role[0].toUpperCase() + role.slice(1)} color
@@ -877,6 +884,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 <Type size={17} />
               </IconButton>
               <IconButton className="icon-button" aria-label={inspecting ? "Stop selecting elements" : "Select an element"} title="Alt+click an element to change its color" aria-pressed={inspecting} disabled={showCapture || Boolean(children)} onClick={toggleInspector}><MousePointer2 size={17} /></IconButton>
+              <IconButton className="icon-button" aria-label={roleMap ? "Hide color map" : "Show color map"} aria-pressed={roleMap} disabled={showCapture || Boolean(children)} onClick={() => setRoleMap(current => !current)}><Layers size={17} /></IconButton>
               <PalettePanel
                 key={comparisonToolbar ? 'comparison' : 'single'}
                 initialTab={comparisonToolbar ? "saved" : "presets"}
@@ -927,7 +935,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               >
                 <RotateCcw size={16} />
               </IconButton>
-              <DropdownMenu modal={false} open={toolsOpen} onOpenChange={open => { if (open) { shareView.current ??= sharedState(); setPanel(null); setActiveColor(null); setPreviewPalette(null); } setToolsOpen(open); }}>
+              <DropdownMenu modal={false} open={toolsOpen} onOpenChange={open => { if (open) { shareView.current ??= sharedState(); setPanel(null); setActiveColor(null); setPreviewPalette(null); document.documentElement.style.setProperty("--tools-menu-bottom", `${Math.round(window.innerHeight - (toolsTrigger.current?.getBoundingClientRect().top ?? window.innerHeight) + 8)}px`); } setToolsOpen(open); }}>
                 <DropdownMenuTrigger asChild><IconButton ref={toolsTrigger} className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /></IconButton></DropdownMenuTrigger>
                 <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed || panel) event.preventDefault(); }}>
                   <DropdownMenuGroup className="mobile-tools">
@@ -936,6 +944,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
                     <DropdownMenuItem onPointerEnter={preloadPalettePanel} onFocus={preloadPalettePanel} onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
                     <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
+                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={() => setRoleMap(current => !current)}>{roleMap ? "Hide color map" : "Show color map"}</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
                   <DropdownMenuItem disabled={index === 0} onSelect={undoPalette}>Undo palette</DropdownMenuItem>
