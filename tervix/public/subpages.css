@@ -90,3 +90,4 @@ html[data-tervix-contact] h1 { font-size: 32px !important; }
 html[data-tervix-contact] h2 { font-size: 24px !important; }
 html[data-tervix-contact] h3 { font-size: 20px !important; }
 @media (min-width: 768px) { html[data-tervix-contact] h1 { font-size: 64px !important; } }
+html[data-tervix-contact] .tervix-dialog { z-index: 1000; }
