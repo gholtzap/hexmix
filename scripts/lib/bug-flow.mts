@@ -23,6 +23,6 @@ export async function checkBug(id:string,path:string,test){
  assert.deepEqual(failures,[]);assert.deepEqual(findings,[]);
 }
 export async function openInfraPage(frame,name){
- const control=frame.getByRole('button',{name,exact:true});if(!await control.isVisible())await frame.getByRole('button',{name:'Open sidebar',exact:true}).filter({visible:true}).first().click();await control.click();
+ const control=frame.getByRole('button',{name,exact:false});if(!await control.isVisible())await frame.getByRole('button',{name:'Open sidebar',exact:true}).filter({visible:true}).first().click();await control.click();
 }
 export async function openChatSidebar(frame){const control=frame.getByRole('button',{name:'Open sidebar',exact:true});if(await control.isVisible())await control.click();}
