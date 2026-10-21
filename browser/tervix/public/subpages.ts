@@ -1,4 +1,5 @@
 (() => {
+    const path = location.pathname.replace(/^\/render\/tervix(?=\/|$)/, '') || '/';
     const ready = () => {
         const dialog = document.createElement('dialog');
         dialog.className = 'tervix-dialog';
@@ -85,7 +86,7 @@
                 button.setAttribute('aria-expanded', String(!menu.classList.contains('hidden')));
             });
         }
-        if (location.pathname === '/templates') {
+        if (path === '/templates') {
             const grid = document.querySelector<HTMLElement>('main .grid.md\\:grid-cols-2');
             const cards = [...(grid?.querySelectorAll<HTMLElement>(':scope > a') || [])];
             const groups = [...document.querySelectorAll<HTMLElement>('main button[type="button"]')].filter(button => button.closest<HTMLElement>('.flex.flex-wrap.items-center.gap-2'));
