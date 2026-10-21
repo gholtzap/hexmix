@@ -32,4 +32,4 @@ Use the preview toolbar to change colors and fonts, save palettes, or switch pag
 
 Use Node.js 24 or later. Browser scripts compile automatically when you run the app. Edit files in `browser/`, not their generated JavaScript outputs.
 
-Run `npm run typecheck` to check all project TypeScript. `npm run build` also runs these checks. See [TypeScript source and build outputs](docs/typescript.md).
+Run `npm run typecheck` to check all project TypeScript. `npm run build` checks scripts and browser TypeScript before the Next.js build checks app TypeScript. See [TypeScript source and build outputs](docs/typescript.md).

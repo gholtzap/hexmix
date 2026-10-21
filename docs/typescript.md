@@ -10,7 +10,7 @@ Use Node.js 24 or later. The Node scripts run directly from `.mts` files. No ext
 - `config/postcss.config.mts`: the source for the generated PostCSS config.
 - `scripts/browser-files.json`: maps each generated public file to its TypeScript source. Several old and new URLs share one source file.
 
-Do not edit a generated `.js` file. Run `npm run build:browser` after editing browser code. The `dev`, `build`, `start`, and `test` commands run this step automatically. It also updates the generated file sizes in the captured asset lists.
+Do not edit a generated `.js` file. Run `npm run build:browser` after editing browser code. The `dev` and `build` commands run this step automatically. It also updates the generated file sizes in the captured asset lists.
 
 ## Checks
 

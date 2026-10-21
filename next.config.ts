@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import {legacyPreviewRoutes,legacyPageRoutes} from "./src/lib/previews.ts";
 const config: NextConfig = {
   devIndicators: false,
   outputFileTracingIncludes: {
@@ -19,7 +18,6 @@ const config: NextConfig = {
     { source: "/assets/fonts.gstatic.com/:path*", destination: "/api/preview/nuvexa/assets/fonts.gstatic.com/:path*" },
   ] }; },
   async headers() { return ["preview-contrast.js", "palette-contrast.js", "font-catalog.js", "fonts/:path*"].map(file => ({ source: `/${file}`, headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] })); },
-  async redirects(){return [...legacyPageRoutes.map(route=>({...route,permanent:true})),...legacyPreviewRoutes.map(({source,destination})=>({source:`${source}/:path*`,destination:`${destination}/:path*`,permanent:true}))];},
   transpilePackages: ["@aicss/react"],
   turbopack: { root: process.cwd() },
 };

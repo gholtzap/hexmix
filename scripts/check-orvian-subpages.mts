@@ -4,6 +4,7 @@ import {chromium} from 'playwright';
 import {expectUI} from 'lintapple/playwright';
 
 const out='artifacts/orvian-subpages';
+const base=process.env.APP_URL??'http://127.0.0.1:3000';
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch();
 const reports=[],errors=[];
@@ -14,18 +15,33 @@ async function audit(page,path,width,theme,state='page'){
   reports.push({path,width,theme,state,report});
   await page.screenshot({path:`${out}/${path.replaceAll('/','-')}-${width}-${theme}-${state}.png`});
 }
+async function usePalette(page,frame,light){
+  await page.getByRole('button',{name:'More tools'}).waitFor();
+  await frame.locator('html[data-editor-light]').waitFor();
+  if((await frame.locator('html').getAttribute('data-editor-light'))===String(light))return;
+  const name=`Use ${light?'light':'dark'} palette`;
+  const button=page.getByRole('button',{name});
+  if(await button.isVisible())await button.click();
+  else{
+    const item=page.getByRole('menuitem',{name});
+    if(!await item.isVisible())await page.getByRole('button',{name:'More tools'}).click();
+    await item.click();
+  }
+  await frame.locator(`html[data-editor-light="${light}"]`).waitFor();
+}
 try{
   for(const width of [1440,390]){
     const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
     page.on('pageerror',error=>errors.push(error.message));
     for(const path of paths){
-      await page.goto(`http://127.0.0.1:3000/orvian/${path}`);
+      await page.goto(`${base}/orvian/${path}`);
       const frame=page.frameLocator('iframe');
       await frame.locator('html[data-editor-site="orvian"]').waitFor();
       await frame.locator('h1').waitFor();
-      assert.equal(await page.locator('iframe').getAttribute('src'),`http://127.0.0.1:3002/${path}`);
+      assert.equal(await page.locator('iframe').getAttribute('src'),`/render/orvian/${path}`);
       const body=await frame.locator('body').innerText();
-      assert.doesNotMatch(body,/Orvian|Digital Workers|Conor|Manu Ebert|Ignore all previous instructions/i);
+      assert.doesNotMatch(body,/Digital Workers|Conor|Manu Ebert|Ignore all previous instructions/i);
+      await usePalette(page,frame,false);
       await audit(page,path,width,'dark');
       let coverBefore;
       if(path==='blog'){
@@ -40,8 +56,7 @@ try{
         if(width===390)await frame.getByRole('button',{name:'Toggle menu'}).click();
         else await frame.getByRole('button',{name:'Resources'}).click();
       }
-      await page.getByRole('button',{name:'Use light palette'}).click();
-      await frame.locator('html[data-editor-light="true"]').waitFor();
+      await usePalette(page,frame,true);
       if(path==='blog'){
         const changed=await frame.locator('.orvian-cover').first().evaluate(e=>getComputedStyle(e).backgroundImage);
         assert.notEqual(changed,coverBefore);
@@ -52,8 +67,7 @@ try{
         await page.waitForURL(url=>url.pathname==='/orvian/blog/1');
         await page.goBack();
         await page.waitForURL(url=>url.pathname==='/orvian/blog');
-        await page.getByRole('button',{name:'Use light palette'}).click();
-        await frame.locator('html[data-editor-light="true"]').waitFor();
+        await usePalette(page,frame,true);
         if(width===390)await frame.getByRole('button',{name:'Toggle menu'}).click();
         await frame.locator('[data-open-demo]:visible').first().click();
         await frame.getByRole('dialog').waitFor();

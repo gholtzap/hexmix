@@ -27,5 +27,3 @@ export const sitePreviews = {
 
 export const dashboardPaths={chatbot:'/dashboards/ai-chatbot',infra:'/dashboards/infra-dashboard'} as const;
 export function siteIdForSlug(slug:string){return (Object.keys(sitePreviews) as (keyof typeof sitePreviews)[]).find(id=>sitePreviews[id].slug===slug);}
-export const legacyPreviewRoutes: { source: string; destination: string }[] = [];
-export const legacyPageRoutes: { source: string; destination: string }[] = [];
