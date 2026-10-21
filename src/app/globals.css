@@ -860,6 +860,9 @@ html {
 .home-page { height: 100dvh; overflow-y: auto; background: var(--color-background); font-size: 14px; line-height: 1.5; }
 .home-shell { max-width: 1200px; padding: 0 32px 64px; margin: 0 auto; }
 .home-header { display: flex; align-items: center; gap: 10px; padding-top: 24px; }
+.home-github { margin-left: auto; width: 44px; height: 44px; color: var(--color-foreground); }
+.home-github-icon { width: 20px; height: 20px; background: currentColor; mask: url('/dashboard-previews/infrastructure/assets/github.svg') center / contain no-repeat; }
+.home-github > .control-tooltip { top: calc(100% + 8px); right: 0; bottom: auto; left: auto; transform: none; }
 .home-wordmark { font-size: 18px; font-weight: 650; letter-spacing: -0.04em; }
 .home-start { padding: 56px 0 44px; }
 .home-intro h1 { max-width: 850px; margin: 0; font-size: 48px; font-weight: 550; line-height: 1.1; letter-spacing: -0.04em; }

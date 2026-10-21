@@ -1,3 +1,9 @@
+## Mobile support
+
+- Mobile support is a requirement for every page and feature. It is not optional.
+- Keep content readable and controls usable on small screens. Prevent unintended horizontal scrolling and overlapping content.
+- Check each UI change at mobile and desktop sizes, including menus, dialogs, and error states. Fix mobile issues before the work is complete.
+
 ## UI component reuse
 
 Use [AICSS](https://www.aicss.dev/) and [Halaska UI](https://ui.halaska.com/components) components when they support the required behavior. Check these libraries and the existing repo components before writing a new control. Keep the page layout, color controls, and font controls when replacing a component. Record the source and license for copied library code.

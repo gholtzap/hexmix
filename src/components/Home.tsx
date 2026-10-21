@@ -47,7 +47,7 @@ export default function Home() {
 
   return <main className="home-page" data-app-ready={ready || undefined}>
     <div className="home-shell">
-      <header className="home-header"><Image src="/hexmix-logo.png" width={44} height={44} alt="" priority /><span className="home-wordmark">Hexmix</span></header>
+      <header className="home-header"><Image src="/hexmix-logo.png" width={44} height={44} alt="" priority /><span className="home-wordmark">Hexmix</span><a className="icon-button home-github" href="https://github.com/gholtzap/hexmix" target="_blank" rel="noopener noreferrer" aria-label="View Hexmix on GitHub" aria-describedby="home-github-tooltip"><span className="home-github-icon" aria-hidden="true" /><span className="control-tooltip" role="tooltip" id="home-github-tooltip">View Hexmix on GitHub</span></a></header>
       <section className="home-start" aria-labelledby="home-title">
         <div className="home-intro">
           <h1 id="home-title" style={{ fontFamily: fonts[heading] }}>See your colors on real pages.</h1>
