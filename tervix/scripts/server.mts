@@ -67,7 +67,7 @@ export async function handleRequest(req: IncomingMessage, res: ServerResponse) {
     res.setHeader('Content-Security-Policy', csp);
     res.setHeader('X-Content-Type-Options', 'nosniff');
     const send = (status: number, body: string | Uint8Array, type = 'text/plain; charset=utf-8') => {
-      if (type.startsWith('text/html')) body = String(body).replace('<html', '<html data-static-source-page="true"').replaceAll('http://127.0.0.1:3000', '').replaceAll('/_next/', '/render-assets/tervix/_next/').replaceAll('/mintlify-assets/render-assets/tervix/_next/', '/render-assets/tervix/mintlify-assets/_next/').replaceAll('/media-', '/render-assets/tervix/media-').replace(/\/(subpages|auth)\.(css|js)/g, '/render-assets/tervix/$1.$2');
+      if (type.startsWith('text/html')) body = String(body).replace('<html', '<html data-static-source-page="true"').replaceAll('http://127.0.0.1:3000', '').replaceAll('/_next/', '/render-assets/tervix/_next/').replaceAll('/mintlify-assets/render-assets/tervix/_next/', '/render-assets/tervix/mintlify-assets/_next/').replaceAll('/media-', '/render-assets/tervix/media-').replace(/\/(subpages|auth|demo)\.(css|js)/g, '/render-assets/tervix/$1.$2');
       res.writeHead(status, { 'Content-Type': type, 'Content-Length': Buffer.byteLength(body) });
       res.end(req.method === 'HEAD' ? undefined : body);
     };

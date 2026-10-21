@@ -1,4 +1,5 @@
 (() => {
+    const glyph = (name:string) => `<svg class="demo-icon" viewBox="0 0 20 20" aria-hidden="true"><use href="/dashboard-previews/workspace/assets/icons.svg#${name}-light-20"/></svg>`;
     const plans = [
         ['PjJi2uwE8C', 'Shared workspace setup', 'Bring a new team space into a clear plan. Review the details together before work begins.'],
         ['9VKXIVLodv', 'Review a stalled plan', 'Bring a blocked item into view, agree on the next step, and keep the team informed.'],
@@ -20,6 +21,18 @@
     const activeId = location.pathname.split('/').pop();
     let active = plans.find(([id]) => id === activeId) || plans[0];
     const $ = selector => document.querySelector<HTMLElement>(selector);
+    $('#interval span').innerHTML = glyph('chevron-down-md');
+    $('.search > span').innerHTML = glyph('magnifying-glass-lg');
+    $('.agent-icon').innerHTML = glyph('sparkles');
+    $('.flow-viewport').setAttribute('role', 'region');
+    const tooltip=(control:HTMLElement,label:string)=>{
+        const tip=document.createElement('span');tip.id='demo-tip-'+document.querySelectorAll('.demo-tip').length;tip.className='demo-tip';tip.role='tooltip';tip.textContent=label;tip.hidden=true;document.body.append(tip);control.setAttribute('aria-describedby',tip.id);
+        const show=()=>{tip.hidden=false;const rect=control.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(rect.left,innerWidth-tip.offsetWidth-8))+'px';tip.style.top=Math.max(8,rect.top-tip.offsetHeight-8)+'px';};
+        control.addEventListener('mouseenter',show);control.addEventListener('focus',show);for(const event of ['mouseleave','blur','click'])control.addEventListener(event,()=>{tip.hidden=true;});
+    };
+    for (const [id, symbol] of [['display-action','square-grid-2x2'],['close-agent','xmark-md']]) {
+        const control=$('#'+id);control.innerHTML=glyph(symbol);tooltip(control,control.getAttribute('aria-label'));
+    }
     const render = () => {
         const [, title, description] = active;
         document.title = `${title} | Tervix`;
@@ -30,7 +43,8 @@
         $('#workflow-tabs').innerHTML = plans.slice(0, 6).map(([id, label]) => `<button type="button" data-plan="${id}" aria-current="${id === active[0]}">${label}</button>`).join('');
     };
     render();
-    $('#demo-categories').innerHTML = categories.map((label, index) => `<button type="button" aria-expanded="false"><span aria-hidden="true">${['◇', '◈', '◌', '✧'][index % 4]}</span>${label}</button>`).join('');
+    $('#demo-categories').innerHTML = categories.map((label, index) => `<button type="button" aria-expanded="false" aria-label="${label}"><span aria-hidden="true">${glyph(['folder', 'document', 'square-grid-2x2', 'sparkles'][index % 4])}</span><span class="category-label">${label}</span></button>`).join('');
+    for(const control of $('#demo-categories').querySelectorAll<HTMLButtonElement>('button'))tooltip(control,control.getAttribute('aria-label'));
     $('#demo-categories').addEventListener('click', event => {
         const button = (event.target as Element).closest<HTMLElement>('button');
         if (!button)
@@ -47,7 +61,7 @@
         if (!id)
             return;
         active = plans.find(plan => plan[0] === id);
-        history.replaceState(null, '', `/b/${id}`);
+        if (window.parent === window) history.replaceState(null, '', `/b/${id}`);
         render();
     });
     const dialog = $('#demo-dialog');
@@ -55,13 +69,17 @@
     $('#dialog-close').addEventListener('click', () => (dialog as HTMLDialogElement).close());
     $('#test-action').addEventListener('click', () => show('Review this plan', 'This local preview shows how the steps fit together.'));
     $('#share-action').addEventListener('click', () => show('Share this plan', 'The plan is ready for your team to review.'));
-    $('#save-action').addEventListener('click', () => show('Plan saved', 'Your changes are saved in this local preview.'));
+    $('#save-action').addEventListener('click', () => {
+        active[2] = $('#demo-description').textContent || '';
+        show('Plan saved', 'Your changes are saved in this local preview.');
+    });
     $('#custom-action').addEventListener('click', () => show('Create a custom step', 'Add a new action that fits the way your team works.'));
     $('#display-action').addEventListener('click', () => document.body.classList.toggle('compact-view'));
+    $('#interval').removeAttribute('aria-label');
     $('#interval').addEventListener('click', event => {
         const values = ['Every day', 'Every week', 'Every month'];
         const current = values.findIndex(value => (event.currentTarget as Element).textContent.includes(value));
-        (event.currentTarget as Element).innerHTML = `${values[(current + 1) % values.length]} <span aria-hidden="true">⌄</span>`;
+        (event.currentTarget as Element).innerHTML = `${values[(current + 1) % values.length]} ${glyph('chevron-down-md')}`;
     });
     $('#close-agent').addEventListener('click', () => { $('.agent-card').hidden = true; $('#open-agent').hidden = false; });
     $('#open-agent').addEventListener('click', () => { $('.agent-card').hidden = false; $('#open-agent').hidden = true; });
