@@ -14,7 +14,7 @@
             const compact = image.getBoundingClientRect().width < 50;
             // Use the surface token so an image does not freeze a color transition mid-frame.
             const parentStyle = getComputedStyle(image.parentElement);
-            const color = parentStyle.getPropertyValue("--p-surface-text").trim() || mediaPalette?.text || (site === "nuvexa" ? "#1d1d1b" : parentStyle.color);
+            const color = mediaPalette?.[image.dataset.editorGradientRole] || parentStyle.getPropertyValue("--p-surface-text").trim() || mediaPalette?.text || (site === "nuvexa" ? "#1d1d1b" : parentStyle.color);
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${compact ? 32 : 140} 34"><text x="0" y="28" fill="${color}" font-family="Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="-1">${compact ? brand[0] : brand}</text></svg>`;
             const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
             image.dataset.editorWordmark = "true";
@@ -140,6 +140,9 @@
     contrastScript.type = "module";
     contrastScript.src = `${editorOrigin}/preview-contrast.js`;
     document.head.append(contrastScript);
+    const inspectorScript = document.createElement("script");
+    inspectorScript.src = `${editorOrigin}/element-inspector.js`;
+    document.head.append(inspectorScript);
     const { fonts } = await import(`${editorOrigin}/font-catalog.js`);
     const fontStyles = document.createElement("link");
     fontStyles.rel = "stylesheet";
@@ -360,8 +363,11 @@
     // Feral UI's Flow export embeds pixels. Draw the same soft-gradient idea as SVG so palette edits can recolor it.
     let nextMediaId = 0;
     let mediaQueued = false;
-    const gradient = (id) => {
-        const { background, primary, secondary, accent } = mediaPalette;
+    const gradient = (id, role?) => {
+        const selected = roles.includes(role) ? mediaPalette[role] : null;
+        const { background, primary, secondary, accent } = selected
+            ? { background: mediaPalette.background, primary: selected, secondary: mediaPalette.background, accent: selected }
+            : mediaPalette;
         const positions = [[18, 24, 77, 77], [78, 18, 24, 76], [43, 82, 82, 27], [72, 72, 18, 20]][id % 4];
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="none"><defs><linearGradient id="base" x2="1" y2="1"><stop stop-color="${secondary}"/><stop offset="1" stop-color="${background}"/></linearGradient><radialGradient id="a"><stop stop-color="${primary}" stop-opacity=".92"/><stop offset="1" stop-color="${primary}" stop-opacity="0"/></radialGradient><radialGradient id="b"><stop stop-color="${accent}" stop-opacity=".83"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient><radialGradient id="c"><stop stop-color="${secondary}" stop-opacity=".9"/><stop offset="1" stop-color="${secondary}" stop-opacity="0"/></radialGradient></defs><rect width="1200" height="800" fill="url(#base)"/><ellipse cx="${positions[0] * 12}" cy="${positions[1] * 8}" rx="700" ry="490" fill="url(#a)"/><ellipse cx="${positions[2] * 12}" cy="${positions[3] * 8}" rx="690" ry="530" fill="url(#b)"/><ellipse cx="630" cy="430" rx="660" ry="450" fill="url(#c)" opacity=".68"/></svg>`;
         return `data:image/svg+xml,${encodeURIComponent(svg)}`;
@@ -446,9 +452,20 @@
         for (const image of document.images) {
             if (image.dataset.editorWordmark)
                 continue;
+            const imageRole = image.dataset.editorGradientRole;
+            if (image.dataset.editorOriginalSrc && !imageRole) {
+                image.src = image.dataset.editorOriginalSrc;
+                image.style.removeProperty("mask");
+                image.style.removeProperty("background-color");
+                delete image.dataset.editorOriginalSrc;
+                delete image.dataset.editorIcon;
+                continue;
+            }
             if (image.dataset.editorIcon) {
                 if (image.dataset.editorIcon === "tile")
-                    image.style.backgroundImage = `url("${gradient(mediaId(image))}")`;
+                    image.style.backgroundImage = `url("${gradient(mediaId(image), imageRole)}")`;
+                else if (image.dataset.editorIcon === "mask")
+                    image.style.backgroundColor = `var(--p-${roles.includes(imageRole) ? imageRole : "primary"})`;
                 continue;
             }
             const box = image.getBoundingClientRect();
@@ -456,9 +473,9 @@
             const height = box.height || image.height || image.naturalHeight;
             if (!image.dataset.editorGradient && (width < 60 || height < 20)) {
                 const source = image.currentSrc || image.src;
-                if (!source || source.startsWith("data:"))
+                if (!source || (source.startsWith("data:") && !imageRole))
                     continue;
-                const svg = /\.svg(?:\?|$)/i.test(source);
+                const svg = /\.svg(?:\?|$)/i.test(source) || source.startsWith("data:");
                 const naturalWidth = image.naturalWidth || Math.max(1, Math.round(width));
                 const naturalHeight = image.naturalHeight || Math.max(1, Math.round(height));
                 const blank = `<svg xmlns="http://www.w3.org/2000/svg" width="${naturalWidth}" height="${naturalHeight}"/>`;
@@ -468,11 +485,12 @@
                     for (const option of image.parentElement.querySelectorAll<HTMLElement>("source"))
                         option.removeAttribute("srcset");
                 if (svg) {
+                    if (source.startsWith("data:")) image.dataset.editorOriginalSrc = source;
                     image.style.mask = `url("${source}") center / contain no-repeat`;
-                    image.style.backgroundColor = "var(--p-primary)";
+                    image.style.backgroundColor = `var(--p-${roles.includes(imageRole) ? imageRole : "primary"})`;
                 }
                 else {
-                    image.style.backgroundImage = `url("${gradient(mediaId(image))}")`;
+                    image.style.backgroundImage = `url("${gradient(mediaId(image), imageRole)}")`;
                     image.style.backgroundSize = "cover";
                 }
                 image.src = `data:image/svg+xml,${encodeURIComponent(blank)}`;
@@ -482,7 +500,7 @@
                 }
                 continue;
             }
-            const url = gradient(mediaId(image));
+            const url = gradient(mediaId(image), imageRole);
             if (image.parentElement?.tagName === "PICTURE") {
                 for (const source of image.parentElement.querySelectorAll<HTMLElement>("source"))
                     source.removeAttribute("srcset");
@@ -545,8 +563,9 @@
         requestAnimationFrame(() => {
             mediaQueued = false;
             updateMedia();
+            updateWordmarks();
         });
-    }).observe(document.body, { childList: true, subtree: true });
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["data-editor-gradient-role"] });
     window.addEventListener("message", (event) => {
         if (event.source !== window.parent || event.origin !== editorOrigin || event.data?.type !== "color-editor-theme")
             return;

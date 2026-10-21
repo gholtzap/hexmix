@@ -11,6 +11,7 @@ import {
   Copy,
   LockKeyhole,
   Moon,
+  MousePointer2,
   MoreHorizontal,
   RotateCcw,
   Share2,
@@ -67,8 +68,36 @@ import {
   type Role,
 } from "@/lib/palette";
 import { fonts, type FontName } from "@/lib/fonts";
+import { isElementSelection, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
 
 type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
+
+function elementPanelPosition(selection: ElementSelection, frame: HTMLIFrameElement): CSSProperties {
+  const frameBox = frame.getBoundingClientRect();
+  const scale = frameBox.width / frame.clientWidth;
+  const target = {
+    left: frameBox.left + selection.bounds.left * scale,
+    right: frameBox.left + selection.bounds.right * scale,
+    top: frameBox.top + selection.bounds.top * scale,
+    bottom: frameBox.top + selection.bounds.bottom * scale,
+  };
+  const width = 148, height = 94, gap = 10, edge = 8;
+  const right = target.right + gap;
+  const left = target.left - width - gap;
+  const x = right + width <= innerWidth - edge ? right : left >= edge ? left : Math.max(edge, Math.min(target.left, innerWidth - width - edge));
+  let y = target.top;
+  if (right + width > innerWidth - edge && left < edge) {
+    y = target.bottom + gap;
+    if (y + height > innerHeight - edge) y = target.top - height - gap;
+  }
+  return { left: Math.max(edge, Math.min(x, innerWidth - width - edge)), top: Math.max(edge, Math.min(y, innerHeight - height - edge)) };
+}
+
+function elementSwatchStyle(selection: ElementSelection, color: string, recolor = false): CSSProperties {
+  return selection.oldImage
+    ? { backgroundColor: color, backgroundImage: selection.oldImage, backgroundBlendMode: recolor ? "luminosity" : "normal", backgroundSize: "cover", backgroundPosition: "center" }
+    : { backgroundColor: color };
+}
 
 export default function Studio({ children, preview = "/preview/index.html", defaultPalette = defaultDarkPalette, waitForPreview = false, capture }: StudioProps) {
   useVisibleViewport();
@@ -83,6 +112,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [heading, setHeading] = useState<FontName>("System");
   const [body, setBody] = useState<FontName>("System");
   const [panel, setPanel] = useState<"fonts" | "saved" | null>(null);
+  const [inspecting, setInspecting] = useState(false);
+  const [selection, setSelection] = useState<ElementSelection | null>(null);
+  const [elementRoles, setElementRolesState] = useState<ElementRole[]>([]);
+  const [rolesReadyPath, setRolesReadyPath] = useState("");
   const [embedded, setEmbedded] = useState(false);
   const [comparisonToolbar, setComparisonToolbar] = useState(false);
   const comparisonState = useRef('');
@@ -92,6 +125,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [exportFormat, setExportFormat] = useState<PaletteExportFormat>("css");
   const { saved, remove, storageReady, save, rename } = useSavedPalettes(setNotice);
   const frame = useRef<HTMLIFrameElement>(null);
+  const newColorButton = useRef<HTMLButtonElement>(null);
   const [toolbarElement, setToolbarElement] = useState<HTMLDivElement | null>(null);
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [showCapture, setShowCapture] = useState(false);
@@ -115,10 +149,55 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       b = query.get("body");
     if (h && Object.hasOwn(fonts, h)) setHeading(h as FontName);
     if (b && Object.hasOwn(fonts, b)) setBody(b as FontName);
+    setElementRolesState(readElementRoles(window.location.search));
+    setRolesReadyPath(window.location.pathname);
   }, [capture?.id, defaultPalette]);
   useEffect(() => {
-    if (children && storageReady) window.history.replaceState(null, "", previewHref(window.location.pathname, palette, heading, body));
-  }, [children, storageReady, palette, heading, body]);
+    if (!storageReady || rolesReadyPath !== window.location.pathname) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("colors", new URLSearchParams(paletteQuery(palette)).get("colors")!);
+    url.searchParams.set("heading", heading);
+    url.searchParams.set("body", body);
+    setElementRoles(url.searchParams, elementRoles);
+    window.history.replaceState(null, "", url);
+  }, [storageReady, palette, heading, body, elementRoles, rolesReadyPath]);
+  function updateInspector() {
+    frame.current?.contentWindow?.postMessage({
+      type: "hexmix-inspector-state", page: window.location.pathname, inspecting, assignments: elementRoles,
+      selectedSelector: selection?.path === window.location.pathname ? selection.selector : null,
+    }, new URL(preview, window.location.origin).origin);
+  }
+  useEffect(updateInspector, [inspecting, elementRoles, preview, selection?.path, selection?.selector]);
+  useEffect(() => {
+    if (selection) newColorButton.current?.focus();
+  }, [selection?.path, selection?.selector]);
+  useEffect(() => {
+    if (!selection) return;
+    const close = () => setSelection(null);
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+    const onPointer = (event: PointerEvent) => {
+      if (!(event.target as Element).closest(".element-panel, .element-role-menu")) close();
+    };
+    const frameDocument = frame.current?.contentDocument;
+    const updatePosition = () => {
+      const target = frameDocument?.querySelector(selection.selector);
+      if (!target) return;
+      const box = target.getBoundingClientRect();
+      setSelection(current => current?.selector === selection.selector ? { ...current, bounds: { left: box.left, right: box.right, top: box.top, bottom: box.bottom } } : current);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("resize", updatePosition);
+    frameDocument?.addEventListener("pointerdown", close, true);
+    frameDocument?.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("resize", updatePosition);
+      frameDocument?.removeEventListener("pointerdown", close, true);
+      frameDocument?.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [selection]);
   function updateFrame() {
     const target = frame.current?.contentWindow;
     if (!target) return;
@@ -157,6 +236,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       link.dataset.previewFonts = "true";
       root.ownerDocument.head.append(link);
     }
+    if (!root.ownerDocument.querySelector('script[data-element-inspector]')) {
+      const script = root.ownerDocument.createElement("script");
+      script.src = "/element-inspector.js";
+      script.dataset.elementInspector = "true";
+      root.ownerDocument.head.append(script);
+    }
     root.dataset.editorHeading = String(heading !== "System");
     root.dataset.editorBody = String(body !== "System");
     const style = root.style;
@@ -187,6 +272,13 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       }
       if (event.source !== frame.current?.contentWindow || event.origin !== new URL(preview, window.location.origin).origin) return;
       if (event.data?.type === "color-editor-ready") updateFrame();
+      if (event.data?.type === "hexmix-inspector-ready") updateInspector();
+      if (event.data?.type === "hexmix-inspect-exit") { setInspecting(false); setSelection(null); }
+      if (event.data?.type === "hexmix-element-selected" && isElementSelection(event.data.selection)) {
+        setSelection(event.data.selection);
+        setPanel(null);
+        setActiveColor(null);
+      }
       if (event.data?.type === "color-editor-painted" && event.data.url === new URL(preview, window.location.origin).href && event.data.palette === roles.map(role => palette[role]).join("|")) setReadyPreview(preview);
       if (event.data?.type === "preview-toggle-theme") {
         if (embedded) window.parent.postMessage({ type: "hexmix-comparison-toggle-theme" }, window.location.origin);
@@ -195,6 +287,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       if (event.data?.type === "preview-navigate" && capture && typeof event.data.path === "string" && /^\/(?!\/)[a-zA-Z0-9%/_-]*$/.test(event.data.path)) {
         const query = new URLSearchParams(paletteQuery(palette));
         query.set("heading", heading); query.set("body", body);
+        setElementRoles(query, elementRoles);
         const site=previewCatalog.find(preview=>preview.id===capture.id);
         if (embedded) query.set('embed', comparisonToolbar ? 'toolbar' : '1');
         if(site)router.push(`${site.path}${event.data.path === "/" ? "" : event.data.path.replaceAll(capture.id,site.path.slice(1))}?${query}`, { scroll: false });
@@ -202,7 +295,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     };
     window.addEventListener("message", onReady);
     return () => window.removeEventListener("message", onReady);
-  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router, embedded, comparisonToolbar]);
+  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router, embedded, comparisonToolbar, inspecting, elementRoles, selection?.path, selection?.selector]);
   useEffect(() => {
     if (embedded) window.parent.postMessage({ type: "hexmix-comparison-ready" }, window.location.origin);
   }, [embedded]);
@@ -304,6 +397,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     url.search = paletteQuery(palette);
     url.searchParams.set("heading", heading);
     url.searchParams.set("body", body);
+    setElementRoles(url.searchParams, elementRoles);
     void copy(url.toString(), "Palette link copied.");
   }
   function download() {
@@ -324,6 +418,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     if (window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) toolsTrigger.current?.focus();
   }
   function closeFonts() { setPanel(null); focusMobileTools(); }
+  function toggleInspector() { setInspecting(!inspecting); setSelection(null); setPanel(null); setActiveColor(null); }
   useEffect(() => { if (panel === "fonts") document.getElementById("heading-font")?.focus(); }, [panel]);
   function togglePanel(next: "fonts" | "saved") {
     setActiveColor(null);
@@ -338,11 +433,25 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   }
   const dark = isDarkPalette(palette);
   const capturePreview = previewCatalog.find(item=>item.id===capture?.id);
+  const selectedRole = selection && elementRoles.find(item => item.path === selection.path && item.selector === selection.selector && item.property === selection.property)?.role;
+  function assignElement(role: Role) {
+    if (!selection) return;
+    const remaining = elementRoles.filter(item => !(item.path === selection.path && item.selector === selection.selector && item.property === selection.property));
+    if (remaining.length >= maxElementRoles) { setNotice("Remove an element choice before you add another."); return; }
+    const next = [...remaining, { path: selection.path, selector: selection.selector, property: selection.property, role }];
+    if (JSON.stringify(next).length > maxElementRolesLength) { setNotice("Remove an element choice before you add another."); return; }
+    setElementRolesState(next);
+  }
+  function restoreElement() {
+    if (!selection) return;
+    setElementRolesState(current => current.filter(item => !(item.path === selection.path && item.selector === selection.selector && item.property === selection.property)));
+    setSelection(null);
+  }
   return (
     <main className={collapsed || embedded ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} data-comparison-toolbar={comparisonToolbar || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
       {children ? children({ palette, heading, body }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
-        <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
-        <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body)}>{label}</a>)}</nav></div>
+        <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body,elementRoles)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
+        <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body,elementRoles)}>{label}</a>)}</nav></div>
       </div> : <iframe
         key={preview}
         ref={attachFrame}
@@ -354,6 +463,21 @@ export default function Studio({ children, preview = "/preview/index.html", defa
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
         onLoad={updateFrame}
       />}
+      {selection && frame.current && (
+        <div className="element-panel" role="dialog" aria-label={`Colors for ${selection.label}`} style={elementPanelPosition(selection, frame.current)}>
+          <button type="button" className="element-swatch-field" aria-label="Use old color" disabled={!selectedRole} onClick={restoreElement}>
+            <span>Old</span>
+            <span className="element-swatch"><span className="element-swatch-fill" style={elementSwatchStyle(selection, selection.oldColor)} /></span>
+          </button>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild><button ref={newColorButton} type="button" className="element-swatch-field" aria-label="Change new color"><span>New</span><span className="element-swatch"><span className="element-swatch-fill" style={elementSwatchStyle(selection, selectedRole ? palette[selectedRole] : selection.oldColor, Boolean(selectedRole))} /></span></button></DropdownMenuTrigger>
+            <DropdownMenuContent className="palette-menu element-role-menu" side="right" sideOffset={8} align="start" aria-label="Choose new color">
+              <DropdownMenuItem onSelect={restoreElement}><span className="element-role-chip element-role-chip-original"><span style={elementSwatchStyle(selection, selection.oldColor)} /></span>Original</DropdownMenuItem>
+              {roles.map(role => <DropdownMenuItem key={role} onSelect={() => assignElement(role)}><span className="element-role-chip" style={{ backgroundColor: palette[role] }} />{role[0].toUpperCase() + role.slice(1)}</DropdownMenuItem>)}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
       {(!embedded || comparisonToolbar) && (collapsed ? (
         <IconButton
           className="toolbar-reopen icon-button"
@@ -403,7 +527,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
             role="region"
             aria-label="Color toolbar"
           >
-            <SiteSwitcher palette={palette} heading={heading} body={body} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);}}/>
+            <SiteSwitcher palette={palette} heading={heading} body={body} elementRoles={elementRoles} onOpen={()=>{setPanel(null);setActiveColor(null);setPreviewPalette(null);setSelection(null);setInspecting(false);}}/>
             <div className="toolbar-colors">
               {roles.map((role) => (
                 <div className="toolbar-color" key={role}>
@@ -543,6 +667,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               >
                 <Type size={17} />
               </IconButton>
+              <IconButton className="icon-button" aria-label={inspecting ? "Stop selecting elements" : "Select an element"} title="Alt+click an element to change its color" aria-pressed={inspecting} disabled={showCapture || Boolean(children)} onClick={toggleInspector}><MousePointer2 size={17} /></IconButton>
               <PalettePanel
                 key={comparisonToolbar ? 'comparison' : 'single'}
                 initialTab={comparisonToolbar ? "saved" : "presets"}
@@ -597,6 +722,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuItem onSelect={randomize}>Shuffle palette</DropdownMenuItem>
                     <DropdownMenuItem onSelect={toggleTheme}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
+                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
@@ -611,8 +737,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger>Previews</DropdownMenuSubTrigger>
                       <DropdownMenuSubContent className="palette-menu mobile-preview-menu" aria-label="Previews">
-                        {previewCatalog.map(site => <DropdownMenuItem asChild key={site.id}><Link prefetch={false} href={previewHref(site.path, palette, heading, body)}>{site.name}</Link></DropdownMenuItem>)}
-                        <DropdownMenuItem asChild><Link prefetch={false} href={previewHref("/", palette, heading, body)}>All sites</Link></DropdownMenuItem>
+                        {previewCatalog.map(site => <DropdownMenuItem asChild key={site.id}><Link prefetch={false} href={previewHref(site.path, palette, heading, body, elementRoles)}>{site.name}</Link></DropdownMenuItem>)}
+                        <DropdownMenuItem asChild><Link prefetch={false} href={previewHref("/", palette, heading, body, elementRoles)}>All sites</Link></DropdownMenuItem>
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
                   </DropdownMenuGroup>

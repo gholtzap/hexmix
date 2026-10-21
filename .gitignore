@@ -30,6 +30,7 @@ test-results/
 /public/preview-navigation.js
 /public/palette-contrast.js
 /public/color-bridge.js
+/public/element-inspector.js
 /public/preview-contrast.js
 /public/font-catalog.js
 /orvian/public/faq.js

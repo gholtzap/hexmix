@@ -2,6 +2,7 @@
   "public/preview-navigation.js": "browser/public/preview-navigation.ts",
   "public/palette-contrast.js": "browser/public/palette-contrast.ts",
   "public/color-bridge.js": "browser/public/color-bridge.ts",
+  "public/element-inspector.js": "browser/public/element-inspector.ts",
   "public/preview-contrast.js": "browser/public/preview-contrast.ts",
   "public/font-catalog.js": "browser/public/font-catalog.ts",
   "orvian/public/faq.js": "browser/orvian/public/faq.ts",

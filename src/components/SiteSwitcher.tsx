@@ -10,14 +10,15 @@ import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,Dr
 import {previewCatalog,previewHref} from '@/lib/preview-catalog';
 import type {Palette} from '@/lib/palette';
 import type {FontName} from '@/lib/fonts';
+import type {ElementRole} from '@/lib/element-roles';
 type SitePreview=(typeof previewCatalog)[number];
-export default function SiteSwitcher({palette,heading,body,onOpen}:{palette:Palette;heading:FontName;body:FontName;onOpen:()=>void}){
+export default function SiteSwitcher({palette,heading,body,elementRoles=[],onOpen}:{palette:Palette;heading:FontName;body:FontName;elementRoles?:ElementRole[];onOpen:()=>void}){
  const path=usePathname() ?? "";
  const menu=useRef<HTMLDivElement>(null);
  const [open,setOpen]=useState(false);
  useEffect(()=>{if(!open)return;const studio=document.querySelector<HTMLElement>('main.studio');if(!studio)return;const previous=studio.inert;studio.inert=true;return()=>{studio.inert=previous;};},[open]);
  const current=previewCatalog.find(site=>path===site.path||path.startsWith(site.path+'/'));
- const href=(path:string)=>previewHref(path,palette,heading,body);
+ const href=(path:string)=>previewHref(path,palette,heading,body,elementRoles);
  const option=(site?:SitePreview)=><DropdownMenuItem key={site?.path??'/'} asChild><PreviewCard.Trigger payload={site} delay={120} closeDelay={80} render={<Link prefetch={false} href={href(site?.path??'/')} aria-current={site===current&&site?'page':undefined}/>}><span>{site?.name??'All sites'}</span>{site&&site===current&&<Check size={16} aria-hidden="true"/>}</PreviewCard.Trigger></DropdownMenuItem>;
  return <DropdownMenu open={open} onOpenChange={value=>{setOpen(value);if(value)onOpen();}}><DropdownMenuTrigger asChild><Button variant="ghost" className="site-switcher-trigger" aria-label={`Switch site: ${current?.name??'Preview'}`}><span>{current?.name??'Preview'}</span><ChevronDown size={16}/></Button></DropdownMenuTrigger><DropdownMenuContent ref={menu} className="site-switcher-menu" align="start" side="top" sideOffset={12} collisionPadding={12}>
   <PreviewCard.Root<SitePreview>>{({payload})=><>
