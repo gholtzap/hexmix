@@ -111,6 +111,8 @@ export function comparisonInteractions() {
         const target = matching() as HTMLElement | null;
         if (!target?.isConnected) return;
         replaying = true;
+        // Native handlers use this marker for actions that affect the shared host.
+        other.documentElement.setAttribute('data-comparison-replay', '');
         try {
           if (event.type === 'click') {
             if (element.matches('input[type="checkbox"]') && (target as HTMLInputElement).checked === checked) (target as HTMLInputElement).checked = !checked;
@@ -142,7 +144,7 @@ export function comparisonInteractions() {
             const pointer = event as PointerEvent;
             target.dispatchEvent(new view.PointerEvent(event.type, { bubbles: true, cancelable: true, button: pointer.button, pointerType: pointer.pointerType, pointerId: pointer.pointerId, isPrimary: pointer.isPrimary }));
           } else target.dispatchEvent(new view.MouseEvent(event.type, { bubbles: true, cancelable: true, button: mouse.button }));
-        } finally { replaying = false; }
+        } finally { other.documentElement.removeAttribute('data-comparison-replay'); replaying = false; }
       }, 0);
     };
     const escape = (event: KeyboardEvent) => {

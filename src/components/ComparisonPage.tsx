@@ -12,6 +12,7 @@ import { isDarkPalette, isPalette, samePalette, paletteForMode, type Palette } f
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
 import { useComparisonScroll } from "@/hooks/useComparisonScroll";
 import { useVisibleViewport } from "@/hooks/useVisibleViewport";
+import {isElementRole,maxElementRoles,maxElementRolesLength} from '@/lib/element-roles';
 import { fonts } from '@/lib/fonts';
 import ComparisonPreview from './ComparisonPreview';
 import { Button } from './ui/button';
@@ -90,7 +91,7 @@ export default function ComparisonPage() {
       if (data?.type === 'hexmix-comparison-change' && isPalette(data.palette) && typeof data.heading === 'string' && Object.hasOwn(fonts, data.heading) && typeof data.body === 'string' && Object.hasOwn(fonts, data.body)) {
         setValue(current => {
           const display = current[side === 'a' ? 'customA' : 'customB'] ? current[side] : paletteForMode(current[side], current.mode);
-          return { ...current, ...(!samePalette(display, data.palette) ? { [side]: data.palette, [side === 'a' ? 'customA' : 'customB']: true } : {}), heading: data.heading, body: data.body };
+          return { ...current, ...(!samePalette(display, data.palette) ? { [side]: data.palette, [side === 'a' ? 'customA' : 'customB']: true } : {}), heading: data.heading, body: data.body, ...(Array.isArray(data.elements) && data.elements.length <= maxElementRoles && data.elements.every(isElementRole) && JSON.stringify(data.elements).length <= maxElementRolesLength ? { elements: data.elements } : {}) };
         });
       }
     };
@@ -101,7 +102,7 @@ export default function ComparisonPage() {
   useEffect(() => { setSharedLink(''); }, [value, active, optionsSide, panels]);
   const preview = previewCatalog.find(item => item.id === value.preview)!;
   const rendered = { a: value.customA ? value.a : paletteForMode(value.a, value.mode), b: value.customB ? value.b : paletteForMode(value.b, value.mode) };
-  const href = (palette: Palette) => previewHref(preview.path, palette, value.heading, value.body);
+  const href = (palette: Palette) => previewHref(preview.path, palette, value.heading, value.body, value.elements);
   const frames = useComparisonScroll(value.preview, ready ? preview.path : '', ready ? preview.path : '', !value.unlinked);
   async function share() {
     try {
@@ -129,11 +130,11 @@ export default function ComparisonPage() {
               <Link href={href(rendered[side])}>Use palette {side.toUpperCase()}</Link>
               <div className="comparison-share"><label htmlFor={`comparison-link-${side}`}>Comparison link</label><Input ref={input} id={`comparison-link-${side}`} value={sharedLink || link} readOnly onFocus={event => event.target.select()} /><Button variant="outline" disabled={!ready} onClick={share}>Copy comparison link</Button></div>
               {notice && <p role="status">{notice}</p>}
-              <Link href={previewHref('/', rendered.a, value.heading, value.body)}>All previews</Link>
+              <Link href={previewHref('/', rendered.a, value.heading, value.body, value.elements)}>All previews</Link>
             </PopoverContent>
           </Popover>
         </header>
-        {ready && <ComparisonPreview key={`${preview.id}-${side}`} path={preview.path} palette={rendered[side]} heading={value.heading} body={value.body} side={side} onFrame={node => { frames.current[side] = node; }} />}
+        {ready && <ComparisonPreview key={`${preview.id}-${side}`} path={preview.path} palette={rendered[side]} heading={value.heading} body={value.body} side={side} elements={value.elements} onFrame={node => { frames.current[side] = node; }} />}
       </section>)}
     </div>
   </main>;
