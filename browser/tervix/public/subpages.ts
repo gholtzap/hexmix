@@ -63,6 +63,7 @@
             link.removeAttribute('target');
         }
         if (path === '/contact') {
+            document.documentElement.dataset.tervixContact = 'true';
             document.title = 'Start a conversation | Tervix';
             const heading = document.querySelector<HTMLElement>('h1');
             if (heading)
