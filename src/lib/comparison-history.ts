@@ -14,6 +14,7 @@ export function comparisonHistory(preview: string, paths: Record<Side, string>, 
   const initial: Position = { preview, ...paths };
   if (!read()) window.history.replaceState({ ...window.history.state, [field]: initial }, '', window.location.href);
   const restoredSides = new Set<Side>();
+  let loading = true;
   registerSharedView('comparison.navigation', {
     read: () => {
       const position = { ...(read() ?? initial) };
@@ -24,11 +25,14 @@ export function comparisonHistory(preview: string, paths: Record<Side, string>, 
       return position;
     },
     restore: value => {
+      // Back and Forward use their history entry, not the initial shared routes.
+      if (!loading) return;
       window.history.replaceState({ ...window.history.state, [field]: value }, '', window.location.href);
       sides.forEach(side => restoredSides.add(side));
     },
     validate: value => !!value && typeof value === 'object' && 'preview' in value && value.preview === preview && 'a' in value && valid('a', value.a) && 'b' in value && valid('b', value.b),
   });
+  loading = false;
   const visit = (child: Window, path: string) => {
     const url = new URL(child.location.href); url.pathname = path;
     child.location.replace(url.href);
