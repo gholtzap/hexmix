@@ -2,6 +2,18 @@
     const localPath = (pathname: string) => pathname.replace(/^\/(?:render\/)?tervix(?=\/|$)/, '') || '/';
     const path = localPath(location.pathname);
     const ready = () => {
+        let closeDocDialog = () => {};
+        const showDocDialog = (panel: HTMLDialogElement) => {
+            closeDocDialog();
+            const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            const background = [...document.body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && node !== panel).map(node => [node, node.inert] as const);
+            let restored = false;
+            const restore = () => { if (restored) return; restored = true; background.forEach(([node, inert]) => { node.inert = inert; }); previous?.focus(); };
+            closeDocDialog = () => { if (panel.open) panel.close(); restore(); };
+            panel.addEventListener('close', restore, { once: true });
+            background.forEach(([node]) => { node.inert = true; });
+            panel.showModal();
+        };
         const dialog = document.createElement('dialog');
         dialog.className = 'tervix-dialog';
         dialog.innerHTML = '<h2>Take the next step</h2><p>Leave a note for your team.</p><form method="dialog" data-local-demo><label for="tervix-email">Email</label><input id="tervix-email" name="email" type="email" autocomplete="email" required><label for="tervix-note">Note</label><textarea id="tervix-note" name="note" placeholder="What would you like to explore?"></textarea><div role="status" aria-live="polite"></div><div class="actions"><button type="button" value="cancel">Close</button><button class="primary" value="submit">Continue</button></div></form>';
@@ -132,24 +144,41 @@
                 }));
                 status.textContent = matches.length ? '' : 'No pages found';
             };
-            let background: [HTMLElement, boolean][] = [];
             const openSearch = () => {
                 input.value = ''; renderResults();
-                if (!search.open) {
-                    background = [...document.body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && node !== search).map(node => [node, node.inert]);
-                    background.forEach(([node]) => { node.inert = true; });
-                    search.showModal();
-                }
+                if (!search.open) showDocDialog(search);
                 input.focus();
             };
-            search.addEventListener('close', () => { background.forEach(([node, inert]) => { node.inert = inert; }); background = []; });
-            search.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); search.close(); } });
+            search.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeDocDialog(); } });
             renderResults();
             searchTriggers.forEach(button => button.addEventListener('click', openSearch));
-            search.querySelector('button').addEventListener('click', () => search.close());
+            search.querySelector('button').addEventListener('click', () => closeDocDialog());
             input.addEventListener('input', renderResults);
             input.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); results.querySelector<HTMLAnchorElement>('a')?.click(); } });
             document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); openSearch(); } });
+        }
+        const sidebar = document.getElementById('sidebar');
+        const navigationTrigger = [...document.querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent.trim().startsWith('Navigation'));
+        if (sidebar && navigationTrigger) {
+            const marker = document.createComment('Documentation navigation position');
+            sidebar.before(marker);
+            const navigation = document.createElement('dialog');
+            navigation.className = 'tervix-dialog tervix-doc-navigation';
+            navigation.setAttribute('aria-labelledby', 'doc-navigation-title');
+            navigation.innerHTML = '<div class="tervix-doc-head"><h2 id="doc-navigation-title">Documentation</h2><button type="button" class="tervix-doc-close" aria-label="Close navigation" aria-describedby="doc-navigation-close-tip"><svg viewBox="0 0 20 20" aria-hidden="true"><use href="/dashboard-previews/workspace/assets/icons.svg#xmark-md-light-20"/></svg><span id="doc-navigation-close-tip" role="tooltip">Close navigation</span></button></div>';
+            document.body.append(navigation);
+            navigationTrigger.setAttribute('aria-controls', 'sidebar');
+            navigationTrigger.setAttribute('aria-expanded', 'false');
+            navigationTrigger.addEventListener('click', () => {
+                if (navigation.open) return;
+                navigation.append(sidebar); showDocDialog(navigation);
+                navigationTrigger.setAttribute('aria-expanded', 'true');
+                sidebar.querySelector<HTMLElement>('a[href]')?.focus();
+            });
+            navigation.querySelector('button').addEventListener('click', () => closeDocDialog());
+            navigation.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeDocDialog(); } });
+            navigation.addEventListener('close', () => { marker.parentNode?.insertBefore(sidebar, marker.nextSibling); navigationTrigger.setAttribute('aria-expanded', 'false'); });
+            matchMedia('(min-width: 1024px)').addEventListener('change', event => { if (event.matches && navigation.open) closeDocDialog(); });
         }
         document.addEventListener('click', event => {
             const target = (event.target as Element).closest<HTMLElement>('button, a');

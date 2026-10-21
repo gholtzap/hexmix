@@ -106,3 +106,6 @@ html[data-static-source-page] .tervix-doc-search[open] { display: flex; flex-dir
 html[data-static-source-page] .tervix-doc-search > :not(.tervix-doc-results) { flex: none; }
 html[data-static-source-page] .tervix-doc-search .tervix-doc-results { flex: 1; min-height: 0; overflow: auto; align-content: start; }
 html[data-static-source-page] .tervix-doc-search .tervix-doc-results:empty { flex: none; }
+html[data-static-source-page] .tervix-doc-navigation #sidebar { display: block !important; position: static !important; width: 100% !important; height: auto !important; }
+html[data-static-source-page] .tervix-doc-navigation #sidebar-content { position: static !important; }
+html[data-static-source-page] .tervix-doc-navigation { margin: auto; inset: 0; }
