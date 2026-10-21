@@ -4,7 +4,6 @@ import {useState, type FormEvent} from 'react';
 import { useLinkState } from "@/hooks/useLinkState";
 import { nullable, stringRecord, redactFields } from "@/lib/link-state";
 import {Action, Menu, Modal} from '../primitives';
-import {projects} from '../data';
 import {PageHeading, Search, Filter, Empty, Status, DataTable} from './shared';
 import type {PageId, PageAction} from './registry';
 import './resources.css';
@@ -14,7 +13,7 @@ type RecordData={id:string;name:string;project:string;status:string;[key:string]
 type Field={key:string;label:string;options?:string[]};
 type Config={title:string;create:string;columns:Field[];fields:Field[];rows:RecordData[];filter?:Field};
 const field=(key:string,label:string,options?:string[]):Field=>({key,label,options});
-const project=field('project','Project',projects.map(item=>item.name));
+const project=field('project','Project');
 const environment=field('environment','Environment',['Production','Preview','Development']);
 const region=field('region','Region',['iad1','sfo1','fra1']);
 const provider=field('provider','Provider',['Cedar','Harbor','Blob','Meadow']);
@@ -31,12 +30,12 @@ const configs:Record<ResourceId,Config>={
  images:{title:'Images',create:'Add Image',columns:[field('dimensions','Dimensions'),field('format','Format'),field('size','Size'),field('requests','Requests'),field('cache','Cache')],fields:[field('name','Image path'),project],filter:field('format','Format',['WebP','JPEG','AVIF']),rows:[row('/hero.webp',{dimensions:'1920 × 1080',format:'WebP',size:'148 KB',original:'312 KB',requests:'12,481',cache:'98.2%'}),row('/product-01.jpg',{dimensions:'1200 × 1200',format:'JPEG',size:'284 KB',original:'284 KB',requests:'8,214',cache:'96.5%',project:'atlas-commerce'}),row('/team.webp',{dimensions:'1600 × 900',format:'WebP',size:'96 KB',original:'224 KB',requests:'3,128',cache:'99.1%'})]},
  daemons:{title:'Daemons',create:'Create Daemon',columns:[field('status','Status'),region,field('cpu','CPU'),field('memory','Memory'),field('uptime','Uptime')],fields:[field('name','Name'),project,region],rows:[row('preview-worker',{status:'Running',region:'iad1',cpu:'12%',memory:'184 MB',uptime:'2 days'}),row('queue-worker',{status:'Paused',region:'sfo1',cpu:'0%',memory:'64 MB',uptime:'6 hours',project:'atlas-commerce'}),row('scheduled-sync',{status:'Healthy',region:'iad1',cpu:'4%',memory:'92 MB',uptime:'5 days'})]},
 };
-export function ResourcePage({page,onAction}:{page:PageId;onAction:PageAction}){
+export function ResourcePage({page,onAction,projectNames}:{page:PageId;onAction:PageAction;projectNames:string[]}){
  if(!(page in configs))return null;
- return <ResourceView key={page} page={page as ResourceId} onAction={onAction}/>;
+ return <ResourceView key={page} page={page as ResourceId} projectNames={projectNames} onAction={onAction}/>;
 }
-function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
- const config=configs[page];
+function ResourceView({page,onAction,projectNames}:{page:ResourceId;onAction:PageAction;projectNames:string[]}){
+ const config={...configs[page],fields:configs[page].fields.map(item=>item.key==='project'?{...item,options:projectNames}:item)};
  const [records,setRecords]=useLinkState("ResourcePages.ResourceView.records", config.rows, { private: true, redact: page === "environment-variables" ? value => redactFields(value, ["value"]) : undefined });
  const [query,setQuery]=useLinkState("ResourcePages.ResourceView.query", '');const [filter,setFilter]=useLinkState("ResourcePages.ResourceView.filter", 'All');
  const [editor,setEditor]=useLinkState<{id?:string;title:string}|null>("ResourcePages.ResourceView.editor", null, { validate: nullable(value => stringRecord(value) && typeof value.title === "string") });

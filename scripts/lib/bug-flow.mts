@@ -13,7 +13,7 @@ export async function checkBug(id:string,path:string,test){
   const scans=[];
   try{
    await page.goto(`${base}${path}${path.includes('?')?'&':'?'}${paletteQuery(palette)}`);await page.locator('[data-app-ready]').waitFor();
-   const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true]').first().waitFor();
+   const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true],html[data-contrast-ready=true]').first().waitFor();
    const audit=async(state,child=frame)=>{await page.mouse.move(0,0);await page.waitForTimeout(150);for(const [surface,target] of [['editor',page],['preview',child]] as const){if(!target)continue;const report=await checkPage(target,policy);scans.push({state,surface,report});}await page.screenshot({path:`${out}/${width}-${theme}-${state}.png`});};
    await test({page,frame,context,width,theme,audit});assert.deepEqual(errors,[]);reports.push({width,theme,actions:'passed',scans});
   }catch(error){failures.push({width,theme,error:String(error),errors});reports.push({width,theme,actions:'failed',scans});await page.screenshot({path:`${out}/${width}-${theme}-failure.png`});}
@@ -23,6 +23,6 @@ export async function checkBug(id:string,path:string,test){
  assert.deepEqual(failures,[]);assert.deepEqual(findings,[]);
 }
 export async function openInfraPage(frame,name){
- const control=frame.getByRole('button',{name,exact:true});if(!await control.isVisible())await frame.getByRole('button',{name:'Open sidebar',exact:true}).filter({visible:true}).first().click();await control.click();
+ const control=frame.getByRole('navigation',{name:'Team',exact:true}).getByRole('button',{name,exact:false});if(!await control.isVisible())await frame.getByRole('button',{name:'Open sidebar',exact:true}).filter({visible:true}).first().click();await control.click();
 }
 export async function openChatSidebar(frame){const control=frame.getByRole('button',{name:'Open sidebar',exact:true});if(await control.isVisible())await control.click();}
