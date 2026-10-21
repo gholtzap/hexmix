@@ -8,13 +8,17 @@ export function validShareHref(href: unknown): href is string {
   return url.origin === 'https://hexmix.invalid' && /^\/(?:$|editor$|compare$|dashboards(?:\/|$)|(?:avenlo|tervix|orvian|nuvexa)(?:\/|$))/.test(url.pathname);
 }
 
-export async function createSharedLink(url: URL, extra?: (state: ViewState) => void): Promise<string> {
-  const host = stateWindow(); delete host.hexmixSharedPalettes;
+export function captureSharedViews(): void {
   const capture = (host: Window) => {
     host.dispatchEvent(new Event('hexmix:capture'));
     for (let i = 0; i < host.frames.length; i++) { try { if (host.frames[i].location.origin === window.location.origin) capture(host.frames[i]); } catch { /* An external frame cannot expose its data. */ } }
   };
-  capture(host);
+  capture(stateWindow());
+}
+
+export async function createSharedLink(url: URL, extra?: (state: ViewState) => void): Promise<string> {
+  const host = stateWindow(); delete host.hexmixSharedPalettes;
+  captureSharedViews();
   const state = sharedState(); extra?.(state);
   if (host.hexmixSharedPalettes) state.views.shared = { palettes: host.hexmixSharedPalettes };
   const fromSnapshot = url.searchParams.has('snapshot');
