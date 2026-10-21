@@ -22,6 +22,7 @@ export function startViewCapture() {
   if (document.documentElement.dataset.sharedView === 'true') return () => {};
   document.documentElement.dataset.sharedView = 'true';
   const restored = new Set<string>();
+  let restoredScroll = new WeakSet<Element>();
   let pendingFields: unknown, pendingView: unknown, pendingContent: unknown;
   const scrollers = new Set<Element>();
   const authored = (node: Element) => !node.closest(controlled) && (node.id && !/^(?:_r_|radix-|base-ui-)/.test(node.id) || node.matches('.agent-card,[data-cookie-banner]'));
@@ -61,10 +62,11 @@ export function startViewCapture() {
     for (const [key, hidden] of Object.entries(value.hidden)) { if (restored.has(`hidden:${key}`)) continue; try { const node = document.querySelector(key); if (node instanceof HTMLElement && hiddenNodes.has(node) && node !== document.body && node !== document.documentElement) { restored.add(`hidden:${key}`); node.hidden = hidden; if (node.hasAttribute('data-cookie-banner')) node.inert = hidden; } } catch { /* Invalid selectors are ignored. */ } }
     for (const [key, position] of Object.entries(value.scroll)) {
       const node = key === 'document' ? document.scrollingElement : (() => { try { return document.querySelector(key); } catch { return null; } })();
-      if (!node || restored.has(`scroll:${key}`) || node.scrollHeight <= node.clientHeight) continue;
+      if (!node || restoredScroll.has(node)) continue;
+      if ((position.top > 0 && node.scrollHeight <= node.clientHeight) || (position.left > 0 && node.scrollWidth <= node.clientWidth)) continue;
       node.scrollTop = position.top * Math.max(0, node.scrollHeight - node.clientHeight);
       node.scrollLeft = position.left * Math.max(0, node.scrollWidth - node.clientWidth);
-      restored.add(`scroll:${key}`);
+      restoredScroll.add(node);
     }
   };
   registerSharedView('document.fields', {
@@ -105,7 +107,7 @@ export function startViewCapture() {
   const scroll = (event: Event) => { if (event.target instanceof Element) scrollers.add(event.target); if (!restoring && !timer) timer = setTimeout(() => { timer = undefined; window.dispatchEvent(new Event('hexmix:capture')); }, 200); };
   document.addEventListener('scroll', scroll, true);
   window.addEventListener('pageshow', retry);
-  const restoreHistory = () => { restored.clear(); pendingFields = readField(stateScope(), 'document.fields'); pendingView = readField(stateScope(), 'document.view'); pendingContent = readField(stateScope(), 'document.content'); requestAnimationFrame(retry); };
+  const restoreHistory = () => { restored.clear(); restoredScroll = new WeakSet(); pendingFields = readField(stateScope(), 'document.fields'); pendingView = readField(stateScope(), 'document.view'); pendingContent = readField(stateScope(), 'document.content'); requestAnimationFrame(retry); };
   stateWindow().addEventListener('popstate', restoreHistory);
   return () => { observer.disconnect(); clearTimeout(timer); document.removeEventListener('scroll', scroll, true); window.removeEventListener('pageshow', retry); stateWindow().removeEventListener('popstate', restoreHistory); delete document.documentElement.dataset.sharedView; };
 }
