@@ -153,8 +153,8 @@ export function chatPage(view = 'chat') {
                         } paint(); });
                         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
                         paint();
-                        const point = e => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * 480 / r.width, (e.clientY - r.top) * 280 / r.height]; };
-                        canvas.onpointerdown = e => { drawing = true; canvas.setPointerCapture(e.pointerId); current = [point(e)]; strokes.push(current); };
+                        const point = e => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * 480 / (r.width || canvas.width), (e.clientY - r.top) * 280 / (r.height || canvas.height)]; };
+                        canvas.onpointerdown = e => { drawing = true; if (e.isTrusted) canvas.setPointerCapture(e.pointerId); current = [point(e)]; strokes.push(current); };
                         canvas.onpointermove = e => { if (drawing) {
                             current.push(point(e));
                             paint();
