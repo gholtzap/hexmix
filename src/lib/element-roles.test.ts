@@ -25,6 +25,20 @@ test("image role assignments survive a share link", () => {
   assert.deepEqual(readElementRoles(`?${query}`), values);
 });
 
+test("page background assignments accept only exact document roots", () => {
+  for (const selector of ["body", "html"]) {
+    const assignment: ElementRole = { path: "/", selector, property: "background", role: "primary" };
+    assert.equal(isElementSelection({ ...assignment, label: "Page", oldColor: "#ffffff", bounds: { left: 0, right: 100, top: 0, bottom: 100 } }), true);
+    const query = new URLSearchParams();
+    setElementRoles(query, [assignment]);
+    assert.deepEqual(readElementRoles(`?${query}`), [assignment]);
+  }
+  for (const selector of ["html > body:nth-of-type(1)", "body, html", "htmlfoo", "body:has(*)"]) {
+    const query = new URLSearchParams({ elements: JSON.stringify([{ path: "/", selector, property: "background", role: "primary" }]) });
+    assert.deepEqual(readElementRoles(`?${query}`), []);
+  }
+});
+
 test("invalid assignments from links are ignored", () => {
   const query = new URLSearchParams({ elements: JSON.stringify([
     { path: "/", selector: "body > button:nth-of-type(1)", property: "background", role: "accent" },

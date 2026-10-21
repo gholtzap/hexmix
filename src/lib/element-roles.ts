@@ -7,7 +7,7 @@ export type ElementSelection = { path: string; selector: string; label: string; 
 export const maxElementRoles = 24;
 export const maxElementRolesLength = 24000;
 
-const selectorPattern = /^body(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9]\d*\)){1,24}$/;
+const selectorPattern = /^(?:html|body(?: > [a-z][a-z0-9-]*:nth-of-type\([1-9]\d*\)){0,24})$/;
 
 export function isElementSelection(value: unknown): value is ElementSelection {
   if (!value || typeof value !== "object") return false;

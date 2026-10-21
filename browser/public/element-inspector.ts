@@ -22,6 +22,7 @@
   document.body.append(outline);
 
   function selectorFor(element: Element) {
+    if (element === document.body || element === document.documentElement) return element.localName;
     const parts: string[] = [];
     for (let current = element; current && current !== document.body; current = current.parentElement) {
       const parent = current.parentElement;
@@ -32,20 +33,29 @@
     return parts.length ? `body > ${parts.join(" > ")}` : null;
   }
 
+  function hasBackground(element: Element) {
+    const style = getComputedStyle(element);
+    const transparent = style.backgroundColor === "transparent" || /^(?:rgba\([^)]*,|[^)]*\/)\s*0(?:\.0+)?%?\)$/.test(style.backgroundColor);
+    return style.backgroundImage !== "none" || !transparent;
+  }
+
   function targetFor(element: Element) {
     if (element === outline || element.closest("script,style,noscript")) return null;
     const image = element.closest("img");
     if (image) return image;
     if (element.closest("video,canvas,iframe")) return null;
-    const control = element.closest("button,a,[role=button]");
+    const control = element.closest("button,a,[role=button],input,textarea,select,[contenteditable=true]");
     return control || element;
+  }
+
+  function isText(element: Element) {
+    return element.matches("h1,h2,h3,h4,h5,h6,p,label") || [...element.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim());
   }
 
   function propertyFor(element: Element): Property {
     if (element instanceof HTMLImageElement) return "image";
     if (element instanceof SVGElement) return getComputedStyle(element).fill === "none" ? "stroke" : "fill";
-    const style = getComputedStyle(element);
-    if (element.matches("button,a,[role=button]") || style.backgroundImage !== "none" || style.backgroundColor !== "rgba(0, 0, 0, 0)") return "background";
+    if (element.matches("body,html,button,a,[role=button]") || hasBackground(element) || !isText(element)) return "background";
     return "color";
   }
 
@@ -57,11 +67,19 @@
     const name = cssProperty[property];
     const style = (element as HTMLElement | SVGElement).style;
     const original = applied.get(element)?.get(name);
-    if (!original) return getComputedStyle(element).getPropertyValue(name).trim();
+    const visibleColor = () => {
+      if (property === "background") {
+        for (let surface: Element | null = element; surface; surface = surface.parentElement) {
+          if (hasBackground(surface)) return getComputedStyle(surface).backgroundColor;
+        }
+      }
+      return getComputedStyle(element).getPropertyValue(name).trim();
+    };
+    if (!original) return visibleColor();
     const appliedValue = { value: style.getPropertyValue(name), priority: style.getPropertyPriority(name) };
     if (original.value) style.setProperty(name, original.value, original.priority);
     else style.removeProperty(name);
-    const color = getComputedStyle(element).getPropertyValue(name).trim();
+    const color = visibleColor();
     style.setProperty(name, appliedValue.value, appliedValue.priority);
     return color;
   }
