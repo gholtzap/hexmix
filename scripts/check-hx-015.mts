@@ -59,6 +59,18 @@ try {
       assert.equal(await single.locator('.chat-message.user').count(), 2);
       await audit(page, single, `${mode}-composer-clearance`);
 
+      await page.goto(`${base}/dashboards/infra-dashboard?${paletteQuery(mode === 'light' ? initialPalette : defaultDarkPalette)}`);
+      await page.locator('[data-app-ready]').waitFor();
+      const infra = page.frameLocator('iframe');
+      await infra.locator('[data-app-ready]').waitFor();
+      if (width === 390) {
+        await infra.locator('.vc-mobile-tools').getByRole('button', { name: 'Open sidebar', exact: true }).click();
+        await page.locator('.toolbar-anchor').waitFor({ state: 'hidden' });
+        await infra.getByRole('button', { name: 'Close sidebar', exact: true }).click();
+        await page.locator('.toolbar-anchor').waitFor({ state: 'visible' });
+      }
+      await audit(page, infra, `${mode}-infrastructure-sidebar`);
+
       await page.screenshot({ path: `${out}/${width}-${mode}.png` });
       actions.push({ width, mode, passed: true }); console.log(width, mode, 'passed');
     } finally { await context.close(); }

@@ -24,7 +24,7 @@ export function usePreviewToolbarClearance(frame: RefObject<HTMLIFrameElement | 
         const baseline = innerHeight - base.bottom;
         let bottom = baseline;
         const boxes: Pick<DOMRect, 'top' | 'right' | 'bottom' | 'left'>[] = [];
-        for (const popup of document.querySelectorAll('[role="menu"], [role="dialog"], dialog[open], .chat-input-area, .vc-agent-form')) {
+        for (const popup of document.querySelectorAll('[role="menu"], [role="dialog"], dialog[open], .chat-input-area, .vc-agent-form, .vc-mobile-tools')) {
           const style = view.getComputedStyle(popup), box = popup.getBoundingClientRect();
           if (popup.getAttribute('aria-hidden') === 'true' || style.display === 'none' || style.visibility === 'hidden' || !box.width || !box.height) continue;
           const top = bounds.top + box.top * scale, lower = bounds.top + box.bottom * scale;
