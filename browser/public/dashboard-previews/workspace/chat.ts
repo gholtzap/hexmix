@@ -4,7 +4,7 @@ import { contextDialog } from './context.js';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
 const chats = ['Plan the next quarter', 'Ideas for the next project', 'Write a weekly update', 'Explore a business idea', 'Organize meeting notes', 'A shared business plan', 'Build a resource list', 'Compare design options', 'A guide to team planning', 'Explore new opportunities', 'Prepare for a presentation', 'Create a project checklist'];
 const projects = ['Design studio', 'Team planning', 'Business priorities'];
-type Message = { role: 'user' | 'assistant'; text: string };
+type Message = { role: 'user' | 'assistant'; text: string; attachments?: string[] };
 const conversations = new Map<string, Message[]>();
 let messages: Message[] = [], power = 1, project = '', temporary = false, draft = '';
 let attachments: string[] = [];
@@ -43,6 +43,9 @@ function saveChat() {
     conversations.delete(activeChat);
     conversations.set(activeChat, messages);
 }
+function attachmentMarkup(names: unknown) {
+    return Array.isArray(names) ? names.filter(name => typeof name === 'string').map(name => `<span class="attachment">${esc(name)}</span>`).join('') : '';
+}
 const powers = ['Light', 'Medium', 'High', 'Extra high', 'Maximum'];
 export function chatPage(view = 'chat') {
     const work = view === 'work';
@@ -54,7 +57,7 @@ export function chatPage(view = 'chat') {
                 document.querySelector<HTMLElement>('[data-chat-recents]').innerHTML = recentRows();
                 document.querySelectorAll<HTMLElement>('[data-sample-chat]').forEach(button => button.onclick = () => openChat(button.dataset.sampleChat, view));
             }
-            function renderMessages() { main.classList.toggle('has-messages', !!messages.length); window.dashboardComponents.unmountWithin(main.querySelector<HTMLElement>('.chat-conversation')); main.querySelector<HTMLElement>('.chat-conversation').innerHTML = messages.map(m => `<div class="chat-message ${m.role}">${m.role === 'assistant' ? '<div data-ai-response></div>' : esc(m.text)}${m.role === 'assistant' ? `<div class="message-actions"><button class="icon-button" data-copy aria-label="Copy response">${icon('copy')}</button></div>` : ''}</div>`).join(''); main.querySelectorAll<HTMLElement>('[data-ai-response]').forEach((host, i) => window.dashboardComponents.response(host, messages.filter(m => m.role === 'assistant')[i].text)); main.querySelectorAll<HTMLElement>('[data-copy]').forEach(b => b.onclick = async () => { try {
+            function renderMessages() { main.classList.toggle('has-messages', !!messages.length); window.dashboardComponents.unmountWithin(main.querySelector<HTMLElement>('.chat-conversation')); main.querySelector<HTMLElement>('.chat-conversation').innerHTML = messages.map(m => `<div class="chat-message ${m.role}">${m.role === 'assistant' ? '<div data-ai-response></div>' : esc(m.text) + (m.attachments ? `<div class="attachments">${attachmentMarkup(m.attachments)}</div>` : '')}${m.role === 'assistant' ? `<div class="message-actions"><button class="icon-button" data-copy aria-label="Copy response">${icon('copy')}</button></div>` : ''}</div>`).join(''); main.querySelectorAll<HTMLElement>('[data-ai-response]').forEach((host, i) => window.dashboardComponents.response(host, messages.filter(m => m.role === 'assistant')[i].text)); main.querySelectorAll<HTMLElement>('[data-copy]').forEach(b => b.onclick = async () => { try {
                 await navigator.clipboard.writeText((b.parentElement.parentElement.firstChild as HTMLElement).innerText);
                 toast('Copied');
             }
@@ -62,7 +65,7 @@ export function chatPage(view = 'chat') {
                 toast('Copy is not available in this browser.');
             } }); }
             function submit() { const value = input.value.trim(); if (!value)
-                return; messages.push({ role: 'user', text: value }, { role: 'assistant', text: `Task: ${value}\n\n1. Define the result you need.\n2. Collect the required details.\n3. Review the next action with your team.\n\nAdd your notes below to develop this plan.` }); saveChat(); renderRecents(); input.value = ''; updateSend(); renderMessages(); main.querySelector<HTMLElement>('.chat-conversation').scrollTop = 1e9; }
+                return; messages.push({ role: 'user', text: value, ...(attachments.length ? { attachments: [...attachments] } : {}) }, { role: 'assistant', text: `Task: ${value}\n\n1. Define the result you need.\n2. Collect the required details.\n3. Review the next action with your team.\n\nAdd your notes below to develop this plan.` }); saveChat(); renderRecents(); input.value = ''; attachments = []; fileInput.value = ''; renderAttachments(); updateSend(); renderMessages(); main.querySelector<HTMLElement>('.chat-conversation').scrollTop = 1e9; }
             function updateSend() { draft = input.value; const sending = !!input.value.trim(); (voice as HTMLInputElement).type = sending ? 'submit' : 'button'; voice.setAttribute('aria-label', sending ? 'Send message' : 'Start Voice'); voice.innerHTML = icon(sending ? 'arrow' : 'voice'); }
             input.value = draft;
             updateSend();
@@ -124,9 +127,9 @@ export function chatPage(view = 'chat') {
                     (anchor as HTMLElement).focus();
                 } };
             };
-            const fileInput = main.querySelector<HTMLElement>('#chat-files');
-            const renderAttachments = () => { main.querySelector<HTMLElement>('.attachments').innerHTML = attachments.map(name => `<span class="attachment">${esc(name)}</span>`).join(''); };
-            fileInput.onchange = () => { attachments.push(...[...(fileInput as HTMLInputElement).files].map(file => file.name)); renderAttachments(); };
+            const fileInput = main.querySelector<HTMLInputElement>('#chat-files');
+            const renderAttachments = () => { main.querySelector<HTMLElement>('.chat-input-area > .attachments').innerHTML = attachmentMarkup(attachments); };
+            fileInput.onchange = () => { attachments.push(...[...fileInput.files].map(file => file.name)); renderAttachments(); };
             renderAttachments();
             function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
             registerSharedDialog('dictate', value => dictate(Boolean(value)), value => typeof value === 'boolean');
@@ -159,7 +162,7 @@ export function chatPage(view = 'chat') {
                         canvas.onpointerup = () => drawing = false;
                         canvas.onpointercancel = () => drawing = false;
                         d.querySelector<HTMLElement>('[data-clear]').onclick = () => { strokes.length = 0; paint(); };
-                        d.querySelector<HTMLElement>('[data-attach]').onclick = () => canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); (fileInput as HTMLInputElement).files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); });
+                        d.querySelector<HTMLElement>('[data-attach]').onclick = () => canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); fileInput.files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); });
                     }); };
             registerSharedDialog('sketch', () => openSketch(), value => value === null);
             main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => { if (!document.documentElement.hasAttribute('data-comparison-replay')) fileInput.click(); } }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: openAddPage }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: openSketch }, { label: 'Plugins', action: () => navigate('plugins') }]);
