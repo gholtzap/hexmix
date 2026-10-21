@@ -150,6 +150,8 @@
     const root = document.documentElement;
     const style = document.createElement("style");
     style.textContent = `
+    html[data-editor-site] { height: 100%; overflow-y: auto; }
+    html[data-editor-site] body { height: auto; min-height: 100%; overflow: visible; }
     html[data-editor-palette="true"], html[data-editor-palette="true"] body { background-color: var(--p-background) !important; color: var(--p-text) !important; }
     html[data-editor-palette="true"][data-editor-site="tervix"] { --background: var(--p-background); --background-deep: color-mix(in srgb,var(--p-background) 85%,black); --foreground: var(--p-on-background); --foreground-muted: color-mix(in srgb,var(--p-on-background) 65%,var(--p-background)); --accent-sage: var(--p-primary); --accent-cyan: var(--p-secondary); --accent-warm: var(--p-accent); }
     html[data-editor-palette="true"][data-editor-site="avenlo"] { --text-primary: var(--p-text); --text-secondary: color-mix(in srgb,var(--p-text) 60%,var(--p-background)); --text-highlight: var(--p-accent); --bg-white: var(--p-background); --bg-beige: var(--p-secondary); --accent-coral: var(--p-primary); --bg-gradient-warm-start: var(--p-primary); --bg-gradient-warm-end: var(--p-accent); }

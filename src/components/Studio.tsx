@@ -24,6 +24,9 @@ import {
 import Link from "next/link";
 import { useVisibleViewport } from "@/hooks/useVisibleViewport";
 import IconButton from "./IconButton";
+import { Button } from "./ui/button";
+import { comparisonHref } from "@/lib/comparison";
+import { copyText } from "@/lib/clipboard";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
@@ -49,8 +52,10 @@ import {
   isPalette,
   isDarkPalette,
   defaultDarkPalette,
+  initialPalette,
   paletteExport,
   paletteExportFormats,
+  paletteForMode,
   paletteQuery,
   quickPickPresets,
   randomPalette,
@@ -78,6 +83,9 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [heading, setHeading] = useState<FontName>("System");
   const [body, setBody] = useState<FontName>("System");
   const [panel, setPanel] = useState<"fonts" | "saved" | null>(null);
+  const [embedded, setEmbedded] = useState(false);
+  const [comparisonToolbar, setComparisonToolbar] = useState(false);
+  const comparisonState = useRef('');
   const [collapsed, setCollapsed] = useState(false);
   const [notice, setNotice] = useState("");
   const [exportOpen, setExportOpen] = useState(false);
@@ -99,6 +107,9 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   }, [capture?.id, preview]);
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
+    setEmbedded(['1', 'toolbar'].includes(query.get("embed") ?? ''));
+    setComparisonToolbar(query.get("embed") === "toolbar");
+    comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System']);
     setHistory([readPalette(window.location.search) ?? defaultPalette]);
     const h = query.get("heading"),
       b = query.get("body");
@@ -161,20 +172,69 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   useEffect(updateFrame, [palette, heading, body, preview, defaultPalette, waitForPreview]);
   useEffect(() => {
     const onReady = (event: MessageEvent) => {
+      if (embedded && event.source === window.parent && event.origin === window.location.origin && event.data?.type === "hexmix-comparison-colors" && isPalette(event.data.palette)) {
+        comparisonState.current = JSON.stringify([event.data.palette, event.data.heading, event.data.body]);
+        if (!samePalette(event.data.palette, history[index])) { setHistory([event.data.palette]); setIndex(0); }
+        setPreviewPalette(null);
+        const url = new URL(window.location.href);
+        url.searchParams.set("colors", new URLSearchParams(paletteQuery(event.data.palette)).get("colors")!);
+        for (const key of ["heading", "body"] as const) if (typeof event.data[key] === "string" && Object.hasOwn(fonts, event.data[key])) {
+          if (key === "heading") setHeading(event.data[key] as FontName); else setBody(event.data[key] as FontName);
+          url.searchParams.set(key, event.data[key]);
+        }
+        window.history.replaceState(null, "", url);
+        return;
+      }
       if (event.source !== frame.current?.contentWindow || event.origin !== new URL(preview, window.location.origin).origin) return;
       if (event.data?.type === "color-editor-ready") updateFrame();
       if (event.data?.type === "color-editor-painted" && event.data.url === new URL(preview, window.location.origin).href && event.data.palette === roles.map(role => palette[role]).join("|")) setReadyPreview(preview);
-      if (event.data?.type === "preview-toggle-theme") apply(randomPalette(!isDarkPalette(palette)));
+      if (event.data?.type === "preview-toggle-theme") {
+        if (embedded) window.parent.postMessage({ type: "hexmix-comparison-toggle-theme" }, window.location.origin);
+        else apply(randomPalette(!isDarkPalette(palette)));
+      }
       if (event.data?.type === "preview-navigate" && capture && typeof event.data.path === "string" && /^\/(?!\/)[a-zA-Z0-9%/_-]*$/.test(event.data.path)) {
         const query = new URLSearchParams(paletteQuery(palette));
         query.set("heading", heading); query.set("body", body);
         const site=previewCatalog.find(preview=>preview.id===capture.id);
+        if (embedded) query.set('embed', comparisonToolbar ? 'toolbar' : '1');
         if(site)router.push(`${site.path}${event.data.path === "/" ? "" : event.data.path.replaceAll(capture.id,site.path.slice(1))}?${query}`, { scroll: false });
       }
     };
     window.addEventListener("message", onReady);
     return () => window.removeEventListener("message", onReady);
-  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router]);
+  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router, embedded, comparisonToolbar]);
+  useEffect(() => {
+    if (embedded) window.parent.postMessage({ type: "hexmix-comparison-ready" }, window.location.origin);
+  }, [embedded]);
+  useEffect(() => {
+    if (!comparisonToolbar) return;
+    const signature = JSON.stringify([history[index], heading, body]);
+    if (signature === comparisonState.current) return;
+    comparisonState.current = signature;
+    window.parent.postMessage({ type: 'hexmix-comparison-change', palette: history[index], heading, body }, window.location.origin);
+  }, [comparisonToolbar, history, index, heading, body]);
+  useEffect(() => {
+    if (!comparisonToolbar) return;
+    const navigate = (event: MouseEvent) => {
+      const link = (event.target as Element).closest<HTMLAnchorElement>('.site-switcher-menu a, .mobile-preview-menu a');
+      if (!link) return;
+      const path = new URL(link.href).pathname;
+      const selected = previewCatalog.find(item => item.path === path);
+      if (selected || path === '/') {
+        event.preventDefault(); event.stopPropagation();
+        window.parent.postMessage({ type: 'hexmix-comparison-preview', preview: selected?.id ?? 'gallery' }, window.location.origin);
+      }
+    };
+    document.addEventListener('click', navigate, true);
+    return () => document.removeEventListener('click', navigate, true);
+  }, [comparisonToolbar]);
+  useEffect(() => {
+    if (comparisonToolbar) window.parent.postMessage({ type: 'hexmix-comparison-panel', open: Boolean(panel || activeColor || exportOpen) }, window.location.origin);
+  }, [comparisonToolbar, panel, activeColor, exportOpen]);
+  function toggleTheme() {
+    if (comparisonToolbar) window.parent.postMessage({ type: 'hexmix-comparison-toggle-theme' }, window.location.origin);
+    else apply({ ...palette, text: palette.background, background: palette.text });
+  }
   useEffect(() => {
     if (exportOpen) dialog.current?.showModal();
     else dialog.current?.close();
@@ -230,20 +290,14 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     apply(next);
   }
   async function copy(text: string, message: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-      setNotice(message);
-    } catch {
-      const input = document.createElement("textarea");
-      input.value = text;
-      input.style.position = "fixed";
-      input.style.opacity = "0";
-      (dialog.current?.open ? dialog.current : document.body).append(input);
-      input.select();
-      const copied = document.execCommand("copy");
-      input.remove();
-      setNotice(copied ? message : "Copy is not available in this browser.");
-    }
+    setNotice(await copyText(text, dialog.current?.open ? dialog.current : document.body) ? message : "Copy is not available in this browser.");
+  }
+  function startComparison() {
+    if (comparisonToolbar) { window.parent.postMessage({ type: 'hexmix-comparison-options' }, window.location.origin); return; }
+    const selected = previewCatalog.find(item => window.location.pathname === item.path || window.location.pathname.startsWith(item.path + '/'));
+    const first = saved.find(item => samePalette(item.colors, palette));
+    const second = saved.find(item => !samePalette(item.colors, palette));
+    router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', mode: isDarkPalette(palette) ? 'dark' : 'light' }));
   }
   function share() {
     const url = new URL(window.location.href);
@@ -285,7 +339,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const dark = isDarkPalette(palette);
   const capturePreview = previewCatalog.find(item=>item.id===capture?.id);
   return (
-    <main className={collapsed ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
+    <main className={collapsed || embedded ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} data-comparison-toolbar={comparisonToolbar || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
       {children ? children({ palette, heading, body }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
         <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
         <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body)}>{label}</a>)}</nav></div>
@@ -300,7 +354,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
         onLoad={updateFrame}
       />}
-      {collapsed ? (
+      {(!embedded || comparisonToolbar) && (collapsed ? (
         <IconButton
           className="toolbar-reopen icon-button"
           aria-label="Open color toolbar"
@@ -449,6 +503,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               ))}
             </div>
             <div className="toolbar-actions">
+              <Button variant="ghost" className="toolbar-secondary" aria-label="Compare palettes" onClick={startComparison}>Compare</Button>
               <IconButton
                 className="icon-button"
                 aria-label="Shuffle palette"
@@ -475,13 +530,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <IconButton
                 className="icon-button"
                 aria-label={dark ? "Use light palette" : "Use dark palette"}
-                onClick={() =>
-                  apply({
-                    ...palette,
-                    text: palette.background,
-                    background: palette.text,
-                  })
-                }
+                onClick={toggleTheme}
               >
                 {dark ? <Sun size={17} /> : <Moon size={17} />}
               </IconButton>
@@ -495,6 +544,9 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 <Type size={17} />
               </IconButton>
               <PalettePanel
+                key={comparisonToolbar ? 'comparison' : 'single'}
+                initialTab={comparisonToolbar ? "saved" : "presets"}
+                initialBrowse={comparisonToolbar}
                 open={panel === "saved"}
                 anchor={toolbarElement}
                 palette={palette}
@@ -507,7 +559,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     setPreviewPalette(null);
                   }
                 }}
-                onApply={apply}
+                onApply={(next, item) => {
+                  apply(comparisonToolbar ? paletteForMode(next, dark ? 'dark' : 'light') : next);
+                  if (comparisonToolbar && item) window.parent.postMessage({ type: 'hexmix-comparison-name', name: item.name }, window.location.origin);
+                }}
                 onSave={(name) => save(palette, name)} onRename={rename}
                 onRemove={remove}
                 notice={notice}
@@ -540,13 +595,14 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed || panel) event.preventDefault(); }}>
                   <DropdownMenuGroup className="mobile-tools">
                     <DropdownMenuItem onSelect={randomize}>Shuffle palette</DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => apply({ ...palette, text: palette.background, background: palette.text })}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={toggleTheme}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
                   <DropdownMenuItem disabled={index === 0} onSelect={() => setIndex(index - 1)}>Undo palette</DropdownMenuItem>
                   <DropdownMenuItem disabled={index === history.length - 1} onSelect={() => setIndex(index + 1)}>Redo palette</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={startComparison}>Compare palettes</DropdownMenuItem>
                   <DropdownMenuItem onSelect={share}>Share palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={openExport}>Export palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={reset}>Reset palette and fonts</DropdownMenuItem>
@@ -572,7 +628,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
             </div>
           </div>
         </div>
-      )}
+      ))}
       {notice && panel !== "saved" && (
         <div className="toast" role="status">
           <Check size={15} />

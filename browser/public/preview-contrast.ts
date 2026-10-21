@@ -213,6 +213,7 @@ new MutationObserver(records => {
 new MutationObserver(schedule).observe(document.head, { childList: true });
 new MutationObserver(scheduleNow).observe(root, { attributes: true, attributeFilter: ['style', 'data-copy-ready', 'data-home-ready'] });
 window.addEventListener('resize', schedule);
+document.addEventListener('scroll', schedule, true);
 document.addEventListener('pointerover', schedule);
 document.addEventListener('focusin', scheduleNow);
 document.addEventListener('click', scheduleNow);

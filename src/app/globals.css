@@ -996,3 +996,49 @@ html {
   .palette-menu[aria-label="More tools"] .mobile-tools > [role="separator"] { display: none; }
   .palette-menu[aria-label="More tools"] [role="menuitem"] { white-space: normal; }
 }
+
+.comparison-page { height: var(--visible-height, 100dvh); overflow: hidden; background: var(--color-background); color: var(--color-foreground); font-size: 14px; }
+.comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); height: 100%; gap: 1px; background: var(--color-border); }
+.comparison-option { position: relative; min-width: 0; min-height: 0; }
+.comparison-option > iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--color-card); }
+.comparison-toolbar { position: absolute; z-index: 10; top: 8px; right: 8px; display: flex; align-items: center; max-width: calc(100% - 32px); color: var(--color-foreground); }
+.comparison-toolbar button { height: 36px; padding: 8px 12px; font-size: 14px; }
+.comparison-toolbar .comparison-palette-button { min-width: 0; flex-shrink: 1; gap: 8px; }
+.comparison-name { overflow-wrap: anywhere; }
+.comparison-mobile-tabs { display: none; }
+.comparison-menu { display: flex; flex-direction: column; gap: 16px; width: 320px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 100px); overflow-y: auto; font-size: 14px; }
+.comparison-menu a { text-decoration: underline; text-underline-offset: 3px; }
+.comparison-menu p { margin: 0; }
+.comparison-select, .comparison-share { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.comparison-select select { height: 44px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-foreground); background: var(--color-card); font: inherit; }
+.comparison-controls { display: flex; gap: 8px; }
+.comparison-controls button[aria-pressed=true], .comparison-mobile-tabs button[aria-pressed=true] { background: var(--color-accent); }
+@media (max-width: 760px) {
+  .comparison-grid { grid-template-columns: 1fr; gap: 0; }
+  .comparison-option { grid-area: 1 / 1; visibility: hidden; pointer-events: none; }
+  .comparison-option[data-active=true] { visibility: visible; pointer-events: auto; }
+  .comparison-toolbar { max-width: calc(100% - 16px); padding: 8px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-background); }
+  .comparison-toolbar button { min-width: 40px; height: 44px; padding: 8px; }
+  .comparison-mobile-tabs button { min-width: 32px; }
+  .comparison-mode { display: none; }
+  .comparison-mobile-tabs { display: flex; gap: 8px; }
+}
+
+/* Use the single-site toolbar in the narrower comparison frames. */
+.studio[data-comparison-toolbar] .toolbar-anchor { width: min(540px, calc(100% - 32px)); bottom: max(16px, env(safe-area-inset-bottom)); }
+.studio[data-comparison-toolbar] .color-toolbar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 8px; }
+.studio[data-comparison-toolbar] .color-toolbar > .site-switcher-trigger { display: none; }
+.studio[data-comparison-toolbar] .toolbar-colors { display: grid; width: 100%; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.studio[data-comparison-toolbar] .toolbar-color > .color-trigger { width: 100%; height: 44px; font-size: 14px; }
+.studio[data-comparison-toolbar] .toolbar-actions { display: flex; flex-wrap: wrap; width: 100%; flex-basis: auto; gap: 8px; justify-content: center; }
+.studio[data-comparison-toolbar] .toolbar-actions > .toolbar-secondary { display: none; }
+.studio[data-comparison-toolbar] .toolbar-actions > .icon-button:not(.toolbar-secondary) { display: inline-flex; width: 36px; height: 36px; flex: 0 0 36px; }
+.studio[data-comparison-toolbar] .toolbar-actions > .toolbar-divider { display: none; }
+body:has(.studio[data-comparison-toolbar]) .mobile-tools { display: contents; }
+@media (max-width: 560px) {
+  .studio[data-comparison-toolbar] .toolbar-anchor { width: calc(100% - 16px); }
+  .studio[data-comparison-toolbar] .toolbar-color > .color-trigger > span { padding: 0; }
+  .studio[data-comparison-toolbar] .toolbar-color > .color-trigger > span > span { display: none; }
+}
+
+.comparison-option[data-panel-open=true] > .comparison-toolbar { visibility: hidden; pointer-events: none; }

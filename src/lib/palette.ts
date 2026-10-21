@@ -79,6 +79,10 @@ const neutralBases = {
   light: { text: "#171717", background: "#ffffff" },
   dark: { text: "#ededed", background: "#171717" },
 };
+export type PaletteMode = "light" | "dark";
+export function paletteForMode(palette: Palette, mode: PaletteMode): Palette {
+  return { ...palette, ...neutralBases[mode] };
+}
 export const presets: SavedPalette[] = [
   ...quickPickPresets,
   ...sanzoCombinations.map(([primary, secondary, accent = secondary], index) => {
@@ -91,7 +95,7 @@ export const presets: SavedPalette[] = [
 ];
 export function presetForTheme(preset: SavedPalette, dark: boolean): SavedPalette {
   if (!preset.id.startsWith("sanzo-wada-")) return preset;
-  return { ...preset, colors: { ...preset.colors, ...neutralBases[dark ? "dark" : "light"] } };
+  return { ...preset, colors: paletteForMode(preset.colors, dark ? "dark" : "light") };
 }
 export function isPalette(value: unknown): value is Palette {
   return (
@@ -130,8 +134,8 @@ export function paletteExport(format: PaletteExportFormat, palette: Palette, hea
   const css = paletteCSS(palette, heading, body);
   return format === "tailwind" ? css.replace(":root {", "@theme {") : css;
 }
-export function readPalette(search: string): Palette | null {
-  const colors = new URLSearchParams(search).get("colors")?.split("-");
+export function readPalette(search: string, key = "colors"): Palette | null {
+  const colors = new URLSearchParams(search).get(key)?.split("-");
   if (!colors || colors.length !== 5) return null;
   const palette = Object.fromEntries(
     roles.map((role, i) => [role, `#${colors[i]}`]),
@@ -201,6 +205,6 @@ export function matchesPalette(item: { name: string; colors: Palette }, filters:
     && (!filters.style || filters.style === traits.style);
 }
 
-export function paletteQuery(palette: Palette): string {
-  return new URLSearchParams({ colors: roles.map((role) => palette[role].slice(1)).join("-") }).toString();
+export function paletteQuery(palette: Palette, key = "colors"): string {
+  return new URLSearchParams({ [key]: roles.map((role) => palette[role].slice(1)).join("-") }).toString();
 }

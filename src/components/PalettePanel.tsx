@@ -21,13 +21,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 type Props = {
   trigger?: ReactElement;
   initialBrowse?: boolean;
+  initialTab?: "presets" | "saved";
   open: boolean;
   anchor: HTMLElement | null;
   palette: Palette;
   saved: SavedPalette[];
   previewId?: string;
   onOpenChange: (open: boolean) => void;
-  onApply: (palette: Palette) => void;
+  onApply: (palette: Palette, item?: SavedPalette) => void;
   onSave: (name: string) => void;
   onRename: (id: string, name: string) => void;
   onRemove: (id: string) => void;
@@ -37,11 +38,11 @@ type Props = {
 };
 
 export default function PalettePanel({
-  trigger, initialBrowse = false, open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice,
+  trigger, initialBrowse = false, initialTab = "presets", open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice,
 }: Props) {
   const [editing, setEditing] = useState<{ id?: string; name: string } | null>(null);
   const [nameError, setNameError] = useState("");
-  const [tab, setTab] = useState<string | number>("presets");
+  const [tab, setTab] = useState<string | number>(initialTab);
   const [browse, setBrowse] = useState(initialBrowse);
   const [filters, setFilters] = useState({ query: "", color: "", mode: "", style: "" });
   const [limit, setLimit] = useState(24);
@@ -177,7 +178,7 @@ export default function PalettePanel({
                             value=""
                             aria-label={`Apply ${item.name}`}
                             aria-pressed={selected}
-                            onClick={() => onApply(item.colors)}
+                            onClick={() => onApply(item.colors, item)}
                           />
                           {value === "saved" && <PreviewThumbnail id={previewId} palette={item.colors} />}
                           <span className="palette-preview" aria-hidden="true">
