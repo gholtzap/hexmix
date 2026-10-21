@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef, type ReactElement, type RefObject } from "react";
 import { useLinkState } from "@/hooks/useLinkState";
 import { oneOf, nullable, stringRecord } from "@/lib/link-state";
-import { Check, Heart, Plus, Share2, X, Copy, MoreHorizontal, FilterX, ChevronDown, LayoutGrid, List } from "lucide-react";
+import { Check, Heart, Plus, Share2, X, Copy, MoreHorizontal, FilterX, ChevronDown, LayoutGrid, List, Undo2 } from "lucide-react";
 import { isDarkPalette, matchesPalette, presetForTheme, presets, roles, type Palette, type SavedPalette } from "@/lib/palette";
 import { samePalette } from "@/lib/palette";
 import PreviewThumbnail from "./PreviewThumbnail";
@@ -33,6 +33,7 @@ type Props = {
   onSave: (name: string) => void;
   onRename: (id: string, name: string) => void;
   onRemove: (id: string) => void;
+  onUndoRemove?: () => void;
   onShare?: () => void;
   onCopy: (item: SavedPalette) => void;
   notice?: string;
@@ -41,7 +42,7 @@ type Props = {
 };
 
 export default function PalettePanel({
-  trigger, initialBrowse = false, initialTab = "presets", open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice, onCopy, onShare,
+  trigger, initialBrowse = false, initialTab = "presets", open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, onUndoRemove, restoreFocus, returnFocus, notice, onCopy, onShare,
 }: Props) {
   const [editing, setEditing] = useLinkState<{ id?: string; name: string } | null>("PalettePanel.PalettePanel.editing", null, { validate: nullable(value => stringRecord(value) && typeof value.name === "string"), private: true });
   const [nameError, setNameError] = useLinkState("PalettePanel.PalettePanel.nameError", "");
@@ -93,6 +94,7 @@ export default function PalettePanel({
       >
         <div className="palette-panel-header">
           <h2>Palettes</h2>
+          {onUndoRemove && <IconButton className="icon-button" aria-label="Undo palette removal" onClick={onUndoRemove}><Undo2 size={17}/></IconButton>}
           <IconButton
             aria-label="Save palette"
             className="icon-button panel-save"

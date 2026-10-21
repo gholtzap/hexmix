@@ -162,7 +162,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [selection, setSelection] = useLinkState<ElementSelection | null>("Studio.selection", null, { private: true, validate: value => value === null || isElementSelection(value) && value.path === window.location.pathname });
   const [elementRoles, setElementRolesState] = useLinkState<ElementRole[]>("Studio.elements", [], { validate: value => Array.isArray(value) && value.length <= maxElementRoles && value.every(isElementRole) });
   const [rolesReadyPath, setRolesReadyPath] = useState("");
-  const { saved, remove, storageReady, save, rename } = useSavedPalettes(setNotice);
+  const { saved, remove, undoRemove, storageReady, save, rename } = useSavedPalettes(setNotice);
   useEffect(() => {
     const capture = () => {
       if (panel === "saved" && readField(stateScope(), "PalettePanel.PalettePanel.tab") === "saved") stateWindow().hexmixSharedPalettes = saved;
@@ -438,7 +438,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   }, [toolbarElement]);
   useEffect(() => {
     if (!notice) return;
-    const timeout = setTimeout(() => setNotice(""), 4000);
+    const timeout = setTimeout(() => setNotice(""), notice === "Palette removed." ? 10000 : 4000);
     return () => clearTimeout(timeout);
   }, [notice]);
   useEffect(() => {
@@ -886,6 +886,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 onShare={share}
                 onCopy={item=>void copy(copyPalette(item.colors), `${item.name} copied.`)}
                 notice={notice}
+                onUndoRemove={undoRemove}
                 returnFocus={toolsTrigger}
                 restoreFocus={!activeColor && panel !== "fonts"}
               />
@@ -960,6 +961,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       {notice && panel !== "saved" && (
         <div className="toast" role="status">
           {notice}
+          {undoRemove && (notice === "Palette removed." || notice === "Your browser could not save this palette.") && <IconButton className="icon-button" aria-label="Undo palette removal" onClick={undoRemove}><Undo2 size={17}/></IconButton>}
         </div>
       )}
       <dialog

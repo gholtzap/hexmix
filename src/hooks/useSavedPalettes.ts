@@ -14,6 +14,7 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
   });
   const [saved, setSaved] = useState<SavedPalette[]>([]);
   const [storageReady, setStorageReady] = useState(false);
+  const [removed, setRemoved] = useState<{palette: SavedPalette; index: number; shared: boolean} | null>(null);
   useEffect(() => {
     const load = () => {
       try { setSaved(readSaved()); }
@@ -27,10 +28,10 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, [setNotice]);
-  function change(update: (current: SavedPalette[]) => SavedPalette[] | null, message: string) {
+  function change(update: (current: SavedPalette[]) => SavedPalette[] | null, message: string, onSuccess?: (before: SavedPalette[], after: SavedPalette[]) => void) {
     if (shared) {
       const next = update(shared);
-      if (next) { setShared(next); setNotice('Shared palettes updated.'); }
+      if (next) { setShared(next); setNotice('Shared palettes updated.'); onSuccess?.(shared, next); }
       return;
     }
     const write = () => {
@@ -40,6 +41,7 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
         if (next) localStorage.setItem(storageKey, JSON.stringify(next));
         setSaved(next ?? current);
         if (next) setNotice(message);
+        if (next) onSuccess?.(current, next);
       } catch { setNotice("Your browser could not save this palette."); }
     };
     if (navigator.locks) void navigator.locks.request(storageKey, write).catch(() => setNotice("Your browser could not save this palette."));
@@ -61,6 +63,21 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
     if (!trimmed || trimmed.length > 80) return;
     change(items => items.map(item => item.id === id ? { ...item, name: trimmed } : item), "Palette renamed.");
   }
-  function remove(id: string) { change(items => items.filter(item => item.id !== id), "Palette removed."); }
-  return { saved: shared ?? saved, storageReady, save, rename, remove };
+  function remove(id: string) {
+    change(items => items.some(item => item.id === id) ? items.filter(item => item.id !== id) : null, "Palette removed.", before => {
+      const index = before.findIndex(item => item.id === id);
+      setRemoved({palette: before[index], index, shared: Boolean(shared)});
+      setNotice("Palette removed.");
+    });
+  }
+  function restoreRemoved() {
+    if (!removed || removed.shared !== Boolean(shared)) return;
+    change(items => {
+      if (items.some(item => item.id === removed.palette.id || samePalette(item.colors, removed.palette.colors))) {
+        setRemoved(null); setNotice("This palette is already saved."); return null;
+      }
+      const next = [...items]; next.splice(Math.min(removed.index, next.length), 0, removed.palette); return next;
+    }, "Palette restored.", () => { setRemoved(null); setNotice("Palette restored."); });
+  }
+  return { saved: shared ?? saved, storageReady, save, rename, remove, undoRemove: removed && removed.shared === Boolean(shared) ? restoreRemoved : undefined };
 }
