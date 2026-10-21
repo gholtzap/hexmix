@@ -1,3 +1,4 @@
+import {clickToolbarAction} from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
@@ -5,9 +6,17 @@ import sharp from 'sharp';
 import { initialPalette, paletteQuery } from '../src/lib/palette.ts';
 import { previewCatalog } from '../src/lib/preview-catalog.ts';
 
+const base = process.env.APP_URL || 'http://127.0.0.1:3000';
 const directory = 'artifacts/preview-captures';
 await mkdir(directory, { recursive: true });
 const results = [];
+async function captureThumbnail(page, thumbnail) {
+  const toolbar = await page.locator('.toolbar-anchor').count();
+  if (toolbar) await clickToolbarAction(page, 'Hide color toolbar');
+  const image = await thumbnail.screenshot();
+  if (toolbar) await page.getByRole('button', {name:'Open color toolbar',exact:true}).click();
+  return image;
+}
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
@@ -18,11 +27,15 @@ try {
   page.on('response', response => {
     if (response.url().includes('/preview-captures/') && response.status() !== 200) errors.push(`${response.status()} ${response.url()}`);
   });
-  await page.goto(`http://127.0.0.1:3000?${paletteQuery(initialPalette)}`);
+  await page.goto(`${base}?${paletteQuery(initialPalette)}`);
   await page.locator('[data-app-ready]').waitFor();
   for (const preview of previewCatalog) {
     const thumbnail = page.locator(`[data-capture="${preview.id}"]`);
-    const screenshot = await thumbnail.screenshot();
+    assert.equal(await thumbnail.locator('rect').count(), 0, 'The capture palette must use the original image');
+    await thumbnail.locator('image').evaluate(async node => {
+      const image = new Image(); image.src = node.getAttribute('href'); await image.decode();
+    });
+    const screenshot = await captureThumbnail(page, thumbnail);
     const { data, info } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
     const original = await sharp(await readFile(`public/preview-captures/${preview.id}/light/original.webp`)).resize(info.width, info.height, { fit: 'fill' }).removeAlpha().raw().toBuffer();
     let error = 0;
@@ -34,13 +47,14 @@ try {
   assert.equal(await page.locator("iframe").count(), 0);
   const initialRequests = assetRequests;
   const target = page.locator('[data-capture="workspace"]');
-  let previous = await sharp(await target.screenshot()).removeAlpha().raw().toBuffer();
+  let previous = await sharp(await captureThumbnail(page, target)).removeAlpha().raw().toBuffer();
   for (const [role, value] of Object.entries({ Text: '243841', Primary: '147d92', Secondary: 'dfe9ef', Accent: '884dcc', Background: 'f3f7fa' })) {
     await page.getByRole('button', { name: new RegExp(`^${role} `) }).click();
     await page.getByRole('textbox', { name: 'Hex', exact: true }).fill(value);
     await page.getByRole('textbox', { name: 'Hex', exact: true }).press('Enter');
-    await page.getByRole('button', { name: 'Close', exact: true }).click();
-    const screenshot = await target.screenshot();
+    await page.getByRole('button', { name: /^Close(?: color picker)?$/ }).click();
+    assert.equal(await target.locator('rect').count(), 1, 'A changed palette must apply the color filter');
+    const screenshot = await captureThumbnail(page, target);
     const current = await sharp(screenshot).removeAlpha().raw().toBuffer();
     const changed = current.reduce((sum, byte, index) => sum + (byte !== previous[index] ? 1 : 0), 0);
     assert.ok(changed > 10, `${role} must change the rendered screenshot`);

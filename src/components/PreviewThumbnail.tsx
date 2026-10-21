@@ -1,12 +1,13 @@
 "use client";
 
 import { Fragment, useId } from "react";
-import { foregroundForSurface, isDarkPalette, roles, type Palette } from "@/lib/palette";
+import { defaultDarkPalette, foregroundForSurface, initialPalette, isDarkPalette, roles, samePalette, type Palette } from "@/lib/palette";
 
 export default function PreviewThumbnail({ id, palette }: { id: string; palette: Palette }) {
   const filter = `capture-${useId().replace(/:/g, "")}`;
   const colors = { ...palette, text: foregroundForSurface(palette.text, palette.background) };
   const directory = `/preview-captures/${id}/${isDarkPalette(palette) ? "dark" : "light"}`;
+  const originalPalette = samePalette(palette, isDarkPalette(palette) ? defaultDarkPalette : initialPalette);
   return <svg className="home-thumbnail" viewBox="0 0 1200 750" aria-hidden="true" focusable="false" data-capture={id}>
     <defs>
       <filter id={filter} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
@@ -20,6 +21,6 @@ export default function PreviewThumbnail({ id, palette }: { id: string; palette:
       </filter>
     </defs>
     <image href={`${directory}/original.webp`} width="1200" height="750" />
-    <rect width="1200" height="750" filter={`url(#${filter})`} />
+    {!originalPalette && <rect width="1200" height="750" filter={`url(#${filter})`} />}
   </svg>;
 }

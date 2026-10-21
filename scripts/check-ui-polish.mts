@@ -10,9 +10,9 @@ async function audit(page,state,width,theme){
  let report={findings:[]},attached=false;try{await expectUI(page,{attach:async(_,data)=>{attached=true;report=JSON.parse(String(data.body));}});}catch(error){if(!attached)throw error;}
  reports.push({state,width,theme,report});if(report.findings.length)await page.screenshot({path:`${output}/finding-${width}-${theme}-${state.replaceAll(' ','-')}.png`});
 }
-async function clearance(page,width){
- const metrics=await page.locator('iframe').evaluate(e=>({bottom:e.getBoundingClientRect().bottom,top:document.querySelector('.toolbar-anchor').getBoundingClientRect().top,height:document.querySelector('.toolbar-anchor').getBoundingClientRect().height,overflow:document.documentElement.scrollWidth>innerWidth}));
- assert.ok(metrics.bottom<=metrics.top-8,JSON.stringify(metrics));assert.equal(metrics.overflow,false);if(width<=560)assert.ok(metrics.height<180,JSON.stringify(metrics));return metrics;
+async function fullscreenPreview(page,width){
+ const metrics=await page.locator('iframe').evaluate(e=>({bottom:e.getBoundingClientRect().bottom,viewportHeight:innerHeight,top:document.querySelector('.toolbar-anchor').getBoundingClientRect().top,height:document.querySelector('.toolbar-anchor').getBoundingClientRect().height,overflow:document.documentElement.scrollWidth>innerWidth}));
+ assert.ok(Math.abs(metrics.bottom-metrics.viewportHeight)<1,JSON.stringify(metrics));assert.ok(metrics.bottom>metrics.top);assert.equal(metrics.overflow,false);if(width<=560)assert.ok(metrics.height<180,JSON.stringify(metrics));return metrics;
 }
 try{
  for(const width of [390,1440])for(const theme of ['light','dark']){
@@ -23,7 +23,7 @@ try{
   await audit(page,'home alignment',width,theme);await page.screenshot({path:`${output}/home-${width}-${theme}.png`});
   for(const [name,path] of [['avenlo','/avenlo'],['chat','/dashboards/ai-chatbot'],['infra','/dashboards/infra-dashboard']] as const){
    await page.goto(`http://127.0.0.1:3000${path}?colors=${colors}`);await page.locator('[data-app-ready]').waitFor();const frame=page.frames().find(f=>f.parentFrame());await frame.locator('[data-app-ready]').waitFor();
-   const metrics=await clearance(page,width);
+   const metrics=await fullscreenPreview(page,width);
    if(name==='avenlo'){
     await frame.locator('html[data-copy-ready=true][data-contrast-ready=true]').waitFor();
     const button=frame.locator('.hero__btn');const style=await button.evaluate(e=>({image:getComputedStyle(e).backgroundImage,label:getComputedStyle(e.querySelector('.shader-btn__label')).color,fill:getComputedStyle(e).color,children:[...e.querySelectorAll('.shader-btn__fallback,.shader-btn__canvas')].map(n=>getComputedStyle(n).display)}));assert.equal(style.image,'none');assert.equal(style.label,style.fill);assert.ok(style.children.every(display=>display==='none'));
@@ -41,7 +41,7 @@ try{
     await clickToolbarAction(page,'Reset palette and fonts');
     await page.getByRole('button',{name:'Fonts',exact:true}).click();await audit(page,'font panel',width,theme);await page.getByRole('button',{name:'Close fonts',exact:true}).click();
     await page.getByRole('button',{name:'Primary color',exact:true}).click();await audit(page,'color picker',width,theme);await page.getByRole('button',{name:'Close color picker',exact:true}).click();
-    await clickToolbarAction(page,'Hide color toolbar');await page.getByRole('button',{name:'Open color toolbar',exact:true}).waitFor();const height=await page.locator('iframe').evaluate(e=>e.getBoundingClientRect().height);assert.ok(Math.abs(height-(width===390?844:900))<1);await audit(page,'toolbar hidden',width,theme);await page.getByRole('button',{name:'Open color toolbar',exact:true}).click();await clearance(page,width);
+    await clickToolbarAction(page,'Hide color toolbar');await page.getByRole('button',{name:'Open color toolbar',exact:true}).waitFor();const height=await page.locator('iframe').evaluate(e=>e.getBoundingClientRect().height);assert.ok(Math.abs(height-(width===390?844:900))<1);await audit(page,'toolbar hidden',width,theme);await page.getByRole('button',{name:'Open color toolbar',exact:true}).click();await fullscreenPreview(page,width);
    }
    actions.push({width,theme,path,toolbarHeight:metrics.height});
   }

@@ -7,6 +7,7 @@ import uiPolicy from '../ui-policy.json' with {type:'json'};
 import {expectUI} from 'lintapple/playwright';
 
 const output='artifacts/dashboard-scale';
+const base=process.env.APP_URL||'http://127.0.0.1:3000';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch();
 const reports=[],metrics=[],errors=[];
@@ -25,7 +26,7 @@ try{
   page.setDefaultTimeout(12000);
   page.on('pageerror',error=>errors.push(error.message));
   const palette=theme==='dark'?'ededed-0f0f0f-ffffff-212121-afafaf':'171717-ffffff-171717-eeeeee-626262';
-  await page.goto(`http://127.0.0.1:3000/dashboards/${name}?colors=${palette}`);
+  await page.goto(`${base}/dashboards/${name}?colors=${palette}`);
   const iframe=page.locator('iframe');const frame=await (await iframe.elementHandle()).contentFrame();
   await frame.locator('[data-app-ready]').waitFor();
   await page.waitForFunction(()=>(document.querySelector('.studio') as HTMLElement)?.dataset.appReady==='true');
@@ -33,19 +34,21 @@ try{
   const dimensions=await measure();metrics.push({width,theme,name,...dimensions});
   assert.equal(Number(dimensions.scale),0.9);assert.equal(dimensions.browserScale,1);assert.equal(dimensions.rootZoom,'1');
   assert.ok(Math.abs(dimensions.width-width)<1);assert.ok(Math.abs(dimensions.innerWidth-width/.9)<1);assert.equal(dimensions.overflow,false);
-  if(width===390)assert.ok(dimensions.height<=dimensions.toolbarTop);
+  assert.ok(Math.abs(dimensions.height-(width===390?844:900))<1);
+  assert.ok(dimensions.height>dimensions.toolbarTop);
   await audit(page,frame,`${name} initial`,width,theme);
   if(name==='infra-dashboard'){
    await frame.getByRole('button',{name:'Add New',exact:true}).click();await audit(page,frame,'project menu',width,theme);
    await frame.getByRole('menuitem',{name:'Project',exact:true}).click();await audit(page,frame,'project dialog',width,theme);
    await frame.getByLabel('Project name',{exact:true}).fill('compact-project');await frame.getByRole('button',{name:'Create Project',exact:true}).click();await frame.getByRole('button',{name:'compact-project',exact:true}).waitFor();
   }else{
+   if(width===390)await clickToolbarAction(page, 'Hide color toolbar');
    await frame.getByRole('button',{name:'Add files and more',exact:true}).click();await audit(page,frame,'chat menu',width,theme);
    await frame.getByRole('menuitem',{name:'Add browser tabs',exact:true}).click();await audit(page,frame,'page attachment dialog',width,theme);
    await frame.getByRole('button',{name:'Close dialog',exact:true}).click();
    await frame.locator('.composer textarea').fill('Plan a weekly review');await frame.locator('.composer textarea').press('Enter');await frame.locator('.chat-message.assistant').waitFor();
   }
-  await clickToolbarAction(page, 'Hide color toolbar');
+  if(!await page.getByRole('button',{name:'Open color toolbar',exact:true}).isVisible())await clickToolbarAction(page, 'Hide color toolbar');
   assert.ok(Math.abs((await measure()).height-(width===390?844:900))<1);
   await audit(page,frame,`${name} toolbar hidden`,width,theme);
   await page.screenshot({path:`${output}/${name}-${width}-${theme}.png`});

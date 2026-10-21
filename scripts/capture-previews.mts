@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { previewCatalog } from '../src/lib/preview-catalog.ts';
 import { defaultDarkPalette, initialPalette, paletteQuery, roles } from '../src/lib/palette.ts';
 
+const base = process.env.APP_URL || 'http://127.0.0.1:3000';
 const width = 1200, height = 750;
 const compress = input => sharp(input).resize(720, 450).webp({ lossless: true }).toBuffer();
 const requested = process.argv.slice(2);
@@ -20,7 +21,7 @@ try {
       console.log(`Capturing ${preview.id} (${mode})`);
       const page = await browser.newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
       page.setDefaultTimeout(20000);
-      await page.goto(`http://127.0.0.1:3000${preview.path}?${paletteQuery(palette)}`);
+      await page.goto(`${base}${preview.path}?${paletteQuery(palette)}`);
       await page.locator('[data-app-ready]').waitFor();
       await clickToolbarAction(page, 'Hide color toolbar');
       await page.getByRole('button', {name:'Open color toolbar',exact:true}).waitFor();
