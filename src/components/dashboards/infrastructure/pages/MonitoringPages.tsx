@@ -24,7 +24,7 @@ const wave=[20,32,28,45,37,52,41,62,54,70,58,78,64,84,76,92,72,87,83,100,90,98,1
 const modelRows=[['Assistant One','8,420','2.1M','$6.24','740ms'],['Assistant Two','6,180','1.8M','$4.82','920ms'],['Assistant Three','3,600','900K','$1.78','410ms']];
 const initialRules=[{name:'Block abusive requests',action:'Block',enabled:true},{name:'Verify login traffic',action:'Challenge',enabled:true},{name:'Allow trusted services',action:'Allow',enabled:false}];
 const usageRows=[['Build CPU minutes','142 minutes','$2.91','Compute'],['Provisioned memory','6.2 GB-hours','$0.57','Compute'],['Drains','1.2 GB','$0.34','Network'],['Fast data transfer','4.2 GB','$0.28','Network'],['Edge requests','128,000 requests','$0.23','Network']];
-function scaled(value:string,factor:number){if(factor===1)return value;return value.replace(/[\d]+(?:\.[\d]+)?/,number=>{const result=Number(number)*factor;return result.toLocaleString('en-US',{maximumFractionDigits:number.includes('.')?2:0});});}
+function scaled(value:string,factor:number){if(factor===1)return value;return value.replace(/\d+(?:,\d{3})*(?:\.\d+)?/,number=>{const result=Number(number.replaceAll(',',''))*factor;return result.toLocaleString('en-US',{maximumFractionDigits:number.includes('.')?2:0});});}
 export function MonitoringPage({page,onAction}:{page:PageId;onAction:PageAction}){return <MonitoringContent key={page} page={page} onAction={onAction}/>;}
 function MonitoringContent({page,onAction}:{page:PageId;onAction:PageAction}){
  const config=configs[page]??configs.analytics!;
