@@ -146,7 +146,7 @@ export function comparisonInteractions() {
           } else if (event.type.startsWith('pointer')) {
             const pointer = event as PointerEvent;
             const rect = point ? target.getBoundingClientRect() : null;
-            target.dispatchEvent(new view.PointerEvent(event.type, { bubbles: true, cancelable: true, button: pointer.button, buttons: pointer.buttons, ...(point && rect ? { clientX: rect.left + point.x * (rect.width || (target as HTMLCanvasElement).width), clientY: rect.top + point.y * (rect.height || (target as HTMLCanvasElement).height) } : {}), pointerType: pointer.pointerType, pointerId: pointer.pointerId, isPrimary: pointer.isPrimary }));
+            target.dispatchEvent(new view.PointerEvent(event.type, { bubbles: true, cancelable: true, button: pointer.button, ...(point && rect ? { buttons: pointer.buttons, clientX: rect.left + point.x * (rect.width || (target as HTMLCanvasElement).width), clientY: rect.top + point.y * (rect.height || (target as HTMLCanvasElement).height) } : {}), pointerType: pointer.pointerType, pointerId: pointer.pointerId, isPrimary: pointer.isPrimary }));
           } else target.dispatchEvent(new view.MouseEvent(event.type, { bubbles: true, cancelable: true, button: mouse.button }));
         } finally { other.documentElement.removeAttribute('data-comparison-replay'); replaying = false; }
       }, 0);
