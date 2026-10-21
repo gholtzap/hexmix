@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {checkPage} from 'lintapple';
+import {expectUI} from 'lintapple/playwright';
 import policy from '../../ui-policy.json' with {type:'json'};
 import {initialPalette,defaultDarkPalette,paletteQuery} from '../../src/lib/palette.ts';
 
@@ -14,7 +15,7 @@ export async function checkBug(id:string,paths:string|string[],test){
   try{
    await page.goto(`${base}${path}${path.includes('?')?'&':'?'}${paletteQuery(palette)}`);await page.locator('[data-app-ready]').waitFor();
    const frame=page.frames().find(f=>f!==page.mainFrame());if(frame)await frame.locator('[data-app-ready],html[data-app-ready=true],html[data-editor-ready=true],html[data-contrast-ready=true]').first().waitFor();
-   const audit=async(state,child=frame)=>{await page.mouse.move(0,0);await page.waitForTimeout(150);for(const [surface,target] of [['editor',page],['preview',child]] as const){if(!target)continue;const report=await checkPage(target,policy);scans.push({state,surface,report});}await page.screenshot({path:`${out}/${prefix}${width}-${theme}-${state}.png`});};
+   const audit=async(state,child=frame)=>{await page.mouse.move(0,0);await page.waitForTimeout(150);for(const [surface,target] of [['editor',page],['preview',child]] as const){if(!target)continue;let report={findings:[]};if(surface==='editor'){try{await expectUI(page,{attach:async(_,file)=>{report=JSON.parse(String(file.body));}},policy);}catch(error){if(!report.findings.length)throw error;}}else report=await checkPage(target,policy);scans.push({state,surface,report});}await page.screenshot({path:`${out}/${prefix}${width}-${theme}-${state}.png`});};
    await test({page,frame,context,width,theme,path,audit});assert.deepEqual(errors,[]);reports.push({path,width,theme,actions:'passed',scans});
   }catch(error){failures.push({path,width,theme,error:String(error),errors});reports.push({path,width,theme,actions:'failed',scans});await page.screenshot({path:`${out}/${prefix}${width}-${theme}-failure.png`});}
   finally{await context.close();}
