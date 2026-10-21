@@ -1,11 +1,13 @@
+import { presets } from '../src/lib/palette-presets.ts';
 import { clickToolbarAction } from './lib/studio-toolbar.mts';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { expectUI } from 'lintapple/playwright';
-import { initialPalette, paletteQuery, presets, quickPickPresets, roles } from '../src/lib/palette.ts';
+import { initialPalette, paletteQuery, quickPickPresets, roles } from '../src/lib/palette.ts';
 
 const directory = 'artifacts/palettes';
+const origin = process.env.APP_URL || 'http://127.0.0.1:3000';
 await mkdir(directory, { recursive: true });
 const browser = await chromium.launch();
 const reports = [];
@@ -57,7 +59,7 @@ try {
       assert.equal(await page.locator('.palette-panel').isVisible(), true);
     };
 
-    await page.goto(`http://127.0.0.1:3000/editor?${paletteQuery(initialPalette)}`);
+    await page.goto(`${origin}/editor?${paletteQuery(initialPalette)}`);
     await page.locator('[data-app-ready]').waitFor();
     await open();
     assert.equal(await tab('Presets').getAttribute('aria-selected'), 'true');
@@ -166,7 +168,7 @@ try {
     assert.equal(await page.locator('.palette-panel').count(), 0);
     await page.getByRole('button', { name: 'Close color picker', exact: true }).click();
     await open();
-    await page.locator('iframe').contentFrame().locator('body').click({ position: { x: 10, y: 10 } });
+    await page.locator('iframe').contentFrame().locator('body').click({ position: { x: 16, y: 150 } });
     await page.locator('.palette-panel').waitFor({ state: 'hidden' });
 
     // Check existing storage records, including long names and a full collection.
@@ -198,6 +200,8 @@ try {
     await page.locator('[data-app-ready]').waitFor();
     await open();
     await tab('Saved').click();
+    const quick = page.getByRole('button', { name: 'Quick picks', exact: true });
+    if (await quick.isVisible()) await quick.click();
     await page.waitForFunction(() => document.querySelectorAll('.palette-card').length === 6);
     assert.equal(await page.locator('.palette-card:visible').count(), 6);
     await page.getByRole('button', { name: 'Browse all palettes', exact: true }).click();

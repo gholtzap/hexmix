@@ -39,7 +39,7 @@ import { comparisonHref } from "@/lib/comparison";
 import { copyText, readThemePaste } from "@/lib/clipboard";
 import {paletteHistoryShortcut} from '@/lib/input-events';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
-import PalettePanel from "./PalettePanel";
+import PalettePanel, { preloadPalettePanel } from "./PalettePanel";
 import {copyPalette,copyTheme,readTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
@@ -934,7 +934,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                     <DropdownMenuItem onSelect={randomize}>Shuffle palette</DropdownMenuItem>
                     <DropdownMenuItem onSelect={toggleTheme}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
+                    <DropdownMenuItem onPointerEnter={preloadPalettePanel} onFocus={preloadPalettePanel} onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
                     <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>

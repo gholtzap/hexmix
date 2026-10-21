@@ -1,3 +1,4 @@
+import { presets, presetForTheme } from "./palette-presets.ts";
 import { createHash } from "node:crypto";
 import { sanzoCombinations } from "./sanzo-wada.ts";
 import { test } from "node:test";
@@ -5,7 +6,6 @@ import assert from "node:assert/strict";
 import {
   restorePalettes,
   matchesPalette,
-  presets,
   paletteQuery,
   defaultDarkPalette,
   foregroundForSurface,
@@ -17,7 +17,6 @@ import {
   randomPalette,
   paletteCSS,
   samePalette,
-  presetForTheme,
 } from "./palette.ts";
 test("contrast matches black and white and identical colors", () => {
   assert.equal(contrast("#000000", "#ffffff"), 21);

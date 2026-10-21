@@ -1,6 +1,5 @@
 import { contrast, foregroundForSurface } from "../../browser/public/palette-contrast.ts";
 export { contrast, foregroundForSurface };
-import { sanzoCombinations } from "./sanzo-wada.ts";
 
 export const roles = [
   "text",
@@ -82,20 +81,6 @@ const neutralBases = {
 export type PaletteMode = "light" | "dark";
 export function paletteForMode(palette: Palette, mode: PaletteMode): Palette {
   return { ...palette, ...neutralBases[mode] };
-}
-export const presets: SavedPalette[] = [
-  ...quickPickPresets,
-  ...sanzoCombinations.map(([primary, secondary, accent = secondary], index) => {
-    return {
-      id: `sanzo-wada-${index + 1}`,
-      name: `Sanzo Wada ${index + 1}`,
-      colors: { ...neutralBases.light, primary, secondary, accent },
-    };
-  }),
-];
-export function presetForTheme(preset: SavedPalette, dark: boolean): SavedPalette {
-  if (!preset.id.startsWith("sanzo-wada-")) return preset;
-  return { ...preset, colors: paletteForMode(preset.colors, dark ? "dark" : "light") };
 }
 export function isPalette(value: unknown): value is Palette {
   return (
