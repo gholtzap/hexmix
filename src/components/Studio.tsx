@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { usePreviewToolbarClearance } from '@/hooks/usePreviewToolbarClearance';
 import { useLinkState } from "@/hooks/useLinkState";
 import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
 import { createSharedLink } from "@/lib/shared-link";
@@ -163,6 +164,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [showCapture, setShowCapture] = useState(false);
   const [readyPreview, setReadyPreview] = useState<string | null>(null);
+  usePreviewToolbarClearance(frame, showCapture ? null : toolbarElement, preview);
   const attachFrame = useCallback((element: HTMLIFrameElement | null) => {
     frame.current = element;
     setReadyPreview(null);
