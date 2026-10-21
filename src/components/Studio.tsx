@@ -37,7 +37,7 @@ import { comparisonHref } from "@/lib/comparison";
 import { copyText, readThemePaste } from "@/lib/clipboard";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
-import {copyPalette,copyTheme,parseTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
+import {copyPalette,copyTheme,readTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
 import SiteSwitcher from "./SiteSwitcher";
@@ -457,10 +457,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     let text: string;
     try { text = await navigator.clipboard.readText(); }
     catch { setNotice("Use Command+V or Ctrl+V to paste a theme."); return; }
-    pasteText(text);
+    await pasteText(text);
   }
-  function pasteText(text: string) {
-    try { applyImport(parseTheme(text)); }
+  async function pasteText(text: string) {
+    try { applyImport(await readTheme(text, window.location.origin)); }
     catch { setNotice("Clipboard has no valid palette or theme."); }
   }
   useEffect(() => {
