@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict';
+import {runBugCheck} from './lib/confirmed-bug.mts';
+await runBugCheck('HX-039','/dashboards/infra-dashboard/environment-variables',async({frame,audit})=>{
+ const create=async(project:string,environment:string)=>{await frame.getByRole('button',{name:'Create Variable',exact:true}).click();const d=frame.getByRole('dialog');await d.getByLabel('Name',{exact:true}).fill('NEXT_PUBLIC_SITE_URL');await d.getByLabel('Value',{exact:true}).fill('https://sample.invalid');await d.getByLabel('Project').selectOption(project);await d.getByLabel('Environment').selectOption(environment);await d.getByRole('button',{name:'Create Variable',exact:true}).click();};
+ await create('atlas-commerce','Production');assert.equal(await frame.getByRole('dialog').count(),0);await create('acme-web','Development');assert.equal(await frame.getByRole('dialog').count(),0);await create('acme-web','Production');await frame.getByRole('dialog').getByRole('alert').waitFor();assert.match(await frame.getByRole('dialog').getByRole('alert').innerText(),/already exists/);assert.equal(await frame.locator('tbody tr').filter({hasText:'NEXT_PUBLIC_SITE_URL'}).count(),3);await audit(frame,'duplicate-scope-error');
+});
