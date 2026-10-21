@@ -63,13 +63,17 @@ export async function pluginsPage(view = 'plugins') {
     }
     function editSkill(skill = undefined) {
         rememberSharedDialog("skill", skill ? skills.indexOf(skill) : null);
-        dialog(skill ? 'Edit skill' : 'New skill', `<form id="plug-skill-form"><label class="field-label" for="plug-skill-name">Name</label><input class="field" id="plug-skill-name" name="name" required maxlength="100" value="${esc(skill?.name || '')}"><label class="field-label" for="plug-skill-content">Instructions</label><textarea class="field" id="plug-skill-content" name="content" required maxlength="10000" rows="7">${esc(skill?.content || '')}</textarea><p class="muted">Sample skill. Changes apply to this preview.</p><div class="actions"><button class="pill primary">Save</button></div></form>`, d => {
+        dialog(skill ? 'Edit skill' : 'New skill', `<form id="plug-skill-form"><label class="field-label" for="plug-skill-name">Name</label><input class="field" id="plug-skill-name" name="name" required maxlength="100" value="${esc(skill?.name || '')}"><label class="field-label" for="plug-skill-content">Instructions</label><textarea class="field" id="plug-skill-content" name="content" required maxlength="10000" rows="7">${esc(skill?.content || '')}</textarea><p class="muted">Sample skill. Changes apply to this preview.</p><div class="actions"><button class="pill primary" style="color:var(--p-on-primary,var(--p-background))">Save</button></div></form>`, d => {
+            d.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input,textarea').forEach(field => { field.oninput = () => field.setCustomValidity(''); });
             d.querySelector<HTMLFormElement>('form').onsubmit = event => {
                 event.preventDefault();
                 const form = event.currentTarget;
                 const name = ((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement).value.trim(), content = ((form as HTMLFormElement).elements.namedItem('content') as HTMLInputElement).value.trim();
-                if (!name || !content)
-                    return;
+                const nameField = (form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement;
+                const contentField = (form as HTMLFormElement).elements.namedItem('content') as HTMLTextAreaElement;
+                nameField.setCustomValidity(name ? '' : 'Enter a name.');
+                contentField.setCustomValidity(content ? '' : 'Enter instructions.');
+                if (!(form as HTMLFormElement).reportValidity()) return;
                 const values = { name, content, description: content.slice(0, 90) };
                 if (skill)
                     Object.assign(skill, values);
