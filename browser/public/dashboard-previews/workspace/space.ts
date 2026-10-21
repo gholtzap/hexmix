@@ -28,6 +28,13 @@ const sideTypes = [['All', 'space'], ['Pages', 'page'], ['Slides', 'slide'], ['S
 function preview(index) {
     return `<img src="assets/template-preview-${index}.png" alt="" loading="lazy">`;
 }
+export function openImages() {
+    state.type = 'Images';
+    state.tab = 'Your items';
+    state.search = '';
+    state.group = null;
+    navigate('space');
+}
 export function spacePage(view = 'space') {
     const sites = view === 'sites';
     const current = sites ? siteState : state;

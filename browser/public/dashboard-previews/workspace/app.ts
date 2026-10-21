@@ -3,7 +3,7 @@ import { stateWindow } from '../../share-state.ts';
 import { startTask, contextDialog } from './context.js';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
 import { chatPage, searchChats } from './chat.js';
-import { spacePage } from './space.js';
+import { spacePage, openImages } from './space.js';
 import { scheduledPage, searchTasks } from './scheduled.js';
 import { pluginsPage } from './plugins.js';
 const views = ['chat', 'work', 'space', 'scheduled', 'plugins', 'sites', 'skills'];
@@ -80,7 +80,7 @@ async function render(view, push = false) {
         else
             navigate('space');
     } };
-    document.querySelector<HTMLElement>('[data-explore]').onclick = e => menu((e.currentTarget as HTMLElement), ['Projects', 'Images', 'Health', 'Finances', 'Sites', 'Maps', 'GPTs', 'Codex'].map(label => ({ label, action: () => label === 'Sites' ? navigate('sites') : label === 'Projects' ? openProjects() : label === 'Images' ? navigate('space') : startTask(label) })));
+    document.querySelector<HTMLElement>('[data-explore]').onclick = e => menu((e.currentTarget as HTMLElement), ['Projects', 'Images', 'Health', 'Finances', 'Sites', 'Maps', 'GPTs', 'Codex'].map(label => ({ label, action: () => label === 'Sites' ? navigate('sites') : label === 'Projects' ? openProjects() : label === 'Images' ? openImages() : startTask(label) })));
     updateProfile();
     document.querySelector<HTMLElement>('.avatar').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: `${profileName()} · Personal account`, action: settings }, { label: 'Settings', action: settings }, { label: 'Help', action: () => openHelp() }]);
     page.mount?.();
