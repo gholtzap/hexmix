@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, ty
 import { usePreviewToolbarClearance } from '@/hooks/usePreviewToolbarClearance';
 import { useLinkState } from "@/hooks/useLinkState";
 import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
-import { createSharedLink } from "@/lib/shared-link";
+import { captureSharedViews, createSharedLink } from "@/lib/shared-link";
 import { oneOf } from "@/lib/link-state";
 import { useRouter } from "next/navigation";
 import {
@@ -131,7 +131,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   useEffect(() => {
     const capture = (event: Event) => {
       if (event instanceof KeyboardEvent && !['Enter', ' '].includes(event.key)) return;
-      if (event.target instanceof Element && event.target.closest('[aria-label="Share palette"], [aria-label="Share view"], .toolbar-more')) shareView.current = sharedState();
+      if (event.target instanceof Element && event.target.closest('[aria-label="Share palette"], [aria-label="Share view"], .toolbar-more')) { captureSharedViews(); shareView.current = sharedState(); }
     };
     window.addEventListener('pointerdown', capture, true); window.addEventListener('keydown', capture, true);
     return () => { window.removeEventListener('pointerdown', capture, true); window.removeEventListener('keydown', capture, true); };
@@ -935,7 +935,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               >
                 <RotateCcw size={16} />
               </IconButton>
-              <DropdownMenu modal={false} open={toolsOpen} onOpenChange={open => { if (open) { shareView.current ??= sharedState(); setPanel(null); setActiveColor(null); setPreviewPalette(null); document.documentElement.style.setProperty("--tools-menu-bottom", `${Math.round(window.innerHeight - (toolsTrigger.current?.getBoundingClientRect().top ?? window.innerHeight) + 8)}px`); } setToolsOpen(open); }}>
+              <DropdownMenu modal={false} open={toolsOpen} onOpenChange={open => { if (open) { captureSharedViews(); shareView.current ??= sharedState(); setPanel(null); setActiveColor(null); setPreviewPalette(null); document.documentElement.style.setProperty("--tools-menu-bottom", `${Math.round(window.innerHeight - (toolsTrigger.current?.getBoundingClientRect().top ?? window.innerHeight) + 8)}px`); } setToolsOpen(open); }}>
                 <DropdownMenuTrigger asChild><IconButton ref={toolsTrigger} className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /></IconButton></DropdownMenuTrigger>
                 <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed || panel) event.preventDefault(); }}>
                   <DropdownMenuGroup className="mobile-tools">
