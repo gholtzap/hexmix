@@ -1,16 +1,21 @@
-import { registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { readViewState, stateScope } from '../../share-state.ts';
 import { dialog, esc, toast, navigate } from './ui.js';
+let sharedContext: string | null = null;
+function personalContext() {
+    if (sharedContext !== null) return sharedContext;
+    try { return localStorage.getItem('pebble-context') || ''; }
+    catch { return ''; }
+}
+linkPreviewData('context', () => ({ text: personalContext() }), value => { if (readViewState().views[stateScope()]?.['workspace.context'] !== undefined) sharedContext = value.text; });
 export function contextDialog() {
     rememberSharedDialog("context");
-    let context = '';
-    try {
-        context = localStorage.getItem('pebble-context') || '';
-    }
-    catch { }
-    dialog('personal assistant', `<form><label class="field-label" for="dot-context">Personal context</label><textarea class="field" id="dot-context" rows="7" maxlength="10000" placeholder="Goals, preferences, and project notes">${esc(context)}</textarea><div class="actions"><button class="pill primary">Save context</button><button type="button" class="pill" data-clear>Clear</button></div><p role="status"></p></form>`, d => {
+    const context = personalContext();
+    dialog('personal assistant', `<form><label class="field-label" for="dot-context">Personal context</label><textarea class="field" id="dot-context" rows="7" maxlength="10000" placeholder="Goals, preferences, and project notes">${esc(context)}</textarea><div class="actions"><button class="pill primary" style="color:var(--p-on-primary,var(--p-background))">Save context</button><button type="button" class="pill" data-clear>Clear</button></div><p role="status"></p></form>`, d => {
         const field = d.querySelector<HTMLTextAreaElement>('textarea'), status = d.querySelector<HTMLElement>('[role=status]');
         const save = () => { try {
-            localStorage.setItem('pebble-context', field.value);
+            if (sharedContext !== null) sharedContext = field.value;
+            else localStorage.setItem('pebble-context', field.value);
             d.close();
             toast('Personal context saved');
         }
