@@ -90,8 +90,8 @@ export function spacePage(view = 'space') {
         });
     }
     function create(type) {
-        nameForm(`Create ${type.toLowerCase()}`, '', name => { items.push({ id: nextId++, name, type, body: '', group: state.group }); if (type === 'Site' && !sites)
-            return 'sites'; if (!sites) {
+        nameForm(`Create ${type.toLowerCase()}`, '', name => { items.push({ id: nextId++, name, type, body: '', group: state.group }); if (type === 'Site' && !sites) {
+            siteState.search = ''; return 'sites'; } if (!sites) {
             state.type = 'All';
             state.tab = 'Your items';
         } current.search = ''; toast(`${type} created`); }, {kind:"create",type});
