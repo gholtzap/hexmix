@@ -51,9 +51,9 @@ img[src="/media-893f0f560686fc.png"] {
 img[data-editor-icon] {
   mask: none !important;
   -webkit-mask: none !important;
-  background: radial-gradient(circle at 24% 22%, var(--p-primary), transparent 54%),
+  background: var(--preview-image-background, radial-gradient(circle at 24% 22%, var(--p-primary), transparent 54%),
     radial-gradient(circle at 74% 78%, var(--p-accent), transparent 48%),
-    linear-gradient(130deg, var(--p-secondary), var(--p-background)) !important;
+    linear-gradient(130deg, var(--p-secondary), var(--p-background))) !important;
   border-radius: 6px;
 }
 

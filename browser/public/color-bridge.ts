@@ -12,6 +12,10 @@
             return;
         for (const image of document.querySelectorAll<HTMLImageElement>(selector)) {
             const compact = image.getBoundingClientRect().width < 50;
+            if (site === "tervix") {
+                if (compact) image.dataset.editorIcon = "tile";
+                else delete image.dataset.editorIcon;
+            }
             // Use the surface token so an image does not freeze a color transition mid-frame.
             const parentStyle = getComputedStyle(image.parentElement);
             const color = mediaPalette?.[image.dataset.editorGradientRole] || parentStyle.getPropertyValue("--p-surface-text").trim() || mediaPalette?.text || (site === "nuvexa" ? "#1d1d1b" : parentStyle.color);
@@ -458,9 +462,10 @@
             return;
         updateAvenloProof();
         for (const image of document.images) {
+            const imageRole = image.dataset.editorGradientRole;
+            image.style.setProperty("--preview-image-background", roles.includes(imageRole) ? `url("${gradient(0, imageRole)}")` : "");
             if (image.dataset.editorWordmark)
                 continue;
-            const imageRole = image.dataset.editorGradientRole;
             if (image.dataset.editorOriginalSrc && !imageRole) {
                 image.src = image.dataset.editorOriginalSrc;
                 image.style.removeProperty("mask");
