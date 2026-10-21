@@ -1,4 +1,4 @@
-interface PreviewPaint {src?:string; visible?:string; ready?:string}
+interface PreviewPaint {src?:string; visible?:string; ready?:string; bodyVisibility?:string}
 interface PreviewSpeechRecognition {
   start():void; stop():void;
   onresult: (event:{results:ArrayLike<ArrayLike<{transcript:string}>>})=>void;

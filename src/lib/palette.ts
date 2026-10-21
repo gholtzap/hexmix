@@ -165,10 +165,12 @@ export function randomPalette(dark = false): Palette {
 export function restorePalettes(value: unknown): SavedPalette[] {
   if (!Array.isArray(value)) throw new Error("Invalid palette collection");
   const ids = new Set<string>();
+  const reserved = new Set(value.map(item => item?.id));
   return value.filter((item) => item && typeof item.name === "string" && isPalette(item.colors))
-    .map((item) => {
-      const id = typeof item.id === "string" && item.id && !ids.has(item.id)
-        ? item.id : crypto.randomUUID();
+    .map((item, index) => {
+      let id = typeof item.id === "string" && item.id && !ids.has(item.id)
+        ? item.id : `restored-${index}`;
+      while (ids.has(id) || (id !== item.id && reserved.has(id))) id += "-";
       ids.add(id);
       return { id, name: item.name, colors: item.colors };
     });

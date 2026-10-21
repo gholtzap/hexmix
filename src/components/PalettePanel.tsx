@@ -55,6 +55,7 @@ export default function PalettePanel({
     scroll.current = {};
   }
   const savedTab = useRef<HTMLButtonElement>(null);
+  const returnToSaved = useRef(false);
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -181,14 +182,20 @@ export default function PalettePanel({
                                   More
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent className="palette-menu" side="top" sideOffset={8} align="end">
+                              <DropdownMenuContent className="palette-menu" side="top" sideOffset={8} align="end"
+                                onCloseAutoFocus={(event) => {
+                                  if (!returnToSaved.current) return;
+                                  event.preventDefault();
+                                  returnToSaved.current = false;
+                                  savedTab.current?.focus();
+                                }}>
                                 <DropdownMenuItem onSelect={() => {
                                   setEditing({ id: item.id, name: item.name });
                                   setNameError("");
                                 }}>Rename palette</DropdownMenuItem>
                                 <DropdownMenuItem className="palette-remove" onSelect={() => {
+                                  returnToSaved.current = true;
                                   onRemove(item.id);
-                                  requestAnimationFrame(() => savedTab.current?.focus());
                                 }}>
                                   Remove palette
                                 </DropdownMenuItem>

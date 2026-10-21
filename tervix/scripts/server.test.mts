@@ -16,7 +16,7 @@ test('root serves captured HTML with local script and connection policy', async 
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /<!DOCTYPE html>/i);
-  const injected = '<link rel="stylesheet" href="/home-media.css"><script src="/home-media.js" defer></script><script src="/color-bridge.js" defer></script>';
+  const injected = '<link rel="stylesheet" href="/render-assets/tervix/home-media.css"><script src="/render-assets/tervix/home-media.js" defer></script><script src="/color-bridge.js" defer></script>';
   assert(html.includes(injected));
   const source = await readFile(new URL('../public/index.html', import.meta.url), 'utf8');
   const normalize = (body: string) => body.replaceAll('http://127.0.0.1:3000', '').replaceAll('/render-assets/tervix/', '/');

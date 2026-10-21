@@ -21,12 +21,20 @@ try {
       if(requested.length && !requested.includes(`${site}:${width}:${theme}`))continue;
       const page = await browser.newPage({viewport:{width,height:width===390?844:900},reducedMotion:'reduce'});
       page.setDefaultTimeout(20000);
+      const paints = [];
+      await page.exposeFunction('recordPreviewPaint', state => paints.push(state));
+      await page.addInitScript(() => {
+        window.addEventListener('message', event => {
+          const iframe = document.querySelector('iframe');
+          if (event.data?.type === 'color-editor-painted' && event.source === iframe?.contentWindow) {
+            window.recordPreviewPaint({src:iframe.src,bodyVisibility:getComputedStyle(iframe.contentDocument.body).visibility});
+          }
+        });
+      });
       await page.goto(base+previewHref('/'+site,palette,'System','System'));
       await page.locator('[data-app-ready]').waitFor();
       await page.evaluate(() => { window.__navigationDocument = crypto.randomUUID(); window.__navigationToolbar = document.querySelector('[aria-label="Color toolbar"]'); });
       const documentId = await page.evaluate(() => window.__navigationDocument);
-      const paints = [];
-      await page.exposeFunction('recordPreviewPaint', state => paints.push(state));
       await page.evaluate(() => {
         const inspect = () => {
           const iframe = document.querySelector('iframe');
@@ -75,6 +83,7 @@ try {
       await page.evaluate(() => history.forward());
       await page.waitForURL(url=>url.pathname==='/'+site+path);
       await ready();
+      assert(paints.every(state=>state.bodyVisibility!=='hidden'),'A hidden page cannot report that it is ready');
       checks.push({site,width,theme,path,frames:page.frames().length,palette,paints});
       console.log(`Checked ${site} ${width} ${theme}`);
       if(site==='avenlo')await page.screenshot({path:`${output}/avenlo-${width}-${theme}.png`});

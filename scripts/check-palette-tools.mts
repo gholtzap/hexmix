@@ -45,6 +45,7 @@ try{
   await page.locator('.toast').waitFor({state:'hidden'});
   await page.getByRole('button',{name:'More actions for Ocean launch',exact:true}).click();await audit(page,'saved palette actions',width,theme);
   await page.getByRole('menuitem',{name:'Rename palette',exact:true}).click();await name.fill('Team colors');await audit(page,'rename palette',width,theme);await page.getByRole('button',{name:'Save name',exact:true}).click();
+  await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   const record=await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0]);assert.equal(record.name,'Team colors');assert.deepEqual(record.colors,palette);
   await page.reload();await page.locator('[data-app-ready]').waitFor();await page.getByRole('button',{name:'Palettes',exact:true}).click();await page.getByRole('tab',{name:'Saved',exact:true}).click();await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0].id),record.id);

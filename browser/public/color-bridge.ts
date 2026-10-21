@@ -572,15 +572,5 @@
                     main.style.setProperty(`--p-${role}`, palette[role]);
         }
     });
-    let lastPainted = "";
-    const reportPainted = () => {
-        if (root.dataset.copyReady !== "true" || root.dataset.contrastReady !== "true") return;
-        const palette = root.dataset.contrastPalette;
-        if (!palette || palette === lastPainted) return;
-        lastPainted = palette;
-        window.parent.postMessage({ type: "color-editor-painted", url: location.href, palette }, editorOrigin);
-    };
-    new MutationObserver(reportPainted).observe(root, { attributes: true, attributeFilter: ["data-copy-ready", "data-contrast-ready", "data-contrast-palette"] });
-    reportPainted();
     window.parent.postMessage({ type: "color-editor-ready" }, editorOrigin);
 })();

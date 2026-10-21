@@ -18,6 +18,12 @@ try {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     const audit = async state => {
+      await page.mouse.move(1, 1);
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+        await Promise.all(document.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {})));
+      });
       let report = { state, viewport, findings: [] };
       try {
         await expectUI(page, { attach: async (_, attachment) => {
@@ -45,6 +51,7 @@ try {
       await page.getByRole('menuitem', { name: 'Remove palette', exact: true }).waitFor();
       await audit('remove menu open');
       await page.getByRole('menuitem', { name: 'Remove palette', exact: true }).click();
+      await apply(name).waitFor({ state: 'detached' });
       await page.waitForFunction(() => document.activeElement?.getAttribute('role') === 'tab');
       assert.equal(await page.locator('.palette-panel').isVisible(), true);
     };
@@ -107,6 +114,7 @@ try {
     await apply('Garden party').click();
     await page.getByRole('button', { name: 'Save palette', exact: true }).click();
       await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await apply('My palette 2').waitFor();
     assert.equal((await saved()).length, 2);
     await remove('My palette 1');
     assert.equal((await saved())[0].name, 'My palette 2');
@@ -114,6 +122,7 @@ try {
     await apply('Plum perfect').click();
     await page.getByRole('button', { name: 'Save palette', exact: true }).click();
       await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('hue-palettes-v1') || '[]').length === 2);
     const names = (await saved()).map(item => item.name);
     assert.equal(new Set(names).size, 2, 'Names must stay unique after removing and saving');
     const newName = names.find(name => name !== 'My palette 2');
@@ -186,6 +195,7 @@ try {
     await page.locator('[data-app-ready]').waitFor();
     await open();
     await tab('Saved').click();
+    await page.waitForFunction(() => document.querySelectorAll('.palette-card').length === 6);
     assert.equal(await page.locator('.palette-card:visible').count(), 6);
     await page.getByRole('button', { name: 'Browse all palettes', exact: true }).click();
     assert.equal(await page.locator('.palette-card:visible').count(), 24);
@@ -236,6 +246,7 @@ try {
     await audit('storage read error');
     await close();
     await page.evaluate(() => {
+      localStorage.removeItem('hue-palettes-v1');
       const setItem = Storage.prototype.setItem;
       Storage.prototype.setItem = function (key, value) {
         if (key === 'hue-palettes-v1') throw new DOMException('Storage unavailable', 'QuotaExceededError');

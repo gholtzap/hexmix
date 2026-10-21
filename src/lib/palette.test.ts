@@ -63,11 +63,15 @@ test("saved collections retain all valid records and get unique persistent IDs",
   const records = Array.from({ length: 3000 }, (_, i) => ({ name: `Palette ${i}`, colors: initialPalette }));
   const restored = restorePalettes([...records, { name: "Invalid", colors: {} }]);
   assert.equal(restored.length, 3000);
+  assert.equal(restorePalettes(records)[0].id, restored[0].id, "Legacy IDs must stay the same when storage is read again");
   assert.equal(new Set(restored.map((item) => item.id)).size, 3000);
   assert.deepEqual(restorePalettes(restored), restored);
   assert.throws(() => restorePalettes({}));
   const duplicates = restorePalettes([{ ...restored[0], id: "same" }, { ...restored[1], id: "same" }]);
   assert.notEqual(duplicates[0].id, duplicates[1].id);
+  const collision = restorePalettes([{ name: "Legacy", colors: initialPalette }, { id: "restored-0", name: "Current", colors: initialPalette }]);
+  assert.equal(collision[1].id, "restored-0");
+  assert.notEqual(collision[0].id, collision[1].id);
 });
 test("palette searches combine name and color traits with filters", () => {
   const filters = { query: "blue pastel", color: "blue", mode: "light", style: "pastel" };

@@ -1,5 +1,5 @@
 import {execFileSync} from 'node:child_process';
-import {readFileSync, writeFileSync} from 'node:fs';
+import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import ts from 'typescript';
 
@@ -9,6 +9,7 @@ const files: Record<string,string> = JSON.parse(readFileSync(new URL('browser-fi
 const compiled = new Map(Object.values(files).map(source => [source, readFileSync(new URL('../'+source.replace(/^browser\//, '').replace(/\.ts$/, '.js'), import.meta.url), 'utf8')]));
 for (const [output, source] of Object.entries(files)) {
   const path = new URL('../'+output, import.meta.url);
+  mkdirSync(new URL('.', path), {recursive:true});
   writeFileSync(path, `// Built from ${source}. Edit the TypeScript source.\n`+compiled.get(source));
 }
 const config = ts.transpileModule(readFileSync(new URL('../config/postcss.config.mts', import.meta.url), 'utf8'), {fileName:"postcss.config.mts",compilerOptions:{module:ts.ModuleKind.NodeNext,target:ts.ScriptTarget.ES2022}}).outputText;
