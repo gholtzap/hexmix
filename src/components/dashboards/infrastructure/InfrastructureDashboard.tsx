@@ -24,7 +24,7 @@ export default function InfrastructureDashboard({initialPage='projects'}:{initia
  const teamNamesRef=useRef(teamNames);teamNamesRef.current=teamNames;
  useEffect(()=>{registerSharedView('infrastructure.teamNames',{read:()=>{const names=teamNamesRef.current;return names['Design studio']==='Design studio'&&names.Personal==='Personal'?{}:names;},restore:value=>setTeamNames(value as Record<string,string>),validate:value=>stringRecord(value)&&typeof value['Design studio']==='string'&&typeof value.Personal==='string',private:true});},[]);
  const teamName=teamNames[team]??team;
- const navigate=(next:PageId)=>{setPage(next);setDialog(null);setDrawer(false);const host=window.parent;const url=new URL(host.location.href);if(host===window)url.searchParams.set('page',next);else url.pathname=dashboardPath(next);host.history.pushState(null,'',url);};
+ const navigate=(next:PageId,project?:string)=>{setPage(next);setDialog(null);setDrawer(false);const host=window.parent;const url=new URL(host.location.href);url.searchParams.delete('project');if(project)url.searchParams.set('project',project);if(host===window)url.searchParams.set('page',next);else url.pathname=dashboardPath(next);host.history.pushState(null,'',url);};
  useEffect(()=>{const host=window.parent;const sync=()=>{const value=host===window?new URLSearchParams(host.location.search).get('page'):host.location.pathname.split('/')[3]||'projects';if(isPageId(value))setPage(value);};host.addEventListener('popstate',sync);return()=>host.removeEventListener('popstate',sync);},[]);
  const [items,setItems]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.items", samples, { private: true }),[query,setQuery]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.query", ''),[layout,setLayout]=useLinkState<'list'|'grid'>("InfrastructureDashboard.InfrastructureDashboard.layout", 'list', { validate: oneOf("list", "grid") }),[sort,setSort]=useLinkState<'Activity'|'Name'>("InfrastructureDashboard.InfrastructureDashboard.sort", 'Activity', { validate: oneOf("Activity", "Name") }),[filter,setFilter]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.filter", 'All');
  const [drawer,setDrawer]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.drawer", false),[dialog,setDialog]=useLinkState<Dialog|null>("InfrastructureDashboard.InfrastructureDashboard.dialog", null, { validate: nullable(value => stringRecord(value) && typeof value.title === "string" && ["action", "project", "find", "add"].includes(value.kind)) }),[notice,setNotice]=useState(''),[agent,setAgent]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.agent", false),[prompt,setPrompt]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.prompt", '', { private: true }),[answer,setAnswer]=useLinkState("InfrastructureDashboard.InfrastructureDashboard.answer", '', { private: true });
@@ -43,7 +43,7 @@ export default function InfrastructureDashboard({initialPage='projects'}:{initia
   if(title==='Log out'){setSignedOut(true);return;}
   if(title==='Theme'){
    const host=window.parent;
-   if(host!==window)host.postMessage({type:'preview-toggle-theme'},location.origin);
+   if(host!==window){if(!document.documentElement.hasAttribute('data-comparison-replay'))host.postMessage({type:'preview-toggle-theme'},location.origin);}
    else {const root=document.documentElement;const light=root.dataset.theme!=='light';root.style.setProperty('--p-background',light?'#ffffff':'#000000');root.style.setProperty('--p-text',light?'#171717':'#ededed');root.style.setProperty('--p-secondary',light?'#f5f5f5':'#1f1f1f');root.style.setProperty('--p-accent',light?'#666666':'#a1a1a1');}
    return;
   }
@@ -55,9 +55,9 @@ export default function InfrastructureDashboard({initialPage='projects'}:{initia
   if(['12 days remaining in cycle','Billing cycle'].includes(title)||['Build CPU Minutes','Fluid Provisioned Memory','Drains Volume','Fluid Active CPU','Fast Origin Transfer','ISR Writes','Function Invocations','ISR Reads','CDN Requests - Additional CPU Duration','Image Optimization Transformation'].includes(title)){navigate('usage');return;}
   if(title==='Enable Observability Plus'){navigate('observability');return;}
   if(title==='All projects'||title==='Favorites'){setQuery('');setFilter(title==='Favorites'?'Favorites':'All');navigate('projects');return;}
-  if(title==='View Logs'){navigate('logs');return;}
+  if(title==='View Logs'){navigate('logs',detail);return;}
   if(['Deployment','View deployment'].includes(title)){navigate('deployments');return;}
-  const next=pageForLabel(title);if(next){navigate(next);return;}
+  const next=pageForLabel(title);if(next){navigate(next,next==='logs'||next==='deployments'?detail:undefined);return;}
   const recent=recentPreviews.find(item=>item.title===detail);
   setDialog({title,detail:recent?.project||detail,kind:items.some(p=>p.name===title)?'project':'action'});
  };
