@@ -128,7 +128,7 @@ export function chatPage(view = 'chat') {
                 } };
             };
             const fileInput = main.querySelector<HTMLInputElement>('#chat-files');
-            const renderAttachments = () => { main.querySelector<HTMLElement>('.attachments').innerHTML = attachmentMarkup(attachments); };
+            const renderAttachments = () => { main.querySelector<HTMLElement>('.chat-input-area > .attachments').innerHTML = attachmentMarkup(attachments); };
             fileInput.onchange = () => { attachments.push(...[...fileInput.files].map(file => file.name)); renderAttachments(); };
             renderAttachments();
             function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
