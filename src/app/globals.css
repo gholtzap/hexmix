@@ -1217,6 +1217,12 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 
 .color-trigger { position: relative; }
 .color-trigger > .swatch-tooltip { display: none; }
+.background-name-narrow { display: none; }
+.background-name-narrow::after { content: "bg"; }
+@media (max-width: 1500px) {
+  .background-name-wide { display: none; }
+  .background-name-narrow { display: inline; }
+}
 @media (max-width: 1200px) {
   .toolbar-color > .color-trigger > .color-trigger-name { display: none; }
   .toolbar-color > .color-trigger:has(> svg) { height: 44px; }

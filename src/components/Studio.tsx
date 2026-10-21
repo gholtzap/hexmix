@@ -739,7 +739,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                             : "#000000",
                       }}
                     >
-                      <span className="color-trigger-name">{role === "background" ? <>Backg<wbr />round</> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
+                      <span className="color-trigger-name">{role === "background" ? <><span className="background-name-wide">Background</span><span className="background-name-narrow" aria-hidden="true" /></> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
                       {locked.includes(role) && <LockKeyhole size={12} aria-hidden="true" />}
                       <span className="control-tooltip swatch-tooltip" role="tooltip" id={`${swatchTooltip}-${role}`}>
                         {role[0].toUpperCase() + role.slice(1)} color
