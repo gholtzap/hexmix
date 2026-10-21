@@ -6,6 +6,7 @@ import { flushSync } from "react-dom";
 import { TextResponse } from "@aicss/react/text-response";
 import { Orb } from "@aicss/react/orbs";
 import { CardDialog, DropdownMenu, IconButton, SegmentedControl, Slider, Toast } from "./vendor/halaska";
+import { clearSharedDialog } from '../../../browser/public/dashboard-previews/workspace/shared';
 
 import type { DashboardDialog, MenuItem, DashboardComponents } from "../../../browser/types/workspace";
 export type { DashboardDialog } from "../../../browser/types/workspace";
@@ -47,6 +48,7 @@ function createComponents() {
     if (app) app.inert = true;
     const close = () => {
       if (!host.isConnected) return;
+      clearSharedDialog();
       if (app) app.inert = previousInert ?? false;
       unmountWithin(host); host.remove();
       if (closeDialog === close) closeDialog = undefined;

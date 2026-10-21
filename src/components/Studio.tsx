@@ -1,14 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useLinkState } from "@/hooks/useLinkState";
+import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
+import { createSharedLink } from "@/lib/shared-link";
+import { oneOf } from "@/lib/link-state";
 import { useRouter } from "next/navigation";
 import {
   ArrowDownToLine,
   ArrowLeft,
   ArrowRight,
-  Check,
   ChevronDown,
   Copy,
+  ClipboardPaste,
+  FileJson,
+  Sparkles,
+  Undo2,
+  Columns2,
   LockKeyhole,
   Moon,
   MousePointer2,
@@ -25,11 +33,11 @@ import {
 import Link from "next/link";
 import { useVisibleViewport } from "@/hooks/useVisibleViewport";
 import IconButton from "./IconButton";
-import { Button } from "./ui/button";
 import { comparisonHref } from "@/lib/comparison";
-import { copyText } from "@/lib/clipboard";
+import { copyText, readThemePaste } from "@/lib/clipboard";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
+import {copyPalette,copyTheme,parseTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
 import SiteSwitcher from "./SiteSwitcher";
@@ -68,7 +76,7 @@ import {
   type Role,
 } from "@/lib/palette";
 import { fonts, type FontName } from "@/lib/fonts";
-import { isElementSelection, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
+import { isElementSelection, isElementRole, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
 
 type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
 
@@ -102,28 +110,53 @@ function elementSwatchStyle(selection: ElementSelection, color: string, recolor 
 export default function Studio({ children, preview = "/preview/index.html", defaultPalette = defaultDarkPalette, waitForPreview = false, capture }: StudioProps) {
   useVisibleViewport();
   const toolsTrigger = useRef<HTMLButtonElement>(null);
+  const [toolsOpen, setToolsOpen] = useLinkState("Studio.toolsOpen", false);
+  const [previewsOpen, setPreviewsOpen] = useLinkState("Studio.previewsOpen", false);
   const router = useRouter();
-  const [history, setHistory] = useState<Palette[]>([defaultPalette]);
-  const [index, setIndex] = useState(0);
+  const shareView = useRef<ViewState | null>(null);
+  useEffect(() => {
+    const capture = (event: Event) => {
+      if (event instanceof KeyboardEvent && !['Enter', ' '].includes(event.key)) return;
+      if (event.target instanceof Element && event.target.closest('[aria-label="Share palette"], [aria-label="Share view"], .toolbar-more')) shareView.current = sharedState();
+    };
+    window.addEventListener('pointerdown', capture, true); window.addEventListener('keydown', capture, true);
+    return () => { window.removeEventListener('pointerdown', capture, true); window.removeEventListener('keydown', capture, true); };
+  }, []);
+  const [history, setHistory] = useLinkState<Palette[]>("Studio.Studio.history", [defaultPalette], { validate: value => Array.isArray(value) && value.length > 0 && value.every(isPalette) });
+  const [index, setIndex] = useLinkState("Studio.Studio.index", 0, { validate: value => Number.isSafeInteger(value) && Number(value) >= 0 });
   const [previewPalette, setPreviewPalette] = useState<Palette | null>(null);
-  const [activeColor, setActiveColor] = useState<Role | null>(null);
-  const palette = previewPalette ?? history[index];
-  const [locked, setLocked] = useState<Role[]>([]);
+  const [activeColor, setActiveColor] = useLinkState<Role | null>("Studio.Studio.activeColor", null, { validate: oneOf(null, ...roles) });
+  const palette = previewPalette ?? history[Math.min(index, history.length - 1)];
+  const [locked, setLocked] = useLinkState<Role[]>("Studio.Studio.locked", [], { validate: value => Array.isArray(value) && value.every(role => roles.includes(role)) });
   const [heading, setHeading] = useState<FontName>("System");
   const [body, setBody] = useState<FontName>("System");
-  const [panel, setPanel] = useState<"fonts" | "saved" | null>(null);
-  const [inspecting, setInspecting] = useState(false);
-  const [selection, setSelection] = useState<ElementSelection | null>(null);
-  const [elementRoles, setElementRolesState] = useState<ElementRole[]>([]);
-  const [rolesReadyPath, setRolesReadyPath] = useState("");
+  const [panel, setPanel] = useLinkState<"fonts" | "saved" | null>("Studio.Studio.panel", null, { validate: oneOf(null, "fonts", "saved") });
   const [embedded, setEmbedded] = useState(false);
   const [comparisonToolbar, setComparisonToolbar] = useState(false);
   const comparisonState = useRef('');
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useLinkState("Studio.Studio.collapsed", false);
   const [notice, setNotice] = useState("");
-  const [exportOpen, setExportOpen] = useState(false);
-  const [exportFormat, setExportFormat] = useState<PaletteExportFormat>("css");
+  const [exportOpen, setExportOpen] = useLinkState("Studio.Studio.exportOpen", false);
+  const [pasteUndo, setPasteUndo] = useLinkState<Theme | null>("Studio.pasteUndo", null, { validate: value => {
+    if (value === null) return true;
+    if (!value || typeof value !== "object" || !("colors" in value) || !isPalette(value.colors) || !("fonts" in value) || !value.fonts || typeof value.fonts !== "object") return false;
+    const pair = value.fonts as Record<string, unknown>;
+    return typeof pair.heading === "string" && Object.hasOwn(fonts, pair.heading) && typeof pair.body === "string" && Object.hasOwn(fonts, pair.body) && "elements" in value && Array.isArray(value.elements) && value.elements.length <= maxElementRoles && value.elements.every(isElementRole);
+  } });
+  const [manualCopy, setManualCopy] = useLinkState<string | null>("Studio.manualCopy", null, { private: true, validate: value => value === null || typeof value === "string" });
+  const [exportFormat, setExportFormat] = useLinkState<PaletteExportFormat>("Studio.Studio.exportFormat", "css", { validate: value => typeof value === "string" && Object.hasOwn(paletteExportFormats, value) });
+  const [inspecting, setInspecting] = useLinkState("Studio.inspecting", false);
+  const [selection, setSelection] = useLinkState<ElementSelection | null>("Studio.selection", null, { private: true, validate: value => value === null || isElementSelection(value) && value.path === window.location.pathname });
+  const [elementRoles, setElementRolesState] = useLinkState<ElementRole[]>("Studio.elements", [], { validate: value => Array.isArray(value) && value.length <= maxElementRoles && value.every(isElementRole) });
+  const [rolesReadyPath, setRolesReadyPath] = useState("");
   const { saved, remove, storageReady, save, rename } = useSavedPalettes(setNotice);
+  useEffect(() => {
+    const capture = () => {
+      if (panel === "saved" && readField(stateScope(), "PalettePanel.PalettePanel.tab") === "saved") stateWindow().hexmixSharedPalettes = saved;
+    };
+    window.addEventListener('hexmix:capture', capture);
+    return () => window.removeEventListener('hexmix:capture', capture);
+  }, [panel, saved]);
   const frame = useRef<HTMLIFrameElement>(null);
   const newColorButton = useRef<HTMLButtonElement>(null);
   const [toolbarElement, setToolbarElement] = useState<HTMLDivElement | null>(null);
@@ -140,27 +173,33 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     setShowCapture(Boolean(capture && new URL(preview, window.location.origin).hostname === "127.0.0.1" && !["127.0.0.1", "localhost"].includes(window.location.hostname)));
   }, [capture?.id, preview]);
   useEffect(() => {
+    const restore = () => {
     const query = new URLSearchParams(window.location.search);
     setEmbedded(['1', 'toolbar'].includes(query.get("embed") ?? ''));
     setComparisonToolbar(query.get("embed") === "toolbar");
     comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System']);
-    setHistory([readPalette(window.location.search) ?? defaultPalette]);
+    const sharedHistory = readField(stateScope(), "Studio.Studio.history");
+    if (!Array.isArray(sharedHistory) || !sharedHistory.length || !sharedHistory.every(isPalette)) setHistory([readPalette(window.location.search) ?? defaultPalette]);
     const h = query.get("heading"),
       b = query.get("body");
-    if (h && Object.hasOwn(fonts, h)) setHeading(h as FontName);
-    if (b && Object.hasOwn(fonts, b)) setBody(b as FontName);
-    setElementRolesState(readElementRoles(window.location.search));
+    setHeading(h && Object.hasOwn(fonts, h) ? h as FontName : "System");
+    setBody(b && Object.hasOwn(fonts, b) ? b as FontName : "System");
+    if (readField(stateScope(), "Studio.elements") === undefined) setElementRolesState(readElementRoles(window.location.search));
     setRolesReadyPath(window.location.pathname);
+    if (readField(stateScope(), "Studio.selection") === undefined) setSelection(null);
+
+    };
+    restore(); window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
   }, [capture?.id, defaultPalette]);
   useEffect(() => {
     if (!storageReady || rolesReadyPath !== window.location.pathname) return;
     const url = new URL(window.location.href);
     url.searchParams.set("colors", new URLSearchParams(paletteQuery(palette)).get("colors")!);
-    url.searchParams.set("heading", heading);
-    url.searchParams.set("body", body);
+    url.searchParams.set("heading", heading); url.searchParams.set("body", body);
     setElementRoles(url.searchParams, elementRoles);
-    window.history.replaceState(null, "", url);
-  }, [storageReady, palette, heading, body, elementRoles, rolesReadyPath]);
+    window.history.replaceState(window.history.state, "", url);
+  }, [children, storageReady, palette, heading, body, elementRoles, rolesReadyPath]);
   function updateInspector() {
     frame.current?.contentWindow?.postMessage({
       type: "hexmix-inspector-state", page: window.location.pathname, inspecting, assignments: elementRoles,
@@ -180,19 +219,22 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     };
     const frameDocument = frame.current?.contentDocument;
     const updatePosition = () => {
-      const target = frameDocument?.querySelector(selection.selector);
+      const target = frame.current?.contentDocument?.querySelector(selection.selector);
       if (!target) return;
       const box = target.getBoundingClientRect();
       setSelection(current => current?.selector === selection.selector ? { ...current, bounds: { left: box.left, right: box.right, top: box.top, bottom: box.bottom } } : current);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
+    const onReady = (event: MessageEvent) => { if (event.source === frame.current?.contentWindow && event.data?.type === "hexmix-inspector-ready") updatePosition(); };
+    window.addEventListener("message", onReady);
     window.addEventListener("resize", updatePosition);
     frameDocument?.addEventListener("pointerdown", close, true);
     frameDocument?.addEventListener("scroll", updatePosition, true);
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("message", onReady);
       window.removeEventListener("resize", updatePosition);
       frameDocument?.removeEventListener("pointerdown", close, true);
       frameDocument?.removeEventListener("scroll", updatePosition, true);
@@ -295,7 +337,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     };
     window.addEventListener("message", onReady);
     return () => window.removeEventListener("message", onReady);
-  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router, embedded, comparisonToolbar, inspecting, elementRoles, selection?.path, selection?.selector]);
+  }, [palette, heading, body, preview, defaultPalette, waitForPreview, capture?.id, router, inspecting, elementRoles, embedded, selection?.path, selection?.selector]);
   useEffect(() => {
     if (embedded) window.parent.postMessage({ type: "hexmix-comparison-ready" }, window.location.origin);
   }, [embedded]);
@@ -383,8 +425,49 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     apply(next);
   }
   async function copy(text: string, message: string) {
-    setNotice(await copyText(text, dialog.current?.open ? dialog.current : document.body) ? message : "Copy is not available in this browser.");
+    if (await copyText(text, dialog.current?.open ? dialog.current : document.body)) setNotice(message);
+    else { setManualCopy(text); setPanel(null); setExportOpen(true); }
   }
+  const pasteHandler = useRef(pasteText);
+  useEffect(() => { pasteHandler.current = pasteText; });
+  useEffect(() => {
+    const documents = new Set<Document>();
+    const paste = (event: ClipboardEvent) => {
+      const text = readThemePaste(event);
+      if (text !== null) { event.preventDefault(); pasteHandler.current(text); }
+    };
+    const load = (event: Event) => {
+      const node = event.target as HTMLIFrameElement;
+      if (node?.tagName === 'IFRAME') { try { if (node.contentDocument) attach(node.contentDocument); } catch { /* Separate origins keep their native paste behavior. */ } }
+    };
+    function attach(doc: Document) {
+      if (documents.has(doc)) return;
+      documents.add(doc); doc.addEventListener('paste', paste); doc.addEventListener('load', load, true);
+      doc.querySelectorAll('iframe').forEach(node => { try { if (node.contentDocument) attach(node.contentDocument); } catch { /* Separate origins keep their native paste behavior. */ } });
+    }
+    attach(document);
+    const message = (event: MessageEvent) => {
+      if (comparisonToolbar && event.origin === window.location.origin && event.source === window.parent && event.data?.type === 'hexmix-paste-theme' && typeof event.data.text === 'string') pasteHandler.current(event.data.text);
+    };
+    window.addEventListener('message', message);
+    return () => { documents.forEach(doc => { doc.removeEventListener('paste', paste); doc.removeEventListener('load', load, true); }); window.removeEventListener('message', message); };
+  }, [preview, comparisonToolbar, readyPreview]);
+  function currentTheme(): Theme { return { colors: palette, fonts: { heading, body }, elements: elementRoles }; }
+  async function pasteClipboard() {
+    let text: string;
+    try { text = await navigator.clipboard.readText(); }
+    catch { setNotice("Use Command+V or Ctrl+V to paste a theme."); return; }
+    pasteText(text);
+  }
+  function pasteText(text: string) {
+    try { applyImport(parseTheme(text)); }
+    catch { setNotice("Clipboard has no valid palette or theme."); }
+  }
+  useEffect(() => {
+    if (!exportOpen || manualCopy === null) return;
+    const focus = requestAnimationFrame(() => { const input = dialog.current?.querySelector<HTMLTextAreaElement>('textarea'); input?.focus(); input?.select(); });
+    return () => cancelAnimationFrame(focus);
+  }, [exportOpen, manualCopy]);
   function startComparison() {
     if (comparisonToolbar) { window.parent.postMessage({ type: 'hexmix-comparison-options' }, window.location.origin); return; }
     const selected = previewCatalog.find(item => window.location.pathname === item.path || window.location.pathname.startsWith(item.path + '/'));
@@ -392,13 +475,23 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const second = saved.find(item => !samePalette(item.colors, palette));
     router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', mode: isDarkPalette(palette) ? 'dark' : 'light' }));
   }
-  function share() {
-    const url = new URL(window.location.href);
-    url.search = paletteQuery(palette);
-    url.searchParams.set("heading", heading);
-    url.searchParams.set("body", body);
-    setElementRoles(url.searchParams, elementRoles);
-    void copy(url.toString(), "Palette link copied.");
+  async function share() {
+    const host = stateWindow();
+    const url = new URL(host.location.href);
+    if (host === window) {
+      url.searchParams.set("colors", new URLSearchParams(paletteQuery(palette)).get("colors")!);
+      url.searchParams.set("heading", heading); url.searchParams.set("body", body);
+      setElementRoles(url.searchParams, elementRoles);
+    }
+    try {
+      const href = await createSharedLink(url, state => {
+        if (shareView.current) state.views = { ...state.views, ...shareView.current.views };
+        const own = state.views[stateScope()];
+        if (saved.length && own?.["Studio.Studio.panel"] === "saved" && own?.["PalettePanel.PalettePanel.tab"] === "saved") state.views.shared = { palettes: saved };
+      });
+      shareView.current = null;
+      await copy(href, "View link copied.");
+    } catch (error) { setNotice(error instanceof Error ? error.message : "The share link could not be saved."); }
   }
   function download() {
     const format = paletteExportFormats[exportFormat];
@@ -425,7 +518,22 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     setPreviewPalette(null);
     setPanel(panel === next ? null : next);
   }
-  function openExport() { setPanel(null); setExportOpen(true); }
+  function applyImport(value: ThemeImport) {
+    if (samePalette(palette,value.colors) && (!value.fonts?.heading || value.fonts.heading === heading) && (!value.fonts?.body || value.fonts.body === body) && (!value.elements || JSON.stringify(value.elements) === JSON.stringify(elementRoles))) {
+      setNotice("Theme already applied."); return;
+    }
+    setPasteUndo({colors:palette,fonts:{heading,body},elements:elementRoles});
+    apply(value.colors);
+    if (value.fonts?.heading) setHeading(value.fonts.heading);
+    if (value.fonts?.body) setBody(value.fonts.body);
+    if (value.elements) setElementRolesState(value.elements);
+    setNotice("Theme pasted.");
+  }
+  function undoPaste() {
+    if (!pasteUndo) return;
+    apply(pasteUndo.colors); setHeading(pasteUndo.fonts.heading); setBody(pasteUndo.fonts.body); setElementRolesState(pasteUndo.elements); setPasteUndo(null); setNotice("Previous theme restored.");
+  }
+  function openExport() { setManualCopy(null); setPanel(null); setExportOpen(true); }
   function reset() { apply(defaultPalette); setHeading("System"); setBody("System"); }
   function hideToolbar() {
     setPanel(null); setCollapsed(true);
@@ -471,10 +579,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
           </button>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild><button ref={newColorButton} type="button" className="element-swatch-field" aria-label="Change new color"><span>New</span><span className="element-swatch"><span className="element-swatch-fill" style={elementSwatchStyle(selection, selectedRole ? palette[selectedRole] : selection.oldColor, Boolean(selectedRole))} /></span></button></DropdownMenuTrigger>
-            <DropdownMenuContent className="palette-menu element-role-menu" side="right" sideOffset={8} align="start" aria-label="Choose new color">
-              <DropdownMenuItem onSelect={restoreElement}><span className="element-role-chip element-role-chip-original"><span style={elementSwatchStyle(selection, selection.oldColor)} /></span>Original</DropdownMenuItem>
-              {roles.map(role => <DropdownMenuItem key={role} onSelect={() => assignElement(role)}><span className="element-role-chip" style={{ backgroundColor: palette[role] }} />{role[0].toUpperCase() + role.slice(1)}</DropdownMenuItem>)}
-            </DropdownMenuContent>
+              <DropdownMenuContent className="palette-menu element-role-menu" side="right" sideOffset={8} align="start" aria-label="Choose new color">
+                <DropdownMenuItem onSelect={restoreElement}><span className="element-role-chip element-role-chip-original"><span style={elementSwatchStyle(selection, selection.oldColor)} /></span>Original</DropdownMenuItem>
+                {roles.map(role => <DropdownMenuItem key={role} onSelect={() => assignElement(role)}><span className="element-role-chip" style={{ backgroundColor: palette[role] }} />{role[0].toUpperCase() + role.slice(1)}</DropdownMenuItem>)}
+              </DropdownMenuContent>
           </DropdownMenu>
         </div>
       )}
@@ -626,8 +734,15 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 </div>
               ))}
             </div>
+            <div className="toolbar-transfer" role="group" aria-label="Palette clipboard">
+              <IconButton className="icon-button" aria-label="Copy palette" onClick={()=>void copy(copyPalette(palette), "Palette copied.")}><Copy size={17}/></IconButton>
+              <IconButton className="icon-button" aria-label="Paste palette or theme" onClick={()=>void pasteClipboard()}><ClipboardPaste size={17}/></IconButton>
+              <IconButton className="icon-button" aria-label="Copy theme and settings" onClick={()=>void copy(copyTheme(currentTheme()), "Theme copied.")}><FileJson size={17}/></IconButton>
+              <IconButton className="icon-button" aria-label="Copy for AI" onClick={()=>void copy(themePrompt(currentTheme()), "AI prompt copied.")}><Sparkles size={17}/></IconButton>
+              <IconButton className="icon-button" aria-label="Undo paste" disabled={!pasteUndo} onClick={undoPaste}><Undo2 size={17}/></IconButton>
+            </div>
             <div className="toolbar-actions">
-              <Button variant="ghost" className="toolbar-secondary" aria-label="Compare palettes" onClick={startComparison}>Compare</Button>
+              <IconButton className="icon-button toolbar-secondary" aria-label="Compare palettes" onClick={startComparison}><Columns2 size={17}/></IconButton>
               <IconButton
                 className="icon-button"
                 aria-label="Shuffle palette"
@@ -690,6 +805,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
                 }}
                 onSave={(name) => save(palette, name)} onRename={rename}
                 onRemove={remove}
+                onShare={share}
+                onCopy={item=>void copy(copyPalette(item.colors), `${item.name} copied.`)}
                 notice={notice}
                 returnFocus={toolsTrigger}
                 restoreFocus={!activeColor && panel !== "fonts"}
@@ -715,26 +832,33 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               >
                 <RotateCcw size={16} />
               </IconButton>
-              <DropdownMenu modal={false} onOpenChange={open => { if (open) { setPanel(null); setActiveColor(null); setPreviewPalette(null); } }}>
-                <DropdownMenuTrigger asChild><IconButton ref={toolsTrigger} className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /><span className="mobile-tools-label">Tools</span></IconButton></DropdownMenuTrigger>
+              <DropdownMenu modal={false} open={toolsOpen} onOpenChange={open => { if (open) { shareView.current ??= sharedState(); setPanel(null); setActiveColor(null); setPreviewPalette(null); } setToolsOpen(open); }}>
+                <DropdownMenuTrigger asChild><IconButton ref={toolsTrigger} className="icon-button toolbar-more" aria-label="More tools"><MoreHorizontal size={17} /></IconButton></DropdownMenuTrigger>
                 <DropdownMenuContent className="palette-menu" side="top" sideOffset={Math.max(12, toolbarHeight - 32)} align="end" aria-label="More tools" onCloseAutoFocus={event => { if (exportOpen || collapsed || panel) event.preventDefault(); }}>
                   <DropdownMenuGroup className="mobile-tools">
                     <DropdownMenuItem onSelect={randomize}>Shuffle palette</DropdownMenuItem>
                     <DropdownMenuItem onSelect={toggleTheme}>{dark ? "Use light palette" : "Use dark palette"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("fonts")}>Fonts</DropdownMenuItem>
-                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => togglePanel("saved")}>Palettes</DropdownMenuItem>
+                    <DropdownMenuItem disabled={showCapture || Boolean(children)} onSelect={toggleInspector}>{inspecting ? "Stop selecting elements" : "Select an element"}</DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </DropdownMenuGroup>
                   <DropdownMenuItem disabled={index === 0} onSelect={() => setIndex(index - 1)}>Undo palette</DropdownMenuItem>
                   <DropdownMenuItem disabled={index === history.length - 1} onSelect={() => setIndex(index + 1)}>Redo palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={startComparison}>Compare palettes</DropdownMenuItem>
                   <DropdownMenuItem onSelect={share}>Share palette</DropdownMenuItem>
+                  <DropdownMenuGroup className="clipboard-tools">
+                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy palette" onClick={()=>void copy(copyPalette(palette), "Palette copied.")}><Copy size={17}/></IconButton></DropdownMenuItem>
+                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Paste palette or theme" onClick={()=>void pasteClipboard()}><ClipboardPaste size={17}/></IconButton></DropdownMenuItem>
+                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy theme and settings" onClick={()=>void copy(copyTheme(currentTheme()), "Theme copied.")}><FileJson size={17}/></IconButton></DropdownMenuItem>
+                    <DropdownMenuItem asChild><IconButton className="icon-button" aria-label="Copy for AI" onClick={()=>void copy(themePrompt(currentTheme()), "AI prompt copied.")}><Sparkles size={17}/></IconButton></DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuItem asChild disabled={!pasteUndo}><IconButton className="icon-button" aria-label="Undo paste" disabled={!pasteUndo} onClick={undoPaste}><Undo2 size={17}/></IconButton></DropdownMenuItem>
                   <DropdownMenuItem onSelect={openExport}>Export palette</DropdownMenuItem>
                   <DropdownMenuItem onSelect={reset}>Reset palette and fonts</DropdownMenuItem>
                   <DropdownMenuItem onSelect={hideToolbar}>Hide color toolbar</DropdownMenuItem>
                   <DropdownMenuGroup className="mobile-tools">
-                    <DropdownMenuSub>
+                    <DropdownMenuSub open={previewsOpen} onOpenChange={setPreviewsOpen}>
                       <DropdownMenuSubTrigger>Previews</DropdownMenuSubTrigger>
                       <DropdownMenuSubContent className="palette-menu mobile-preview-menu" aria-label="Previews">
                         {previewCatalog.map(site => <DropdownMenuItem asChild key={site.id}><Link prefetch={false} href={previewHref(site.path, palette, heading, body, elementRoles)}>{site.name}</Link></DropdownMenuItem>)}
@@ -757,7 +881,6 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       ))}
       {notice && panel !== "saved" && (
         <div className="toast" role="status">
-          <Check size={15} />
           {notice}
         </div>
       )}
@@ -771,7 +894,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       >
         <div className="export-dialog">
           <div className="panel-title">
-            <h2>Export</h2>
+            <h2>{manualCopy === null ? "Export" : "Copy text"}</h2>
+            <IconButton className="icon-button" aria-label="Share view" onClick={share}><Share2 size={18}/></IconButton>
             <IconButton
               className="icon-button"
               aria-label="Close export"
@@ -780,6 +904,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <X size={18} />
             </IconButton>
           </div>
+          {manualCopy !== null ? <label className="manual-copy">Text to copy<textarea readOnly value={manualCopy} onFocus={event=>event.target.select()}/></label> : <>
           <label className="export-format">Format
             <select aria-label="Format" value={exportFormat} onChange={event => setExportFormat(event.target.value as PaletteExportFormat)}>
               {Object.entries(paletteExportFormats).map(([value, format]) => <option value={value} key={value}>{format.label}</option>)}
@@ -787,21 +912,11 @@ export default function Studio({ children, preview = "/preview/index.html", defa
           </label>
           {exportFormat === "tailwind" && <p className="export-help">Add this block to your Tailwind 4 stylesheet.</p>}
           <pre role="region" tabIndex={0} aria-label={`${paletteExportFormats[exportFormat].label} export`}><code>{paletteExport(exportFormat, palette, fonts[heading], fonts[body])}</code></pre>
-          <div className="dialog-actions">
-            <button
-              onClick={() =>
-                void copy(
-                  paletteExport(exportFormat, palette, fonts[heading], fonts[body]),
-                  `${paletteExportFormats[exportFormat].label} copied.`,
-                )
-              }
-            >
-              <Copy size={15} /> Copy {paletteExportFormats[exportFormat].label}
-            </button>
-            <button className="button-dark" onClick={download}>
-              <ArrowDownToLine size={15} /> Download {paletteExportFormats[exportFormat].label}
-            </button>
-          </div>
+          </>}
+          {manualCopy === null && <div className="dialog-actions">
+            <IconButton className="icon-button" aria-label={`Copy ${paletteExportFormats[exportFormat].label}`} onClick={()=>void copy(paletteExport(exportFormat,palette,fonts[heading],fonts[body]),`${paletteExportFormats[exportFormat].label} copied.`)}><Copy size={18}/></IconButton>
+            <IconButton className="icon-button" aria-label={`Download ${paletteExportFormats[exportFormat].label}`} onClick={download}><ArrowDownToLine size={18}/></IconButton>
+          </div>}
         </div>
       </dialog>
     </main>

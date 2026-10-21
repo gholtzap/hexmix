@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { restorePalettes, samePalette, type Palette, type SavedPalette } from "@/lib/palette";
+import { restorePalettes, samePalette, isPalette, type Palette, type SavedPalette } from "@/lib/palette";
+import { useLinkState } from './useLinkState';
 
 const storageKey = "hue-palettes-v1";
 const readSaved = () => restorePalettes(JSON.parse(localStorage.getItem(storageKey) || "[]"));
 
 export function useSavedPalettes(setNotice: (message: string) => void) {
+  const [shared, setShared] = useLinkState<SavedPalette[] | null>('palettes', null, {
+    scope: 'shared', private: true,
+    validate: value => value === null || Array.isArray(value) && value.length <= 10_000 && value.every(item => item && typeof item.id === 'string' && typeof item.name === 'string' && item.name.length <= 80 && isPalette(item.colors)),
+  });
   const [saved, setSaved] = useState<SavedPalette[]>([]);
   const [storageReady, setStorageReady] = useState(false);
   useEffect(() => {
@@ -23,6 +28,11 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
     return () => window.removeEventListener("storage", sync);
   }, [setNotice]);
   function change(update: (current: SavedPalette[]) => SavedPalette[] | null, message: string) {
+    if (shared) {
+      const next = update(shared);
+      if (next) { setShared(next); setNotice('Shared palettes updated.'); }
+      return;
+    }
     const write = () => {
       try {
         const current = readSaved();
@@ -52,5 +62,5 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
     change(items => items.map(item => item.id === id ? { ...item, name: trimmed } : item), "Palette renamed.");
   }
   function remove(id: string) { change(items => items.filter(item => item.id !== id), "Palette removed."); }
-  return { saved, storageReady, save, rename, remove };
+  return { saved: shared ?? saved, storageReady, save, rename, remove };
 }

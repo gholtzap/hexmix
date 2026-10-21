@@ -4,6 +4,7 @@ import {chromium} from 'playwright';
 import {expectUI} from 'lintapple/playwright';
 import {measure} from './lib/measure-text-contrast.mts';
 import {contrast} from '../src/lib/palette.ts';
+const appUrl=process.env.APP_URL??'http://127.0.0.1:3000';
 const directory='artifacts/all-surface-contrast';await mkdir(directory,{recursive:true});
 const browser=await chromium.launch();const reports=[],failures=[];
 try {
@@ -11,7 +12,7 @@ try {
   const page=await browser.newPage({viewport:{width,height:width===390?844:900},reducedMotion:'reduce'});page.setDefaultTimeout(15000);
   let source,frame,path;
   const settle=()=>source.waitForFunction(colors=>document.documentElement.dataset.contrastReady==='true'&&document.documentElement.dataset.contrastPalette===colors.split('-').map(color=>'#'+color).join('|'),colors);
-  const open=async route=>{path=route;await page.goto(`http://127.0.0.1:3000${route}?colors=${colors}`,{waitUntil:'domcontentloaded'});frame=page.frameLocator('iframe');await frame.locator('html[data-contrast-ready=true]').waitFor();source=page.frames().find(frame=>frame.parentFrame());await settle();};
+  const open=async route=>{path=route;await page.goto(`${appUrl}${route}?colors=${colors}`,{waitUntil:'domcontentloaded'});frame=page.frameLocator('iframe');await frame.locator('html[data-contrast-ready=true]').waitFor();await frame.locator('body').waitFor({state:'visible'});source=page.frames().find(frame=>frame.parentFrame());await settle();};
   const check=async state=>{await source.evaluate(async()=>{await Promise.all(document.getAnimations().filter(animation=>animation.effect.getTiming().iterations!==Infinity).map(animation=>animation.finished.catch(()=>{})));});await settle();const text=await measure(source);const bad=text.filter(item=>contrast(item.foreground,item.background)<4.5);let ui={findings:[]};try{await expectUI(page,{attach:async(_,a)=>ui=JSON.parse(String(a.body))});}catch(error){if(!ui.findings.length)throw error;}const record={path,width,theme,state,measurements:text.length,failures:bad,ui};reports.push(record);if(bad.length||ui.findings.length)failures.push(record);await page.screenshot({path:`${directory}/action-${path.replaceAll('/','_')}-${width}-${theme}-${state.replaceAll(' ','-')}.png`});};
   try {
    await open('/avenlo');if(width===390)await frame.locator('.nav__toggle').click();else await frame.getByRole('button',{name:'Solutions',exact:true}).click();await check('navigation open');

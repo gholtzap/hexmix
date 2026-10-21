@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useLinkState } from "@/hooks/useLinkState";
+import { stringRecord } from "@/lib/link-state";
 import { createPortal } from 'react-dom';
 import { companySizes, validateDemo, type DemoValues } from '../lib/demo-validation';
 
@@ -10,10 +12,10 @@ const fieldIds = { firstName: 'demo-first-name', lastName: 'demo-last-name', ema
 const actionClass = 'mt-6 md:mt-8 w-full border text-center pt-4 pb-3.5 px-8 transition-all duration-300 ease-in-out rounded-lg cursor-pointer border-stone-50 text-stone-50 bg-gradient-to-r from-coral/80 via-peach/80 to-amber/80 shadow-lg/20 hover:shadow-xl/50 hover:from-coral hover:via-peach hover:to-amber';
 
 export default function DemoDialog() {
-  const [open, setOpen] = useState(false);
-  const [values, setValues] = useState(emptyValues);
-  const [errors, setErrors] = useState<ReturnType<typeof validateDemo>>({});
-  const [complete, setComplete] = useState(false);
+  const [open, setOpen] = useLinkState("DemoDialog.DemoDialog.open", false);
+  const [values, setValues] = useLinkState("DemoDialog.DemoDialog.values", emptyValues, { private: true });
+  const [errors, setErrors] = useLinkState<ReturnType<typeof validateDemo>>("DemoDialog.DemoDialog.errors", {}, { validate: stringRecord });
+  const [complete, setComplete] = useLinkState("DemoDialog.DemoDialog.complete", false);
   const overlay = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
 

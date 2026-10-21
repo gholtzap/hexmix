@@ -1,6 +1,7 @@
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { matchesShape, stringRecord } from '../../share-state.ts';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
 const templates = [['Your guide to pages', 'Start here', 'Page'], ['Product Strategy', 'Slides', 'Slides'], ['Project tracker', 'Page', 'Page'], ['Weekly update', 'Page', 'Page'], ['Growth Strategy', 'Slides', 'Slides'], ['To-do list', 'Page', 'Page'], ['Feedback tracker', 'Page', 'Page'], ['Release notes', 'Page', 'Page']];
-// shortcut: sample edits stay in memory, add storage when the preview needs edits after reload.
 interface SpaceItem {id:number;name:string;type:string;body:string;favorite?:boolean;source?:string;trash?:boolean;group?:string}
 const items: SpaceItem[] = [
     { id: 1, name: 'Team notes.md', type: 'Page', body: 'Team notes\n\nAdd topics for the next team meeting.', favorite: true },
@@ -17,6 +18,11 @@ const spaces = [];
 let nextId = 10;
 const state = { type: 'All', tab: 'Suggested', layout: 'list', search: '', group: null };
 const siteState = { layout: 'list', search: '' };
+linkPreviewData('spaceData', () => ({ items, spaces, nextId }), value => { items.splice(0, items.length, ...value.items); spaces.splice(0, spaces.length, ...value.spaces); nextId = value.nextId; }, {
+ validate: value => !!value && typeof value === 'object' && 'items' in value && 'spaces' in value && 'nextId' in value && Number.isSafeInteger(value.nextId) && Array.isArray(value.items) && value.items.every(item => matchesShape(item, { id: 1, name: '', type: '', body: '' })) && Array.isArray(value.spaces) && value.spaces.every(item => typeof item === 'string' || stringRecord(item)),
+});
+linkPreviewData('spaceView', () => ({ ...state, group: state.group ?? '' }), value => { Object.assign(state, value); }, { private: false });
+linkPreviewData('siteView', () => siteState, value => { Object.assign(siteState, value); }, { private: false });
 const typeIcons = { Page: 'page', Slides: 'slide', Site: 'sites', Image: 'image' };
 const sideTypes = [['All', 'space'], ['Pages', 'page'], ['Slides', 'slide'], ['Sites', 'sites'], ['Images', 'image'], ['Team resources', 'drive']];
 function preview(index) {
@@ -25,7 +31,8 @@ function preview(index) {
 export function spacePage(view = 'space') {
     const sites = view === 'sites';
     const current = sites ? siteState : state;
-    const selected = new Set();
+    const selected = new Set<number>();
+    linkPreviewData('spaceSelection', () => ({ selected: [...selected] }), value => { selected.clear(); value.selected.forEach(id => selected.add(id)); }, { private: false, validate: value => !!value && typeof value === 'object' && 'selected' in value && Array.isArray(value.selected) && value.selected.every(id => typeof id === 'number' && items.some(item => item.id === id)) });
     const visible = () => items.filter(item => {
         if (sites)
             return item.type === 'Site' && !item.trash && item.name.toLowerCase().includes(current.search.toLowerCase());
@@ -65,11 +72,13 @@ export function spacePage(view = 'space') {
         bindSearch();
     }
     function edit(item) {
+        rememberSharedDialog("spaceItem", item.id);
         dialog(item.name, `<form><label class="field-label" for="space-document">${item.type === 'Site' ? 'Site content' : 'Content'}</label><textarea id="space-document" class="field" rows="12" maxlength="20000">${esc(item.body)}</textarea><div class="actions"><button class="pill primary">Save</button></div></form>`, d => {
             d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); item.body = d.querySelector<HTMLTextAreaElement>('textarea').value; d.close(); redraw(); toast('Saved'); };
         });
     }
-    function nameForm(title, value, save) {
+    function nameForm(title, value, save, intent) {
+        rememberSharedDialog("spaceName", intent);
         dialog(title, `<form><label class="field-label" for="space-name">Name</label><input class="field" id="space-name" maxlength="160" required value="${esc(value)}"><div class="actions"><button class="pill primary">Save</button></div></form>`, d => {
             const input = d.querySelector<HTMLInputElement>('input');
             input.oninput = () => input.setCustomValidity('');
@@ -85,7 +94,7 @@ export function spacePage(view = 'space') {
             return 'sites'; if (!sites) {
             state.type = 'All';
             state.tab = 'Your items';
-        } current.search = ''; toast(`${type} created`); });
+        } current.search = ''; toast(`${type} created`); }, {kind:"create",type});
     }
     function syncSelection() {
         const all = document.querySelector<HTMLInputElement>('[data-space-select-all]');
@@ -99,6 +108,9 @@ export function spacePage(view = 'space') {
         document.querySelector<HTMLElement>('#space-search').oninput = e => { current.search = (e.target as HTMLInputElement).value; document.querySelector<HTMLElement>('#space-results').innerHTML = rows(); syncSelection(); const templates = document.querySelector<HTMLElement>('.space-templates'); if (templates)
             templates.hidden = Boolean(current.search); };
     }
+    function newSpace() { nameForm('New space', '', name => { if (!spaces.includes(name))
+                spaces.push(name); state.group = name; state.type = 'All'; if (sites)
+                return 'space'; }, {kind:"group"}); }
     function click(e) {
         const button = e.target.closest('button');
         if (!button)
@@ -150,12 +162,10 @@ export function spacePage(view = 'space') {
         if ('spaceActions' in data) {
             const item = items.find(item => item.id === Number(data.spaceActions));
             if (item)
-                menu(button, [{ label: 'Rename', action: () => nameForm('Rename', item.name, name => { item.name = name; }) }, { label: item.favorite ? 'Remove from favorites' : 'Add to favorites', action: () => { item.favorite = !item.favorite; redraw(); } }, { label: item.trash ? 'Restore' : 'Move to trash', action: () => { item.trash = !item.trash; selected.delete(item.id); redraw(); toast(item.trash ? 'Moved to trash' : 'Restored'); } }]);
+                menu(button, [{ label: 'Rename', action: () => nameForm('Rename', item.name, name => { item.name = name; }, {kind:"rename",id:item.id}) }, { label: item.favorite ? 'Remove from favorites' : 'Add to favorites', action: () => { item.favorite = !item.favorite; redraw(); } }, { label: item.trash ? 'Restore' : 'Move to trash', action: () => { item.trash = !item.trash; selected.delete(item.id); redraw(); toast(item.trash ? 'Moved to trash' : 'Restored'); } }]);
         }
         if ('spaceNewGroup' in data)
-            nameForm('New space', '', name => { if (!spaces.includes(name))
-                spaces.push(name); state.group = name; state.type = 'All'; if (sites)
-                return 'space'; });
+            newSpace();
         if ('spaceGroup' in data) {
             state.group = data.spaceGroup;
             state.type = 'All';
@@ -165,6 +175,13 @@ export function spacePage(view = 'space') {
                 redraw();
         }
     }
+    registerSharedDialog('spaceName', intent => {
+        const value = intent as {kind:string;type?:string;id?:number};
+        if (value.kind === 'create') create(value.type);
+        else if (value.kind === 'group') newSpace();
+        else { const item = items.find(item => item.id === value.id); if (item) nameForm('Rename', item.name, name => { item.name = name; }, value); }
+    }, intent => !!intent && typeof intent === 'object' && !Array.isArray(intent) && ('kind' in intent) && (intent.kind === 'group' || intent.kind === 'create' && 'type' in intent && ['Page','Slides','Site','Image'].includes(String(intent.type)) || intent.kind === 'rename' && 'id' in intent && items.some(item => item.id === intent.id)));
+    registerSharedDialog('spaceItem' , id => edit(items.find(item => item.id === id)), id => typeof id === 'number' && items.some(item => item.id === id));
     return { title: 'Space', sidebar: `<div id="space-sidebar" class="space-sidebar">${sidebar()}</div>`, main: `<section class="page-content space-page" id="space-page">${content()}</section>`, mount() {
             document.querySelector<HTMLElement>('#space-page').onclick = click;
             document.querySelector<HTMLElement>('#space-sidebar').onclick = click;

@@ -1,4 +1,4 @@
-import {dashboardPaths} from '@/lib/previews';
+import {dashboardPaths} from '../../../../lib/previews.ts';
 export const pageLabels = {
  projects:'Projects', deployments:'Deployments', logs:'Logs', analytics:'Analytics',
  'speed-insights':'Speed Insights', observability:'Observability', firewall:'Firewall', cdn:'CDN',

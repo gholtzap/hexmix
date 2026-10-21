@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from 'react';
+import { useLinkState } from "@/hooks/useLinkState";
 import {SegmentedControl} from '../vendor/halaska';
 import {Action, Icon, Menu} from './primitives';
 import {previews} from './data';
@@ -20,9 +20,9 @@ const metrics = [
 ];
 
 export default function Insights({onAction}:{onAction:(title:string,detail?:string)=>void}) {
-  const [tab,setTab]=useState('Recents');
-  const [usageExpanded,setUsageExpanded]=useState(false);
-  const [recentsExpanded,setRecentsExpanded]=useState(false);
+  const [tab,setTab]=useLinkState("Insights.Insights.tab", 'Recents');
+  const [usageExpanded,setUsageExpanded]=useLinkState("Insights.Insights.usageExpanded", false);
+  const [recentsExpanded,setRecentsExpanded]=useLinkState("Insights.Insights.recentsExpanded", false);
   return <aside className={`vc-insights vc-insights-${tab.toLowerCase()}`} aria-label="Project insights">
     <div className="vc-insight-tabs" data-component="halaska-segmented-control">
       <SegmentedControl options={['Recents','Usage','Alerts']} value={tab} onChange={setTab} theme="dark"/>

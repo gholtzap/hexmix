@@ -5,6 +5,7 @@ import {Button} from '@/components/ui/button';
 import IconButton from '@/components/IconButton';
 import {CardDialog, DropdownMenu} from '../vendor/halaska';
 import sourceIcons from './icons.json';
+import { useLinkState } from '@/hooks/useLinkState';
 const icons:Record<string,string>=sourceIcons;
 export function Icon({name,className=''}:{name:string;className?:string}){
  const body=icons[name];
@@ -14,9 +15,12 @@ export function Action({className='',variant='ghost',...props}:ComponentProps<ty
 export function Tool({label,icon,onClick}:{label:string;icon:string;onClick?:()=>void}){return <Action className="vc-tool" aria-label={label} title={label} onClick={onClick}><Icon name={icon}/></Action>;}
 type MenuProps={label:string;icon?:string;children?:ReactNode;items:{label:string;onClick:()=>void}[];className?:string};
 export function Menu({label,icon,children,items,className=''}:MenuProps){
+ const [open,setOpen]=useLinkState(`menu:${label}`,false);
+ const trigger=useRef<HTMLButtonElement>(null);
  const [anchor,setAnchor]=useState<HTMLElement|null>(null);
+ useEffect(()=>{setAnchor(open?trigger.current:null);},[open]);
  const iconOnly=!children||className.includes('vc-score-menu')||className.includes('vc-add')||className.includes('vc-team-menu')||className.includes('vc-profile-menu');
- return <div className={`vc-menu ${className}`} data-component="halaska-dropdown-menu"><div data-menu-trigger><Action className={children?'':'vc-tool'} aria-label={iconOnly?label:undefined} title={label} aria-haspopup="menu" aria-expanded={!!anchor} onClick={event=>setAnchor(event.currentTarget)}>{icon&&<Icon name={icon}/>} {children}</Action></div>{anchor&&<MenuPopup anchor={anchor} label={label} items={items} onClose={()=>setAnchor(null)}/>}</div>;
+ return <div className={`vc-menu ${className}`} data-component="halaska-dropdown-menu"><div data-menu-trigger><Action ref={trigger} className={children?'':'vc-tool'} aria-label={iconOnly?label:undefined} title={label} aria-haspopup="menu" aria-expanded={open} onClick={()=>setOpen(true)}>{icon&&<Icon name={icon}/>} {children}</Action></div>{anchor&&<MenuPopup anchor={anchor} label={label} items={items} onClose={()=>setOpen(false)}/>}</div>;
 }
 function MenuPopup({anchor,label,items,onClose}:{anchor:HTMLElement;label:string;items:MenuProps['items'];onClose:()=>void}){
  const host=useRef<HTMLDivElement>(null);

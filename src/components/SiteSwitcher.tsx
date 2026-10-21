@@ -1,6 +1,7 @@
 "use client";
 import Link from 'next/link';
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef} from 'react';
+import {useLinkState} from "@/hooks/useLinkState";
 import {PreviewCard} from '@base-ui/react/preview-card';
 import {usePathname} from 'next/navigation';
 import {ChevronDown,Check} from 'lucide-react';
@@ -15,7 +16,7 @@ type SitePreview=(typeof previewCatalog)[number];
 export default function SiteSwitcher({palette,heading,body,elementRoles=[],onOpen}:{palette:Palette;heading:FontName;body:FontName;elementRoles?:ElementRole[];onOpen:()=>void}){
  const path=usePathname() ?? "";
  const menu=useRef<HTMLDivElement>(null);
- const [open,setOpen]=useState(false);
+ const [open,setOpen]=useLinkState("siteMenu",false);
  useEffect(()=>{if(!open)return;const studio=document.querySelector<HTMLElement>('main.studio');if(!studio)return;const previous=studio.inert;studio.inert=true;return()=>{studio.inert=previous;};},[open]);
  const current=previewCatalog.find(site=>path===site.path||path.startsWith(site.path+'/'));
  const href=(path:string)=>previewHref(path,palette,heading,body,elementRoles);

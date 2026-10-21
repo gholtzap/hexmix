@@ -48,6 +48,7 @@ try {
     try { await expectUI(page, { attach: async (_, data) => { report = JSON.parse(String(data.body)); } }); }
     catch (error) { if (!report) throw error; }
     results.push({ path, target: name, width, theme, role, findings: report?.findings ?? [] });
+    await page.screenshot({ path: `${output}/${path.slice(1)}-${name}-${width}-${theme}.png` });
     await page.getByRole("button", { name: "Use old color" }).click();
     await page.waitForFunction(({ selector, before }: { selector: string; before: { image: string; color: string; blend: string } }) => {
       const element = document.querySelector<HTMLIFrameElement>("iframe.website-frame")?.contentDocument?.querySelector(selector);

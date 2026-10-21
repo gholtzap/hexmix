@@ -1,3 +1,5 @@
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { matchesShape } from '../../share-state.ts';
 import { contextDialog, startTask } from './context.js';
 import { icon, esc, dialog, menu, toast } from './ui.js';
 const suggestions = [
@@ -8,10 +10,13 @@ const suggestions = [
     ['🎵', 'Explore opportunities', 'Review new business ideas each week.', 'Every Monday at 9:00 AM'],
     ['🎉', 'Plan the next week', 'Send me next steps for the week ahead.', 'Every Thursday at 9:00 AM']
 ];
-// shortcut: tasks stay in memory, add storage when the preview needs saved tasks after reload.
 const tasks = [];
 let filter = 'All';
 let nextId = 1;
+linkPreviewData('tasks', () => ({ tasks, nextId }), value => { tasks.splice(0, tasks.length, ...value.tasks); nextId = value.nextId; }, {
+ validate: value => matchesShape(value, { tasks: [{ id: 1, title: '', prompt: '', schedule: '', paused: false }], nextId: 1 }),
+});
+linkPreviewData('taskFilter', () => ({ filter }), value => { filter = value.filter; }, { private: false });
 function taskRows() {
     const visible = tasks.filter(task => filter === 'All' || (filter === 'Paused' ? task.paused : !task.paused));
     return visible.length ? visible.map(task => `<button class="row sched-task" data-sched-task="${task.id}">${icon(task.paused ? 'pause' : 'clock')}<span>${esc(task.title)}</span>${task.paused ? '<small class="muted">Paused</small>' : ''}</button>`).join('') : `<p class="side-note sched-empty">${tasks.length ? 'No matching tasks' : 'No scheduled tasks'}</p>`;
@@ -24,6 +29,7 @@ function renderTasks() {
     }
 }
 function taskForm(task = undefined) {
+    rememberSharedDialog("task", task?.id ?? null);
     const saved = task && 'id' in task;
     dialog(saved ? 'Task details' : 'New task', `<form id="sched-form">
     <label class="field-label" for="sched-title">Title</label><input class="field" id="sched-title" name="title" required maxlength="160" value="${esc(task?.title || '')}">
@@ -79,6 +85,7 @@ export function scheduledPage() {
     };
 }
 export function searchTasks() {
+    rememberSharedDialog("taskSearch");
     dialog('Search tasks', '<label class="field-label" for="task-search">Search tasks</label><input id="task-search" class="field" type="search"><div data-task-results></div><div class="actions"><button class="pill primary" data-create-task>New task</button></div>', d => {
         const input = d.querySelector<HTMLInputElement>('input'), results = d.querySelector<HTMLElement>('[data-task-results]');
         function render() { const matches = tasks.filter(task => `${task.title} ${task.prompt}`.toLowerCase().includes(input.value.trim().toLowerCase())); results.innerHTML = matches.length ? matches.map(task => `<button class="row" data-task-result="${task.id}">${esc(task.title)}</button>`).join('') : '<p class="empty-state">No tasks found</p>'; results.querySelectorAll<HTMLElement>('[data-task-result]').forEach(button => button.onclick = () => { const task = tasks.find(task => task.id === Number(button.dataset.taskResult)); d.close(); if (task)
@@ -88,3 +95,6 @@ export function searchTasks() {
         render();
     });
 }
+
+registerSharedDialog("task", value => taskForm(value === null ? undefined : tasks.find(item => item.id === value)), value => value === null || typeof value === "number" && tasks.some(item => item.id === value));
+registerSharedDialog("taskSearch", () => searchTasks(), value => value === null);

@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState, type ReactElement, type RefObject } from "react";
-import { Check, Heart, Plus, X } from "lucide-react";
+import { useCallback, useMemo, useRef, type ReactElement, type RefObject } from "react";
+import { useLinkState } from "@/hooks/useLinkState";
+import { oneOf, nullable, stringRecord } from "@/lib/link-state";
+import { Check, Heart, Plus, Share2, X, Copy, MoreHorizontal, FilterX, ChevronDown, LayoutGrid, List } from "lucide-react";
 import { isDarkPalette, matchesPalette, presetForTheme, presets, roles, type Palette, type SavedPalette } from "@/lib/palette";
 import { samePalette } from "@/lib/palette";
 import PreviewThumbnail from "./PreviewThumbnail";
 import IconButton from "./IconButton";
 import { ColorPickerSwatch } from "./reui/color-picker";
-import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import {
   DropdownMenu,
@@ -32,20 +33,22 @@ type Props = {
   onSave: (name: string) => void;
   onRename: (id: string, name: string) => void;
   onRemove: (id: string) => void;
+  onShare?: () => void;
+  onCopy: (item: SavedPalette) => void;
   notice?: string;
   restoreFocus: boolean;
   returnFocus?: RefObject<HTMLButtonElement | null>;
 };
 
 export default function PalettePanel({
-  trigger, initialBrowse = false, initialTab = "presets", open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice,
+  trigger, initialBrowse = false, initialTab = "presets", open, anchor, palette, saved, previewId = "workspace", onOpenChange, onApply, onSave, onRename, onRemove, restoreFocus, returnFocus, notice, onCopy, onShare,
 }: Props) {
-  const [editing, setEditing] = useState<{ id?: string; name: string } | null>(null);
-  const [nameError, setNameError] = useState("");
-  const [tab, setTab] = useState<string | number>(initialTab);
-  const [browse, setBrowse] = useState(initialBrowse);
-  const [filters, setFilters] = useState({ query: "", color: "", mode: "", style: "" });
-  const [limit, setLimit] = useState(24);
+  const [editing, setEditing] = useLinkState<{ id?: string; name: string } | null>("PalettePanel.PalettePanel.editing", null, { validate: nullable(value => stringRecord(value) && typeof value.name === "string"), private: true });
+  const [nameError, setNameError] = useLinkState("PalettePanel.PalettePanel.nameError", "");
+  const [tab, setTab] = useLinkState<string | number>("PalettePanel.PalettePanel.tab", initialTab, { validate: oneOf("presets", "saved") });
+  const [browse, setBrowse] = useLinkState("PalettePanel.PalettePanel.browse", initialBrowse);
+  const [filters, setFilters] = useLinkState("PalettePanel.PalettePanel.filters", { query: "", color: "", mode: "", style: "" });
+  const [limit, setLimit] = useLinkState("PalettePanel.PalettePanel.limit", 24, { validate: value => Number.isSafeInteger(value) && Number(value) >= 24 && Number(value) <= 10008 });
   const scroll = useRef<Record<string, number>>({});
   const restoreBodyScroll = useCallback((node: HTMLDivElement | null) => {
     if (node) node.scrollTop = scroll.current[String(tab)] ?? 0;
@@ -90,9 +93,9 @@ export default function PalettePanel({
       >
         <div className="palette-panel-header">
           <h2>Palettes</h2>
-          <Button
-            variant="outline"
-            className="panel-save"
+          <IconButton
+            aria-label="Save palette"
+            className="icon-button panel-save"
             onClick={() => {
               let number = saved.length + 1;
               while (saved.some((item) => item.name === `My palette ${number}`)) number++;
@@ -100,8 +103,9 @@ export default function PalettePanel({
               setNameError("");
             }}
           >
-            <Plus size={14} aria-hidden="true" /> Save palette
-          </Button>
+            <Plus size={17} aria-hidden="true" />
+          </IconButton>
+          {onShare && <IconButton className="icon-button" aria-label="Share view" onClick={onShare}><Share2 size={17}/></IconButton>}
           <IconButton className="icon-button" aria-label="Close palettes" onClick={() => onOpenChange(false)}>
             <X size={17} />
           </IconButton>
@@ -130,8 +134,8 @@ export default function PalettePanel({
             onChange={(event) => { setEditing({ ...editing, name: event.target.value }); setNameError(""); }} />
           {nameError && <p id="palette-name-error" role="alert">{nameError}</p>}
           <div className="palette-name-actions">
-            <Button type="button" variant="outline" onClick={() => { setEditing(null); savedTab.current?.focus(); }}>Cancel</Button>
-            <Button type="submit" variant="outline">{editing.id ? "Save name" : "Save"}</Button>
+            <IconButton type="button" className="icon-button" aria-label="Cancel palette name" onClick={() => { setEditing(null); savedTab.current?.focus(); }}><X size={17}/></IconButton>
+            <IconButton type="submit" className="icon-button" aria-label={editing.id ? "Save name" : "Save"}><Check size={17}/></IconButton>
           </div>
         </form>}
         {browse && <div className="palette-filters">
@@ -193,11 +197,10 @@ export default function PalettePanel({
                         </div>
                         {value === "saved" && (
                           <div className="palette-card-actions">
+                            <IconButton floatingTooltip className="icon-button" aria-label={`Copy ${item.name}`} onClick={()=>onCopy(item)}><Copy size={17}/></IconButton>
                             <DropdownMenu modal={false}>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="palette-more" aria-label={`More actions for ${item.name}`}>
-                                  More
-                                </Button>
+                                <IconButton floatingTooltip className="icon-button palette-more" aria-label={`More actions for ${item.name}`}><MoreHorizontal size={17}/></IconButton>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent className="palette-menu" side="top" sideOffset={8} align="end"
                                 onCloseAutoFocus={(event) => {
@@ -227,18 +230,16 @@ export default function PalettePanel({
               ) : (
                 <div className="palette-empty">
                   <p>{items.length ? "No palettes match your search." : "No saved palettes yet."}</p>
-                  {items.length > 0 && <Button variant="outline" onClick={() => {
+                  {items.length > 0 && <IconButton className="icon-button" aria-label="Clear filters" onClick={() => {
                     setFilters({ query: "", color: "", mode: "", style: "" }); setLimit(24);
-                  }}>Clear filters</Button>}
+                  }}><FilterX size={17}/></IconButton>}
                 </div>
               )}
-              {browse && results.length > limit && <Button variant="outline" className="palette-load" onClick={() => setLimit((current) => current + 24)}>Load more</Button>}
+              {browse && results.length > limit && <IconButton className="icon-button palette-load" aria-label="Load more" onClick={() => setLimit((current) => current + 24)}><ChevronDown size={17}/></IconButton>}
             </TabsContent>
           ))}
         </Tabs>
-        <Button variant="outline" className="palette-browse-toggle" onClick={() => { setBrowse(!browse); scroll.current = {}; }}>
-          {browse ? "Quick picks" : "Browse all palettes"}
-        </Button>
+        <IconButton className="icon-button palette-browse-toggle" aria-label={browse ? "Quick picks" : "Browse all palettes"} onClick={() => { setBrowse(!browse); scroll.current = {}; }}>{browse?<List size={17}/>:<LayoutGrid size={17}/>}</IconButton>
         </div>
       </PopoverContent>
     </Popover>

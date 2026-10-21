@@ -13,5 +13,10 @@ export function previewHref(path:string,palette:Palette,heading:FontName,body:Fo
   const query=new URLSearchParams(paletteQuery(palette));
   query.set('heading',heading);query.set('body',body);
   setElementRoles(query,elementRoles);
-  return `${path}?${query}`;
+  if (typeof window !== 'undefined') {
+    const current = new URLSearchParams(window.location.search);
+    for (const key of ['state', 'snapshot']) if (current.has(key)) query.set(key, current.get(key)!);
+  }
+  const hash = typeof window !== 'undefined' && window.location.hash.startsWith('#state=') ? window.location.hash : '';
+  return `${path}?${query}${hash}`;
 }

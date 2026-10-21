@@ -1,3 +1,5 @@
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { stateWindow } from '../../share-state.ts';
 import { startTask, contextDialog } from './context.js';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
 import { chatPage, searchChats } from './chat.js';
@@ -9,6 +11,9 @@ const labels = { chat: 'Home', space: 'Space', scheduled: 'Scheduled', plugins: 
 const icons = { chat: 'home', space: 'space', scheduled: 'clock', plugins: 'plugin', sites: 'sites' };
 let current = new URLSearchParams(location.search).get('view') || 'chat';
 let closed = false, renderId = 0;
+let sharedProfile: string | null = null;
+linkPreviewData('profile', () => ({ name: profileName() }), value => { sharedProfile = value.name; });
+linkPreviewData('sidebar', () => ({ closed }), value => { closed = value.closed; }, { private: false });
 function pathFor(view) { return '/dashboards/ai-chatbot' + (view === 'chat' ? '' : '/' + view); }
 function updatePath(view) { if (window.parent === window) {
     const url = new URL(location.href);
@@ -21,6 +26,7 @@ else {
     window.parent.history.pushState({}, '', url);
 } }
 function profileName() {
+    if (sharedProfile !== null) return sharedProfile;
     try { return localStorage.getItem('pebble-profile')?.trim() || 'Jamie Davis'; }
     catch { return 'Jamie Davis'; }
 }
@@ -68,19 +74,22 @@ async function render(view, push = false) {
         else
             navigate('space');
     } };
-    document.querySelector<HTMLElement>('[data-explore]').onclick = e => menu((e.currentTarget as HTMLElement), ['Projects', 'Images', 'Health', 'Finances', 'Sites', 'Maps', 'GPTs', 'Codex'].map(label => ({ label, action: () => label === 'Sites' ? navigate('sites') : label === 'Projects' ? dialog('Projects', '<button class="row" data-project-demo>Design studio</button><button class="row" data-project-demo>Learning journal</button>', d => d.querySelectorAll<HTMLElement>('button[data-project-demo]').forEach(b => b.onclick = () => { d.close(); navigate('work'); })) : label === 'Images' ? navigate('space') : startTask(label) })));
+    document.querySelector<HTMLElement>('[data-explore]').onclick = e => menu((e.currentTarget as HTMLElement), ['Projects', 'Images', 'Health', 'Finances', 'Sites', 'Maps', 'GPTs', 'Codex'].map(label => ({ label, action: () => label === 'Sites' ? navigate('sites') : label === 'Projects' ? openProjects() : label === 'Images' ? navigate('space') : startTask(label) })));
     updateProfile();
-    document.querySelector<HTMLElement>('.avatar').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: `${profileName()} · Personal account`, action: settings }, { label: 'Settings', action: settings }, { label: 'Help', action: () => dialog('Help', '<p>Choose a task to get started.</p><div class="actions"><button class="pill" data-help="work">Start a task</button><button class="pill" data-help="space">Create a document</button><button class="pill" data-help="scheduled">Schedule a task</button></div>', d => d.querySelectorAll<HTMLElement>('[data-help]').forEach(b => b.onclick = () => { d.close(); navigate(b.dataset.help); })) }]);
+    document.querySelector<HTMLElement>('.avatar').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: `${profileName()} · Personal account`, action: settings }, { label: 'Settings', action: settings }, { label: 'Help', action: () => openHelp() }]);
     page.mount?.();
+    requestAnimationFrame(restoreSharedDialog);
     document.documentElement.dataset.appReady = 'true';
     document.title = (view === 'chat' ? 'Pebble' : view[0].toUpperCase() + view.slice(1)) + ' · Local preview';
 }
 function settings() {
+    rememberSharedDialog("settings");
     const name = profileName();
     dialog('Settings', `<form><label class="field-label" for="profile-name">Display name</label><input id="profile-name" class="field" required maxlength="80" value="${esc(name)}"><div class="actions"><button class="pill primary">Save settings</button><button type="button" class="pill" data-context>Personal context</button><button type="button" class="pill" data-theme>Change theme</button></div><p role="status"></p></form>`, d => {
         d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const value = d.querySelector<HTMLInputElement>('input').value.trim(); if (!value)
             return; try {
-            localStorage.setItem('pebble-profile', value);
+            if (sharedProfile !== null) sharedProfile = value;
+            else localStorage.setItem('pebble-profile', value);
             updateProfile();
             d.close();
             toast('Settings saved');
@@ -99,10 +108,18 @@ window.addEventListener('keydown', e => { if (e.key === 'Escape') {
     if (main)
         main.inert = false;
 } });
-window.addEventListener('popstate', () => render(new URLSearchParams(location.search).get('view') || 'chat'));
+stateWindow().addEventListener('popstate', () => render(stateWindow() === window ? new URLSearchParams(location.search).get('view') || 'chat' : stateWindow().location.pathname.split('/')[3] || 'chat'));
 if (window.parent !== window) {
     const onBack = () => { const view = window.parent.location.pathname.split('/')[3] || 'chat'; render(view); };
     window.parent.addEventListener('popstate', onBack);
     window.addEventListener('pagehide', () => window.parent.removeEventListener('popstate', onBack));
 }
 render(current).catch(() => { document.querySelector<HTMLElement>('#app').innerHTML = '<main class="empty-state"><h1>The page could not load</h1><button class="pill" id="retry-page">Try again</button></main>'; document.querySelector<HTMLElement>('#retry-page').onclick = () => location.reload(); });
+
+registerSharedDialog("settings", () => settings(), value => value === null);
+
+function openProjects() { rememberSharedDialog('Projects'); return dialog('Projects', '<button class="row" data-project-demo>Design studio</button><button class="row" data-project-demo>Learning journal</button>', d => d.querySelectorAll<HTMLElement>('button[data-project-demo]').forEach(b => b.onclick = () => { d.close(); navigate('work'); })); }
+registerSharedDialog('Projects', () => openProjects(), value => value === null);
+
+function openHelp() { rememberSharedDialog('Help'); return dialog('Help', '<p>Choose a task to get started.</p><div class="actions"><button class="pill" data-help="work">Start a task</button><button class="pill" data-help="space">Create a document</button><button class="pill" data-help="scheduled">Schedule a task</button></div>', d => d.querySelectorAll<HTMLElement>('[data-help]').forEach(b => b.onclick = () => { d.close(); navigate(b.dataset.help); })); }
+registerSharedDialog('Help', () => openHelp(), value => value === null);

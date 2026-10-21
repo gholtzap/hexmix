@@ -108,9 +108,11 @@ export function isPalette(value: unknown): value is Palette {
 }
 export function surfaceForegrounds(palette: Palette) {
   return {
+    text: foregroundForSurface(palette.text, palette.text),
     background: foregroundForSurface(palette.text, palette.background),
     secondary: foregroundForSurface(palette.text, palette.secondary),
     primary: foregroundForSurface(palette.text, palette.primary),
+    accent: foregroundForSurface(palette.text, palette.accent),
     dark: foregroundForSurface(palette.text, "#1c1917"),
   };
 }

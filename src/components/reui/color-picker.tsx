@@ -1,5 +1,7 @@
 "use client"
 
+import { useLinkState } from "@/hooks/useLinkState";
+
 import { CheckIcon, ChevronDownIcon, CopyIcon, PipetteIcon } from "lucide-react"
 
 // Title: Color Picker
@@ -1014,6 +1016,7 @@ const EMPTY_COLOR: ColorPickerColor = {
 }
 
 type ColorPickerContextValue = {
+  shareKey: string
   id: string
   value: string | null
   /** The color written in `format` for display, hex in capitals, or `null`. */
@@ -1255,6 +1258,7 @@ export function ColorPicker({
   useEffect(() => () => window.clearTimeout(copiedTimer.current), [])
 
   const context: ColorPickerContextValue = {
+    shareKey: name ?? label ?? idProp ?? "color",
     id,
     value: raw,
     text: color
@@ -1568,7 +1572,7 @@ export function ColorPickerInput({
 }: ColorPickerInputProps) {
   const context = useColorPickerContext("ColorPickerInput")
   /* `null` while the field shows the value rather than an edit in progress. */
-  const [text, setText] = useState<string | null>(null)
+  const [text, setText] = useLinkState<string | null>(`picker:${context.shareKey}.text`, null, { private: true, validate: value => value === null || typeof value === "string" })
   const current = context.text ?? ""
   const shown = text ?? current
   const fieldRef = useRef<HTMLInputElement | null>(null)
@@ -2501,7 +2505,7 @@ export function ColorPickerChannelInput({
 }: ColorPickerChannelInputProps) {
   const context = useColorPickerContext("ColorPickerChannelInput")
   const space = channel === "hex" ? "rgb" : resolveSpace(channel, colorSpace)
-  const [text, setText] = useState<string | null>(null)
+  const [text, setText] = useLinkState<string | null>(`picker:${context.shareKey}.${space}.${channel}.text`, null, { private: true, validate: value => value === null || typeof value === "string" })
   const current = channelText(context.display, space, channel)
   const shown = text ?? current
   const fieldRef = useRef<HTMLInputElement | null>(null)
@@ -2651,8 +2655,8 @@ export function ColorPickerFields({
   ...props
 }: ColorPickerFieldsProps) {
   const context = useColorPickerContext("ColorPickerFields")
-  const [formatState, setFormatState] = useState(
-    defaultFormat ?? context.format
+  const [formatState, setFormatState] = useLinkState<ColorPickerFormat>(
+    `picker:${context.shareKey}.format`, defaultFormat ?? context.format, { validate: value => formats.includes(value as ColorPickerFormat) }
   )
   const shown = formatProp ?? formatState
   const fields = FORMAT_FIELDS[shown]

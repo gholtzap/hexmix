@@ -9,6 +9,7 @@ import {sitePreviews,dashboardPaths} from '../src/lib/previews.ts';
 import {workspaceViews} from '../src/lib/workspace-views.ts';
 
 const requested=process.argv.slice(2);
+const appUrl=process.env.APP_URL??'http://127.0.0.1:3000';
 const directory='artifacts/all-surface-contrast'+(requested.length?'/focused':'');
 await mkdir(directory,{recursive:true});
 const destinations=JSON.parse(await readFile('src/lib/site-destinations.json','utf8'));
@@ -42,7 +43,7 @@ async function worker(){
  while(cursor<jobs.length){const job=jobs[cursor++];const record: typeof job & {text?: Awaited<ReturnType<typeof measure>>;failures?: Awaited<ReturnType<typeof measure>>;ui?: {findings:unknown[]};error?:string}={...job};try{
   await page.setViewportSize({width:job.width,height:job.width===390?844:900});
   const palette={...initialPalette,...job.palette};
-  const response=await page.goto(`http://127.0.0.1:3000${job.path}?${paletteQuery(palette)}`, {waitUntil:'domcontentloaded'});
+  const response=await page.goto(`${appUrl}${job.path}?${paletteQuery(palette)}`, {waitUntil:'domcontentloaded'});
   assert.ok(response.ok(),`${job.path} returned ${response.status()}`);
   await page.locator('[data-app-ready]').waitFor();
   let frame: Page | Frame=page;

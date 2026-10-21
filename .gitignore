@@ -6,6 +6,7 @@ dist/
 coverage/
 *.tsbuildinfo
 .vercel/
+.local/shares/
 
 # Local checks and reference captures
 artifacts/
@@ -69,3 +70,8 @@ test-results/
 /public/status.js
 /public/preview-pages/tervix/subpages.js
 /public/preview-pages/nuvexa/subpages.js
+.env*.local
+
+/public/share-state.js
+/public/preview-view.js
+/public/dashboard-previews/workspace/shared.js

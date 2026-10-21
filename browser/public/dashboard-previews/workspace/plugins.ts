@@ -1,8 +1,12 @@
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { matchesShape } from '../../share-state.ts';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
-// shortcut: sample changes stay in memory, add storage when this preview needs saved changes after reload.
 const installed = new Set(['Team tool 01', 'Team tool 03', 'Team tool 35']);
 const custom = [];
 const skills = [{ name: 'Writing style', description: 'Write clear, direct answers.', content: 'Use short sentences. Give the main answer first.' }, { name: 'Code review', description: 'Review changes for errors and risks.', content: 'Check behavior, validation, and error handling. Explain each finding.' }];
+linkPreviewData('plugins', () => ({ installed: [...installed], custom, skills }), value => {
+ installed.clear(); value.installed.forEach(name => installed.add(name)); custom.splice(0, custom.length, ...value.custom); skills.splice(0, skills.length, ...value.skills);
+}, { validate: value => matchesShape(value, { installed: [''], custom: [{ name: '', description: '' }], skills: [{ name: '', description: '', content: '' }] }) });
 const asset = image => new URL(image, import.meta.url).href;
 const picture = item => item.image ? `<img class="plug-logo" src="${esc(asset(item.image))}" alt="" width="36" height="36">` : `<span class="plug-logo plug-placeholder">${icon('plugin')}</span>`;
 export async function pluginsPage(view = 'plugins') {
@@ -22,6 +26,7 @@ export async function pluginsPage(view = 'plugins') {
     const allItems = () => [...items, ...custom];
     let tab = 'Public';
     let search = '';
+    linkPreviewData(`pluginView.${view}`, () => ({ tab, search }), value => { tab = value.tab; search = value.search; }, { private: false });
     const skillView = view === 'skills';
     const sideRows = () => allItems().filter(item => installed.has(item.name)).map(item => `<button class="row" data-plug-detail="${esc(item.name)}">${picture(item)}<span>${esc(item.name)}</span></button>`).join('');
     const card = item => `<article class="plug-card"><button class="plug-detail" data-plug-detail="${esc(item.name)}">${picture(item)}<span class="plug-copy"><span class="plug-name">${esc(item.name)}</span><span class="plug-description">${esc(item.description)}</span></span></button><button class="icon-button plug-install" data-plug-install="${esc(item.name)}" aria-label="${installed.has(item.name) ? 'Remove' : 'Install'} ${esc(item.name)}">${icon(installed.has(item.name) ? 'check' : 'plus')}</button></article>`;
@@ -51,11 +56,13 @@ export async function pluginsPage(view = 'plugins') {
         toast(remove ? 'Sample plugin removed' : 'Sample plugin installed');
     }
     function details(item) {
+        rememberSharedDialog("plugin", item.name);
         dialog(item.name, `<div class="plug-dialog-icon">${picture(item)}</div><p>${esc(item.description)}</p><p class="muted">Sample plugin. Changes apply to this preview.</p><div class="actions"><button class="pill primary" id="plug-confirm">${installed.has(item.name) ? 'Remove' : 'Install'}</button></div>`, d => {
             d.querySelector<HTMLElement>('#plug-confirm').onclick = () => { toggleInstall(item); d.close(); };
         });
     }
     function editSkill(skill = undefined) {
+        rememberSharedDialog("skill", skill ? skills.indexOf(skill) : null);
         dialog(skill ? 'Edit skill' : 'New skill', `<form id="plug-skill-form"><label class="field-label" for="plug-skill-name">Name</label><input class="field" id="plug-skill-name" name="name" required maxlength="100" value="${esc(skill?.name || '')}"><label class="field-label" for="plug-skill-content">Instructions</label><textarea class="field" id="plug-skill-content" name="content" required maxlength="10000" rows="7">${esc(skill?.content || '')}</textarea><p class="muted">Sample skill. Changes apply to this preview.</p><div class="actions"><button class="pill primary">Save</button></div></form>`, d => {
             d.querySelector<HTMLFormElement>('form').onsubmit = event => {
                 event.preventDefault();
@@ -75,6 +82,7 @@ export async function pluginsPage(view = 'plugins') {
         });
     }
     function addPlugin(create) {
+        rememberSharedDialog("addPlugin", Boolean(create));
         dialog(create ? 'Create plugin' : 'Add plugin', `<form><label class="field-label" for="plug-new-name">Name</label><input class="field" id="plug-new-name" name="name" required maxlength="100"><label class="field-label" for="plug-new-description">Description</label><textarea class="field" id="plug-new-description" name="description" required rows="3" maxlength="500"></textarea><p class="muted">This adds a sample plugin to this preview.</p><div class="actions"><button class="pill primary">${create ? 'Create' : 'Add'} plugin</button></div></form>`, d => {
             d.querySelector<HTMLFormElement>('form').onsubmit = event => {
                 event.preventDefault();
@@ -96,6 +104,7 @@ export async function pluginsPage(view = 'plugins') {
         });
     }
     function manage() {
+        rememberSharedDialog("managePlugins");
         const saved = allItems().filter(item => installed.has(item.name));
         dialog('Manage plugins', saved.length ? saved.map(item => `<div class="row plug-managed">${picture(item)}<span>${esc(item.name)}</span><button class="pill" data-plug-remove="${esc(item.name)}">Remove</button></div>`).join('') : '<p class="muted">No installed plugins</p>', d => {
             d.querySelectorAll<HTMLElement>('[data-plug-remove]').forEach(button => { button.onclick = () => { installed.delete(button.dataset.plugRemove); refresh(); d.close(); manage(); }; });
@@ -111,6 +120,10 @@ export async function pluginsPage(view = 'plugins') {
         if (clear)
             clear.onclick = () => { search = ''; (document.querySelector<HTMLElement>('#plug-search') as HTMLInputElement).value = ''; refresh(); document.querySelector<HTMLElement>('#plug-search').focus(); };
     }
+    registerSharedDialog('plugin', name => details(allItems().find(item => item.name === name)), name => typeof name === 'string' && allItems().some(item => item.name === name));
+    registerSharedDialog('skill', index => editSkill(index === null ? undefined : skills[Number(index)]), index => index === null || typeof index === 'number' && !!skills[index]);
+    registerSharedDialog('addPlugin', value => addPlugin(value), value => typeof value === 'boolean');
+    registerSharedDialog('managePlugins', () => manage(), value => value === null);
     return {
         title: 'Customize',
         sidebar: `<div class="side-body"><button class="row ${skillView ? '' : 'active'}" id="plug-nav-plugins">${icon('plugin')}<span>Plugins</span></button><button class="row ${skillView ? 'active' : ''}" id="plug-nav-skills">${icon('page')}<span>Skills</span></button><div class="side-section">Installed</div><div id="plug-installed">${sideRows()}</div></div>`,
@@ -124,6 +137,8 @@ export async function pluginsPage(view = 'plugins') {
                 document.querySelector<HTMLElement>('#plug-manage').onclick = manage;
                 document.querySelectorAll<HTMLElement>('[data-plug-tab]').forEach(button => { button.onclick = () => { tab = button.dataset.plugTab; document.querySelectorAll<HTMLElement>('[data-plug-tab]').forEach(el => el.setAttribute('aria-selected', String(el === button))); refresh(); }; });
             }
+            (document.querySelector('#plug-search') as HTMLInputElement).value = search;
+            document.querySelectorAll<HTMLElement>('[data-plug-tab]').forEach(el => el.setAttribute('aria-selected', String(el.dataset.plugTab === tab)));
             bindRows();
         }
     };

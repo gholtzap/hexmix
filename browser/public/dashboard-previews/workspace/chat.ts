@@ -1,3 +1,5 @@
+import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
+import { matchesShape } from '../../share-state.ts';
 import { contextDialog } from './context.js';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
 const chats = ['Plan the next quarter', 'Ideas for the next project', 'Write a weekly update', 'Explore a business idea', 'Organize meeting notes', 'A shared business plan', 'Build a resource list', 'Compare design options', 'A guide to team planning', 'Explore new opportunities', 'Prepare for a presentation', 'Create a project checklist'];
@@ -5,6 +7,12 @@ const projects = ['Design studio', 'Team planning', 'Business priorities'];
 type Message = { role: 'user' | 'assistant'; text: string };
 const conversations = new Map<string, Message[]>();
 let messages: Message[] = [], power = 1, project = '', temporary = false, draft = '';
+let attachments: string[] = [];
+linkPreviewData('chat', () => ({ conversations: [...conversations], messages, power, project, temporary, draft, projects, attachments }), value => {
+ conversations.clear(); for (const [name, thread] of value.conversations) conversations.set(name, thread);
+ projects.splice(0, projects.length, ...value.projects); attachments = value.attachments;
+ messages = value.messages; power = value.power; project = value.project; temporary = value.temporary; draft = value.draft;
+}, { validate: value => matchesShape(value, { conversations: [['', [{ role: '', text: '' }]]], messages: [{ role: '', text: '' }], power: 1, project: '', temporary: false, draft: '', projects: [''], attachments: [''] }) });
 function openChat(title: string, view = 'chat') {
     if (!conversations.has(title)) conversations.set(title, [
         { role: 'user', text: title },
@@ -43,6 +51,7 @@ export function chatPage(view = 'chat') {
             voice.onclick = () => { if (input.value.trim())
                 return; dictate(true); };
             function dictate(voiceMode = false) {
+                rememberSharedDialog("dictate", voiceMode);
                 let recognition;
                 dialog(voiceMode ? 'Voice' : 'Dictate', `${voiceMode ? '<div class="voice-orb" data-voice-orb></div>' : ''}<form><label class="field-label" for="voice-transcript">Message</label><textarea id="voice-transcript" class="field" required rows="4" maxlength="4000" placeholder="Speak or type your message"></textarea><p role="status"></p><div class="actions"><button type="button" class="pill" data-record>Start recording</button><button class="pill primary">Use message</button></div></form>`, d => {
                     const transcript = d.querySelector<HTMLTextAreaElement>('textarea'), record = d.querySelector<HTMLElement>('[data-record]'), status = d.querySelector<HTMLElement>('[role=status]');
@@ -92,11 +101,18 @@ export function chatPage(view = 'chat') {
                 } };
             };
             const fileInput = main.querySelector<HTMLElement>('#chat-files');
-            fileInput.onchange = () => { main.querySelector<HTMLElement>('.attachments').innerHTML = [...(fileInput as HTMLInputElement).files].map(f => `<span class="attachment">${esc(f.name)}</span>`).join(''); };
-            function chooseProject() { dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
-            main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => fileInput.click() }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: () => dialog('Add a page', '<form><label class="field-label" for="page-url">Page URL</label><input id="page-url" class="field" type="url" required placeholder="https://example.com"><div class="actions"><button class="pill primary">Add page</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const url = d.querySelector<HTMLInputElement>('input').value; input.value = `Review this page: ${url}`; updateSend(); d.close(); input.focus(); }) }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: () => dialog('Sketch', '<canvas class="sketch-canvas" width="480" height="280" aria-label="Drawing canvas"></canvas><div class="actions"><button class="pill" data-clear>Clear</button><button class="pill primary" data-attach>Attach sketch</button></div>', d => {
+            const renderAttachments = () => { main.querySelector<HTMLElement>('.attachments').innerHTML = attachments.map(name => `<span class="attachment">${esc(name)}</span>`).join(''); };
+            fileInput.onchange = () => { attachments = [...(fileInput as HTMLInputElement).files].map(file => file.name); renderAttachments(); };
+            renderAttachments();
+            function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
+            registerSharedDialog('dictate', value => dictate(Boolean(value)), value => typeof value === 'boolean');
+            registerSharedDialog('chooseProject', () => chooseProject(), value => value === null);
+            const openAddPage = () => { rememberSharedDialog('addPage'); return dialog('Add a page', '<form><label class="field-label" for="page-url">Page URL</label><input id="page-url" class="field" type="url" required placeholder="https://example.com"><div class="actions"><button class="pill primary">Add page</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const url = d.querySelector<HTMLInputElement>('input').value; input.value = `Review this page: ${url}`; updateSend(); d.close(); input.focus(); }); };
+            registerSharedDialog('addPage', () => openAddPage(), value => value === null);
+            const openSketch = () => { rememberSharedDialog('sketch'); return dialog('Sketch', '<canvas class="sketch-canvas" width="480" height="280" aria-label="Drawing canvas"></canvas><div class="actions"><button class="pill" data-clear>Clear</button><button class="pill primary" data-attach>Attach sketch</button></div>', d => {
                         const canvas = d.querySelector<HTMLCanvasElement>('canvas'), ctx = canvas.getContext('2d'), strokes = [];
                         let drawing = false, current;
+                        linkPreviewData('sketch', () => ({ strokes }), value => { strokes.splice(0, strokes.length, ...value.strokes); }, { validate: value => matchesShape(value, { strokes: [[[0, 0]]] }) });
                         const paint = () => { const colors = getComputedStyle(document.documentElement); ctx.fillStyle = colors.getPropertyValue('--p-background').trim() || '#ffffff'; ctx.fillRect(0, 0, 480, 280); ctx.strokeStyle = colors.getPropertyValue('--p-text').trim() || '#171717'; ctx.lineWidth = 3; for (const stroke of strokes) {
                             ctx.beginPath();
                             ctx.moveTo(stroke[0][0], stroke[0][1]);
@@ -120,7 +136,9 @@ export function chatPage(view = 'chat') {
                         canvas.onpointercancel = () => drawing = false;
                         d.querySelector<HTMLElement>('[data-clear]').onclick = () => { strokes.length = 0; paint(); };
                         d.querySelector<HTMLElement>('[data-attach]').onclick = () => canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); (fileInput as HTMLInputElement).files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); });
-                    }) }, { label: 'Plugins', action: () => navigate('plugins') }]);
+                    }); };
+            registerSharedDialog('sketch', () => openSketch(), value => value === null);
+            main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => fileInput.click() }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: openAddPage }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: openSketch }, { label: 'Plugins', action: () => navigate('plugins') }]);
             main.querySelectorAll<HTMLElement>('.suggestion').forEach(b => b.onclick = () => { input.value = b.querySelector<HTMLElement>('span:last-child').textContent; input.focus(); updateSend(); });
             main.querySelector<HTMLElement>('[data-choose-project]')?.addEventListener('click', chooseProject);
             main.querySelector<HTMLElement>('[data-files]')?.addEventListener('click', () => fileInput.click());
@@ -130,10 +148,14 @@ export function chatPage(view = 'chat') {
             document.querySelector<HTMLElement>('[data-dot]').onclick = () => contextDialog();
             document.querySelectorAll<HTMLElement>('[data-sample-chat]').forEach(b => b.onclick = () => openChat(b.dataset.sampleChat, view));
             document.querySelectorAll<HTMLElement>('[data-project]').forEach(b => b.onclick = () => { project = b.dataset.project; main.querySelector<HTMLElement>('.project-badge').textContent = project; input.focus(); });
-            document.querySelector<HTMLElement>('[data-new-project]').onclick = () => dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const name = d.querySelector<HTMLInputElement>('input').value.trim(); if (!name)
-                return; projects.push(name); project = name; d.close(); navigate(view); });
+            const openNewProject = () => { rememberSharedDialog('newProject'); return dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const name = d.querySelector<HTMLInputElement>('input').value.trim(); if (!name)
+                return; projects.push(name); project = name; d.close(); navigate(view); }); };
+            registerSharedDialog('newProject', () => openNewProject(), value => value === null);
+            document.querySelector<HTMLElement>('[data-new-project]').onclick = openNewProject;
             document.querySelector<HTMLElement>('[data-chat-options]').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Search chats', action: searchChats }, { label: 'New chat', action: () => newChat(view) }]);
             renderMessages();
         } };
 }
-export function searchChats() { dialog('Search chats', `<input class="field" type="search" placeholder="Search chats" aria-label="Search chats"><div class="chat-search-results"></div>`, d => { const input = d.querySelector<HTMLInputElement>('input'), results = d.querySelector<HTMLElement>('.chat-search-results'); const render = () => { const list = chats.filter(c => c.toLowerCase().includes(input.value.toLowerCase())); results.innerHTML = list.length ? list.map(c => `<button class="row">${icon('edit')}${esc(c)}</button>`).join('') : '<p class="empty-state">No chats found</p>'; [...results.querySelectorAll<HTMLElement>('button')].forEach((b, i) => b.onclick = () => { d.close(); openChat(list[i]); }); }; input.oninput = render; render(); }); }
+export function searchChats() { rememberSharedDialog('chatSearch'); dialog('Search chats', `<input class="field" type="search" placeholder="Search chats" aria-label="Search chats"><div class="chat-search-results"></div>`, d => { const input = d.querySelector<HTMLInputElement>('input'), results = d.querySelector<HTMLElement>('.chat-search-results'); const render = () => { const list = chats.filter(c => c.toLowerCase().includes(input.value.toLowerCase())); results.innerHTML = list.length ? list.map(c => `<button class="row">${icon('edit')}${esc(c)}</button>`).join('') : '<p class="empty-state">No chats found</p>'; [...results.querySelectorAll<HTMLElement>('button')].forEach((b, i) => b.onclick = () => { d.close(); openChat(list[i]); }); }; input.oninput = render; render(); }); }
+
+registerSharedDialog("chatSearch", () => searchChats(), value => value === null);

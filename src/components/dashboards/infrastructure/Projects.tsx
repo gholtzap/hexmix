@@ -1,5 +1,5 @@
 "use client";
-import {useState} from 'react';
+import { useLinkState } from "@/hooks/useLinkState";
 import {Activity,CheckCheck} from 'lucide-react';
 import {projectRepository,type Project} from './data';
 import {Icon, Action, Menu} from './primitives';
@@ -16,7 +16,7 @@ export function ProjectToolbar({query,onQuery,layout,onLayout,sort,onSort,filter
  ]}/><div className="vc-view-switch" role="group" aria-label="Project layout"><Action className={`vc-tool ${layout==='grid'?'selected':''}`} aria-label="Grid view" title="Grid view" aria-pressed={layout==='grid'} onClick={()=>onLayout('grid')}><Icon name="Projects"/></Action><Action className={`vc-tool ${layout==='list'?'selected':''}`} aria-label="List view" title="List view" aria-pressed={layout==='list'} onClick={()=>onLayout('list')}><Icon name="list"/></Action></div><Menu className="vc-add" label="Add New" icon="plus" items={['Project','Agent','Domain','Store','Integration','AI Gateway Key','Sandbox','Team Member'].map(label=>({label,onClick:()=>onAdd(label)}))}><span>Add New</span><Icon name="chevron"/></Menu></div>;
 }
 export default function Projects({items,layout,query,filter,onClear,onFavorite,onAction}:{items:Project[];layout:'list'|'grid';query:string;filter:string;onClear:()=>void;onFavorite:(name:string)=>void;onAction:(title:string,detail?:string)=>void}){
- const [limit,setLimit]=useState(12);
+ const [limit,setLimit]=useLinkState("Projects.Projects.limit", 12);
  return <section className="vc-projects" aria-label="Projects"><div className="vc-section-title" role="heading" aria-level={1}>Projects {filter!=='All'&&<span className="vc-filter-tag">{filter}</span>}</div>{!items.length?<div className="vc-empty vc-panel"><div role="heading" aria-level={2}>No projects found</div><p>{query?`No projects match “${query}”.`:'No projects match this filter.'}</p><Action className="outline" onClick={onClear}>Clear search and filters</Action></div>:<><div className={`vc-project-list ${layout==='grid'?'grid':''}`}>
  {items.slice(0,limit).map(project=><article className="vc-project vc-panel" key={project.name}><div className="vc-project-top"><div className="vc-project-avatar" style={{backgroundImage:`url(${project.gradient})`}}><Menu label={`Project Menu · ${project.name}`} className="vc-avatar-menu" items={[
   {label:project.favorite?'Remove Favorite':'Add Favorite',onClick:()=>onFavorite(project.name)},

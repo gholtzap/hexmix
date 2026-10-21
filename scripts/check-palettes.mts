@@ -57,7 +57,7 @@ try {
       assert.equal(await page.locator('.palette-panel').isVisible(), true);
     };
 
-    await page.goto(`${process.env.APP_URL || "http://127.0.0.1:3000"}/editor?${paletteQuery(initialPalette)}`);
+    await page.goto(`http://127.0.0.1:3000/editor?${paletteQuery(initialPalette)}`);
     await page.locator('[data-app-ready]').waitFor();
     await open();
     assert.equal(await tab('Presets').getAttribute('aria-selected'), 'true');

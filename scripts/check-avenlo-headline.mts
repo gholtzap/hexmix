@@ -32,7 +32,16 @@ try {
    await document.fonts.ready;const samples=[],start=performance.now();
    await new Promise<void>(resolve=>{function sample(){samples.push({word:typed.textContent,top:document.querySelector('.hero__lede').getBoundingClientRect().top});if(performance.now()-start<7200)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
    return {emptySeen:samples.some(s=>s.word===''),words:[...new Set(samples.map(s=>s.word))],min:Math.min(...samples.map(s=>s.top)),max:Math.max(...samples.map(s=>s.top))};
-  });assert(motion.emptySeen,'Animation must reach the empty state');assert(motion.words.length>5);assert(motion.max-motion.min<1,JSON.stringify(motion));results.push({theme,motion});await page.close();
+  });assert(!motion.emptySeen,'The editor must keep the changing word clickable');assert(motion.words.length>=3);assert(motion.max-motion.min<1,JSON.stringify(motion));
+  await frame.locator('.hero__typed').hover();
+  await frame.locator('.hero__typed').click({modifiers:['Alt']});
+  await page.locator('.element-panel').waitFor();
+  const selected=await frame.locator('.hero__typed').textContent();
+  assert(await frame.locator('.hero__sizer').allTextContents().then(words=>words.includes(selected)));
+  await page.mouse.move(1,100);await page.waitForTimeout(2400);
+  assert.equal(await frame.locator('.hero__typed').textContent(),selected,'The selected word must stay in place');
+  await page.keyboard.press('Escape');await frame.locator('[data-hexmix-selected]').waitFor({state:'detached'});
+  results.push({theme,motion,selected});await page.close();
  }
 }finally{await browser.close();await writeFile(`${output}/report.json`,JSON.stringify({results,reports},null,2));}
 console.log(`${results.length-2} layouts, ${reports.length} UI checks, and two live animation checks passed.`);

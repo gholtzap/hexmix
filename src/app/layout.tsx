@@ -1,5 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Suspense } from 'react';
+import SharedStateProvider from '@/components/SharedStateProvider';
 
 export const metadata: Metadata = {
   title: { default: "Hexmix", template: "%s | Hexmix" },
@@ -20,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head><link rel="stylesheet" href="/fonts/fonts.css" /></head>
-      <body>{children}</body>
+      <body><Suspense fallback={null}><SharedStateProvider>{children}</SharedStateProvider></Suspense></body>
     </html>
   );
 }

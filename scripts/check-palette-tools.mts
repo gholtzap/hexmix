@@ -5,6 +5,7 @@ import {chromium} from 'playwright';
 import {expectUI} from 'lintapple/playwright';
 import {initialPalette,defaultDarkPalette,paletteQuery,paletteExport,paletteExportFormats} from '../src/lib/palette.ts';
 import {fonts} from '../src/lib/fonts.ts';
+const base=process.env.APP_URL||'http://127.0.0.1:3000';
 const output='artifacts/palette-tools';await mkdir(output,{recursive:true});
 const browser=await chromium.launch(),reports=[],actions=[],errors=[];
 let completed=false;
@@ -20,7 +21,7 @@ try{
   const context=await browser.newContext({viewport:{width,height:width===390?844:900},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});
   const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',error=>errors.push(error.message));
   const query=paletteQuery(palette)+'&heading=Arial&body=Verdana';
-  await page.goto('http://127.0.0.1:3000/dashboards/infra-dashboard?'+query);await page.locator('[data-app-ready]').waitFor();
+  await page.goto(base+'/dashboards/infra-dashboard?'+query);await page.locator('[data-app-ready]').waitFor();
   await clickToolbarAction(page, 'Export palette');
   const dialog=page.getByRole('dialog',{name:'Export',exact:true});
   for(const [format,details] of Object.entries(paletteExportFormats)){
@@ -47,12 +48,12 @@ try{
   await page.getByRole('menuitem',{name:'Rename palette',exact:true}).click();await name.fill('Team colors');await audit(page,'rename palette',width,theme);await page.getByRole('button',{name:'Save name',exact:true}).click();
   await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   const record=await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0]);assert.equal(record.name,'Team colors');assert.deepEqual(record.colors,palette);
-  await page.reload();await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
+  await page.reload();await page.locator('[data-app-ready]').waitFor();if(!await page.getByRole('tab',{name:'Saved',exact:true}).isVisible())await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();await page.getByRole('button',{name:'Apply Team colors',exact:true}).waitFor();
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('hue-palettes-v1'))[0].id),record.id);
   await page.getByRole('button',{name:'Browse all palettes',exact:true}).click();const search=page.getByRole('searchbox',{name:'Search palettes',exact:true});await search.fill('team');assert.equal(await page.locator('.saved-row').count(),1);await search.fill('missing');await page.getByText('No palettes match your search.',{exact:true}).waitFor();await audit(page,'empty saved search',width,theme);await page.getByRole('button',{name:'Clear filters',exact:true}).click();
-  await page.goto('http://127.0.0.1:3000/avenlo?'+query);await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=avenlo]').count(),1);await audit(page,'Avenlo saved preview',width,theme);await page.screenshot({path:`${output}/saved-${width}-${theme}.png`});
+  await page.goto(base+'/avenlo?'+query);await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=avenlo]').count(),1);await audit(page,'Avenlo saved preview',width,theme);await page.screenshot({path:`${output}/saved-${width}-${theme}.png`});
   await page.getByRole('button',{name:'Apply Team colors',exact:true}).click();
-  await page.getByRole('button',{name:'Close palettes',exact:true}).click();await page.goto('http://127.0.0.1:3000/?'+paletteQuery(palette));await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=workspace]').count(),1);await audit(page,'home saved preview',width,theme);
+  await page.getByRole('button',{name:'Close palettes',exact:true}).click();await page.goto(base+'/?'+paletteQuery(palette));await page.locator('[data-app-ready]').waitFor();await clickToolbarAction(page, 'Palettes');await page.getByRole('tab',{name:'Saved',exact:true}).click();assert.equal(await page.locator('.saved-row [data-capture=workspace]').count(),1);await audit(page,'home saved preview',width,theme);
   actions.push({width,theme,exports:3,savedId:record.id});await context.close();
  }
  assert.deepEqual(errors,[]);completed=true;

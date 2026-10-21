@@ -95,6 +95,7 @@
         document.documentElement.dataset.editorSite = site;
     };
     const startBrand = () => {
+        void import(`${editorOrigin}/preview-view.js`).then(module => module.startViewCapture());
         const touchStyle = document.createElement('link');
         touchStyle.rel = 'stylesheet';
         touchStyle.href = `${editorOrigin}/mobile-preview.css`;

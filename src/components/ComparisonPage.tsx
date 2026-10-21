@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { useLinkState } from "@/hooks/useLinkState";
+import { createSharedLink } from "@/lib/shared-link";
+import { oneOf } from "@/lib/link-state";
 import Link from 'next/link';
 import { comparisonHref, readComparison, type Comparison } from '@/lib/comparison';
-import { copyText } from '@/lib/clipboard';
+import { copyText, readThemePaste } from '@/lib/clipboard';
 import { previewCatalog, previewHref } from '@/lib/preview-catalog';
 import { isDarkPalette, isPalette, samePalette, paletteForMode, type Palette } from '@/lib/palette';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
@@ -22,10 +25,21 @@ export default function ComparisonPage() {
   const ready = Boolean(origin);
   const initialized = useRef(false);
   const [mobile, setMobile] = useState(false);
-  const [active, setActive] = useState<'a' | 'b'>('a');
-  const [optionsSide, setOptionsSide] = useState<'a' | 'b' | null>(null);
+  const [active, setActive] = useLinkState<'a' | 'b'>("ComparisonPage.ComparisonPage.active", 'a', { validate: oneOf("a", "b") });
+  const [optionsSide, setOptionsSide] = useLinkState<'a' | 'b' | null>("ComparisonPage.ComparisonPage.optionsSide", null, { validate: oneOf(null, "a", "b") });
   const [notice, setNotice] = useState('');
-  const [panels, setPanels] = useState({ a: false, b: false });
+  const [sharedLink, setSharedLink] = useState('');
+  useEffect(() => {
+    const paste = (event: ClipboardEvent) => {
+      const text = readThemePaste(event);
+      if (text === null) return;
+      event.preventDefault();
+      document.querySelector<HTMLIFrameElement>(`iframe[title="Palette ${active.toUpperCase()} preview"]`)?.contentWindow?.postMessage({ type: 'hexmix-paste-theme', text }, window.location.origin);
+    };
+    document.addEventListener('paste', paste);
+    return () => document.removeEventListener('paste', paste);
+  }, [active]);
+  const [panels, setPanels] = useLinkState("ComparisonPage.ComparisonPage.panels", { a: false, b: false });
   const input = useRef<HTMLInputElement>(null);
   const { saved, storageReady } = useSavedPalettes(setNotice);
   useEffect(() => {
@@ -48,8 +62,11 @@ export default function ComparisonPage() {
   }, []);
   useEffect(() => {
     if (!ready) return;
-    const href = comparisonHref(value);
-    window.history.replaceState(null, '', href);
+    const href = new URL(comparisonHref(value), window.location.origin);
+    const current = new URL(window.location.href);
+    if (current.hash.startsWith('#state=')) href.hash = current.hash;
+    for (const key of ['state', 'snapshot']) if (current.searchParams.has(key)) href.searchParams.set(key, current.searchParams.get(key)!);
+    window.history.replaceState(window.history.state, '', href);
   }, [value, ready]);
   useEffect(() => {
     const toggle = (event: MessageEvent) => {
@@ -76,13 +93,18 @@ export default function ComparisonPage() {
     return () => window.removeEventListener('message', toggle);
   }, []);
   const link = ready ? new URL(comparisonHref(value), origin).href : '';
+  useEffect(() => { setSharedLink(''); }, [value, active, optionsSide, panels]);
   const preview = previewCatalog.find(item => item.id === value.preview)!;
   const rendered = { a: value.customA ? value.a : paletteForMode(value.a, value.mode), b: value.customB ? value.b : paletteForMode(value.b, value.mode) };
   const href = (palette: Palette) => previewHref(preview.path, palette, value.heading, value.body);
   const frames = useComparisonScroll(value.preview, ready ? preview.path : '', ready ? preview.path : '', !value.unlinked);
   async function share() {
-    if (await copyText(link, input.current?.parentElement ?? document.body)) setNotice('Comparison link copied.');
-    else { setNotice('Select and copy the comparison link.'); input.current?.focus(); input.current?.select(); }
+    try {
+      const shared = await createSharedLink(new URL(link));
+      setSharedLink(shared);
+      if (await copyText(shared, input.current?.parentElement ?? document.body)) setNotice('Comparison link copied.');
+      else { setNotice('Select and copy the comparison link.'); requestAnimationFrame(() => { input.current?.focus(); input.current?.select(); }); }
+    } catch { setNotice('The share link could not be saved. Try again.'); }
   }
   return <main className="comparison-page" data-app-ready={ready || undefined}>
     <div className="comparison-grid">
@@ -100,7 +122,7 @@ export default function ComparisonPage() {
               <label className="comparison-link-toggle"><input type="checkbox" checked={!value.unlinked} onChange={() => setValue(({ unlinked, ...current }) => unlinked ? current : { ...current, unlinked: true })} />Link interactions</label>
               <div className="comparison-controls" role="group" aria-label="Preview appearance">{(['light', 'dark'] as const).map(mode => <Button key={mode} variant="outline" aria-pressed={value.mode === mode} onClick={() => setValue(({ customA, customB, ...current }) => ({ ...current, mode }))}>{mode === 'light' ? 'Light' : 'Dark'}</Button>)}</div>
               <Link href={href(rendered[side])}>Use palette {side.toUpperCase()}</Link>
-              <div className="comparison-share"><label htmlFor={`comparison-link-${side}`}>Comparison link</label><Input ref={input} id={`comparison-link-${side}`} value={link} readOnly onFocus={event => event.target.select()} /><Button variant="outline" disabled={!ready} onClick={share}>Copy comparison link</Button></div>
+              <div className="comparison-share"><label htmlFor={`comparison-link-${side}`}>Comparison link</label><Input ref={input} id={`comparison-link-${side}`} value={sharedLink || link} readOnly onFocus={event => event.target.select()} /><Button variant="outline" disabled={!ready} onClick={share}>Copy comparison link</Button></div>
               {notice && <p role="status">{notice}</p>}
               <Link href={previewHref('/', rendered.a, value.heading, value.body)}>All previews</Link>
             </PopoverContent>

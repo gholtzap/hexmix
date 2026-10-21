@@ -1,5 +1,7 @@
+import { registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
 import { dialog, esc, toast, navigate } from './ui.js';
 export function contextDialog() {
+    rememberSharedDialog("context");
     let context = '';
     try {
         context = localStorage.getItem('pebble-context') || '';
@@ -20,6 +22,7 @@ export function contextDialog() {
     });
 }
 export function startTask(topic) {
+    rememberSharedDialog("startTask", String(topic));
     dialog(topic, `<form><label class="field-label" for="task-goal">What would you like to work on?</label><textarea class="field" id="task-goal" required rows="4" maxlength="2000">${esc(topic)}: </textarea><div class="actions"><button class="pill primary">Continue in Work</button></div></form>`, d => {
         d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const goal = d.querySelector<HTMLTextAreaElement>('textarea').value.trim(); if (!goal)
             return; d.close(); navigate('work'); requestAnimationFrame(() => { const input = document.querySelector<HTMLTextAreaElement>('.composer textarea'); if (input) {
@@ -29,3 +32,6 @@ export function startTask(topic) {
         } }); };
     });
 }
+
+registerSharedDialog("context", () => contextDialog(), value => value === null);
+registerSharedDialog("startTask", topic => startTask(topic), value => typeof value === "string" && value.length <= 2000);

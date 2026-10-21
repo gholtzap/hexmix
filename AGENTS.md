@@ -6,6 +6,8 @@
 
 ## UI component reuse
 
+Use icon buttons with accessible names and tooltips for actions. Do not use text-based action buttons.
+
 Use [AICSS](https://www.aicss.dev/) and [Halaska UI](https://ui.halaska.com/components) components when they support the required behavior. Check these libraries and the existing repo components before writing a new control. Keep the page layout, color controls, and font controls when replacing a component. Record the source and license for copied library code.
 
 ## Preview text contrast

@@ -39,5 +39,8 @@
   "public/home-media.js": "browser/tervix/public/home-media.ts",
   "public/status.js": "browser/tervix/public/status.ts",
   "public/preview-pages/tervix/subpages.js": "browser/tervix/public/subpages.ts",
-  "public/preview-pages/nuvexa/subpages.js": "browser/nuvexa/public/subpages.ts"
+  "public/preview-pages/nuvexa/subpages.js": "browser/nuvexa/public/subpages.ts",
+  "public/share-state.js": "browser/public/share-state.ts",
+  "public/dashboard-previews/workspace/shared.js": "browser/public/dashboard-previews/workspace/shared.ts",
+  "public/preview-view.js": "browser/public/preview-view.ts"
 }

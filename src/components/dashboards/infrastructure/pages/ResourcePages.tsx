@@ -1,6 +1,8 @@
 "use client";
 import {isDomainName} from '@/lib/validation';
 import {useState, type FormEvent} from 'react';
+import { useLinkState } from "@/hooks/useLinkState";
+import { nullable, stringRecord } from "@/lib/link-state";
 import {Action, Menu, Modal} from '../primitives';
 import {projects} from '../data';
 import {PageHeading, Search, Filter, Empty, Status, DataTable} from './shared';
@@ -35,11 +37,11 @@ export function ResourcePage({page,onAction}:{page:PageId;onAction:PageAction}){
 }
 function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
  const config=configs[page];
- const [records,setRecords]=useState(config.rows);
- const [query,setQuery]=useState('');const [filter,setFilter]=useState('All');
- const [editor,setEditor]=useState<{record?:RecordData;title:string}|null>(null);
- const [detail,setDetail]=useState<string|null>(null);const [removing,setRemoving]=useState<RecordData|null>(null);
- const [visible,setVisible]=useState<string[]>([]);const [message,setMessage]=useState('');
+ const [records,setRecords]=useLinkState("ResourcePages.ResourceView.records", config.rows, { private: true });
+ const [query,setQuery]=useLinkState("ResourcePages.ResourceView.query", '');const [filter,setFilter]=useLinkState("ResourcePages.ResourceView.filter", 'All');
+ const [editor,setEditor]=useLinkState<{record?:RecordData;title:string}|null>("ResourcePages.ResourceView.editor", null, { validate: nullable(value => !!value && typeof value === "object" && "title" in value && typeof value.title === "string" && (!("record" in value) || value.record === undefined || stringRecord(value.record))) });
+ const [detail,setDetail]=useLinkState<string|null>("ResourcePages.ResourceView.detail", null, { validate: nullable(value => typeof value === "string") });const [removing,setRemoving]=useLinkState<RecordData|null>("ResourcePages.ResourceView.removing", null, { validate: nullable(value => stringRecord(value) && ["id", "name", "project", "status"].every(key => typeof value[key] === "string")) });
+ const [visible,setVisible]=useLinkState<string[]>("ResourcePages.ResourceView.visible", []);const [message,setMessage]=useState('');
  const selected=records.find(item=>item.id===detail);
  const shown=records.filter(item=>Object.values(item).join(' ').toLowerCase().includes(query.toLowerCase())&&(filter==='All'||item[config.filter?.key??'']===filter));
  const update=(record:RecordData,values:Record<string,string>,result:string)=>{setRecords(items=>items.map(item=>item.id===record.id?{...item,...values}:item));setMessage(result);};
@@ -74,8 +76,8 @@ function ResourceView({page,onAction}:{page:ResourceId;onAction:PageAction}){
  </div>;
 }
 function RecordEditor({page,config,title,record,records,onClose,onSave}:{page:ResourceId;config:Config;title:string;record?:RecordData;records:RecordData[];onClose:()=>void;onSave:(values:Record<string,string>)=>void}){
- const [values,setValues]=useState<Record<string,string>>(()=>Object.fromEntries(config.fields.map(item=>[item.key,record?.[item.key]??(title.startsWith('Add ')?item.options?.find(option=>title===`Add ${option}`):undefined)??item.options?.[0]??''])));
- const [error,setError]=useState('');
+ const [values,setValues]=useLinkState<Record<string,string>>("ResourcePages.RecordEditor.values", ()=>Object.fromEntries(config.fields.map(item=>[item.key,record?.[item.key]??(title.startsWith('Add ')?item.options?.find(option=>title===`Add ${option}`):undefined)??item.options?.[0]??''])), { private: true, scope: `resource:${page}:${record?.id ?? title}` });
+ const [error,setError]=useLinkState("ResourcePages.RecordEditor.error", '');
  function submit(event:FormEvent){event.preventDefault();const cleaned=Object.fromEntries(Object.entries(values).map(([key,value])=>[key,value.trim()]));if(Object.values(cleaned).some(value=>!value)){setError('Complete all fields.');return;}
   if(page==='environment-variables'&&!/^[A-Z_][A-Z0-9_]*$/.test(cleaned.name)){setError('Use uppercase letters, numbers, and underscores. Start with a letter or underscore.');return;}
   if(page==='domains'&&!isDomainName(cleaned.name)){setError('Enter a domain, such as app.example.com.');return;}

@@ -8,15 +8,19 @@
     let e = window.matchMedia(`(prefers-reduced-motion: reduce)`), n = 50, r = 22, i = 1800, a = 320, o = e => new Promise(t => window.setTimeout(t, e));
     document.querySelectorAll<HTMLElement>(`.hero__rotator`).forEach(s => { if (e.matches || location.search.includes(`static`))
         return; let c = s.querySelector<HTMLElement>(`.hero__typed`), l = Array.from(s.querySelectorAll<HTMLElement>(`.hero__sizer`)); if (!c || l.length < 2)
-        return; let u = l.map(e => e.textContent ?? ``), d = 0, f = e => { let n = l.map(e => e.getBoundingClientRect().width), r = n[e]; c.style.backgroundSize = `${r + parseFloat(getComputedStyle(c).paddingRight)}px 100%`, s.style.transform = ``; }; (async () => { for (await (document.fonts?.ready ?? Promise.resolve()), f(d);;) {
-        await o(i);
+        return; let u = l.map(e => e.textContent ?? ``), d = 0, f = e => { let n = l.map(e => e.getBoundingClientRect().width), r = n[e]; c.style.backgroundSize = `${r + parseFloat(getComputedStyle(c).paddingRight)}px 100%`, s.style.transform = ``; };
+        const waitForPointer = async () => { while (s.matches(':hover') || c.hasAttribute('data-hexmix-selected')) await o(80); };
+        s.addEventListener('pointerenter', () => { c.textContent = u[d]; });
+        (async () => { for (await (document.fonts?.ready ?? Promise.resolve()), f(d);;) {
+        await o(i); await waitForPointer();
+        if (window.parent !== window) { d = (d + 1) % u.length; c.textContent = u[d]; f(d); continue; }
         let e = u[d];
         for (let t = e.length - 1; t >= 0; t--)
-            c.textContent = e.slice(0, t), await o(r);
+            await waitForPointer(), c.textContent = e.slice(0, t), await o(r);
         d = (d + 1) % u.length, f(d), await o(a);
         let t = u[d];
         for (let e = 1; e <= t.length; e++)
-            c.textContent = t.slice(0, e), await o(n + (Math.random() - .5) * 30);
+            await waitForPointer(), c.textContent = t.slice(0, e), await o(n + (Math.random() - .5) * 30);
     } })(); let p = 0; window.addEventListener(`resize`, () => { window.clearTimeout(p), p = window.setTimeout(() => f(d), 150); }); });
 }
 {

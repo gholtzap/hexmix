@@ -3,12 +3,13 @@ import {chromium} from 'playwright';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {contrast} from '../src/lib/palette.ts';
 import {measure} from './lib/measure-text-contrast.mts';
+const appUrl=process.env.APP_URL??'http://127.0.0.1:3000';
 const directory='artifacts/all-surface-contrast';await mkdir(directory,{recursive:true});
 const browser=await chromium.launch();const reports=[];
 try {
  for(const width of [390,1440]) {
   const page=await browser.newPage({viewport:{width,height:width===390?844:900},reducedMotion:'reduce'});
-  await page.goto('http://127.0.0.1:3000/editor?colors=000000-0c0a09-e98878-ffe291-a8655f');
+  await page.goto(`${appUrl}/editor?colors=000000-0c0a09-e98878-ffe291-a8655f`);
   const frame=page.frameLocator('iframe');await frame.locator('html[data-contrast-ready="true"]').waitFor();
   const source=page.frames().find(frame=>frame.parentFrame());
   const settle=async()=>source.waitForFunction(()=>document.documentElement.dataset.contrastReady==='true'&&document.documentElement.dataset.contrastPalette===['text','background','primary','secondary','accent'].map(role=>document.documentElement.style.getPropertyValue(`--p-${role}`)).join('|'));

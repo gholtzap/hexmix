@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLinkState } from "@/hooks/useLinkState";
 import Link from "next/link";
 import Image from "next/image";
 import { fonts } from "@/lib/fonts";
@@ -9,7 +9,7 @@ import Studio from "./Studio";
 import PreviewThumbnail from "./PreviewThumbnail";
 import { Button } from "./ui/button";
 export default function Home() {
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useLinkState("Home.Home.category", "All", { validate: value => ["All", "Homepages", "Dashboards"].includes(String(value)) });
   return <Studio>{({ palette, heading, body }) => <div className="home-page">
     <div className="home-shell">
       <header className="home-header"><Image src="/hexmix-logo.png" width={44} height={44} alt="" priority /><span className="home-wordmark">Hexmix</span><a className="icon-button home-github" href="https://github.com/gholtzap/hexmix" target="_blank" rel="noopener noreferrer" aria-label="View Hexmix on GitHub" aria-describedby="home-github-tooltip"><span className="home-github-icon" aria-hidden="true" /><span className="control-tooltip" role="tooltip" id="home-github-tooltip">View Hexmix on GitHub</span></a></header>
