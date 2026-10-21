@@ -1193,3 +1193,20 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 .comparison-link-toggle input { width: 16px; height: 16px; accent-color: var(--color-foreground); }
 
 .toolbar-anchor[data-preview-toolbar-hidden] { visibility: hidden; pointer-events: none; }
+
+.color-trigger { position: relative; }
+.color-trigger > .swatch-tooltip { display: none; }
+@media (max-width: 1200px) {
+  .toolbar-color > .color-trigger > .color-trigger-name { display: none; }
+  .toolbar-color > .color-trigger:has(> svg) { height: 44px; }
+  .toolbar-color > .color-trigger > .swatch-tooltip {
+    display: block;
+    width: max-content;
+    max-width: none;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+  .color-trigger:is(:hover, :focus-visible):not([data-state="open"]) > .swatch-tooltip { opacity: 1; visibility: visible; }
+  .toolbar-color:first-child .swatch-tooltip { left: 0; transform: none; }
+  .toolbar-color:last-child .swatch-tooltip { left: auto; right: 0; transform: none; }
+}
