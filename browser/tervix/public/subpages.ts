@@ -112,6 +112,45 @@
                 });
             }
         }
+        const searchTriggers = [...document.querySelectorAll<HTMLButtonElement>('button[aria-label="Open search"]')];
+        if (searchTriggers.length) {
+            const search = document.createElement('dialog');
+            search.className = 'tervix-dialog tervix-doc-search';
+            search.setAttribute('aria-label', 'Search documentation');
+            search.innerHTML = '<div class="tervix-doc-head"><h2 id="doc-search-title">Search</h2><button type="button" class="tervix-doc-close" aria-label="Close search" aria-describedby="doc-search-close-tip"><svg viewBox="0 0 20 20" aria-hidden="true"><use href="/dashboard-previews/workspace/assets/icons.svg#xmark-md-light-20"/></svg><span id="doc-search-close-tip" role="tooltip">Close search</span></button></div><input type="search" aria-label="Search documentation" placeholder="Search pages"><ul class="tervix-doc-results"></ul><p role="status" aria-live="polite"></p>';
+            document.body.append(search);
+            const input = search.querySelector<HTMLInputElement>('input');
+            const results = search.querySelector<HTMLUListElement>('ul');
+            const status = search.querySelector<HTMLElement>('[role=status]');
+            const renderResults = () => {
+                const pages = [...new Map([...document.querySelectorAll<HTMLAnchorElement>('#sidebar a[href]')].filter(link => link.textContent.trim()).map(link => [new URL(link.href).pathname, link])).values()];
+                const query = input.value.trim().toLowerCase();
+                const matches = pages.filter(link => `${link.textContent} ${new URL(link.href).pathname}`.toLowerCase().includes(query));
+                results.replaceChildren(...matches.slice(0, 20).map(link => {
+                    const row = document.createElement('li'), result = document.createElement('a');
+                    result.href = link.href; result.dataset.previewPath = link.dataset.previewPath ?? localPath(new URL(link.href).pathname); result.target = '_top'; result.textContent = link.textContent.trim(); row.append(result); return row;
+                }));
+                status.textContent = matches.length ? '' : 'No pages found';
+            };
+            let background: [HTMLElement, boolean][] = [];
+            const openSearch = () => {
+                input.value = ''; renderResults();
+                if (!search.open) {
+                    background = [...document.body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && node !== search).map(node => [node, node.inert]);
+                    background.forEach(([node]) => { node.inert = true; });
+                    search.showModal();
+                }
+                input.focus();
+            };
+            search.addEventListener('close', () => { background.forEach(([node, inert]) => { node.inert = inert; }); background = []; });
+            search.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); search.close(); } });
+            renderResults();
+            searchTriggers.forEach(button => button.addEventListener('click', openSearch));
+            search.querySelector('button').addEventListener('click', () => search.close());
+            input.addEventListener('input', renderResults);
+            input.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); results.querySelector<HTMLAnchorElement>('a')?.click(); } });
+            document.addEventListener('keydown', event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); openSearch(); } });
+        }
         document.addEventListener('click', event => {
             const target = (event.target as Element).closest<HTMLElement>('button, a');
             if (!target)
