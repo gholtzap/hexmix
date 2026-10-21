@@ -177,7 +177,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const query = new URLSearchParams(window.location.search);
     setEmbedded(['1', 'toolbar'].includes(query.get("embed") ?? ''));
     setComparisonToolbar(query.get("embed") === "toolbar");
-    comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System']);
+    comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System', readElementRoles(window.location.search)]);
     const sharedHistory = readField(stateScope(), "Studio.Studio.history");
     if (!Array.isArray(sharedHistory) || !sharedHistory.length || !sharedHistory.every(isPalette)) setHistory([readPalette(window.location.search) ?? defaultPalette]);
     const h = query.get("heading"),
@@ -300,7 +300,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   useEffect(() => {
     const onReady = (event: MessageEvent) => {
       if (embedded && event.source === window.parent && event.origin === window.location.origin && event.data?.type === "hexmix-comparison-colors" && isPalette(event.data.palette)) {
-        comparisonState.current = JSON.stringify([event.data.palette, event.data.heading, event.data.body]);
+        const assignments = event.data.elements === undefined ? elementRoles : event.data.elements;
+        if (!Array.isArray(assignments) || assignments.length > maxElementRoles || !assignments.every(isElementRole) || JSON.stringify(assignments).length > maxElementRolesLength) return;
+        comparisonState.current = JSON.stringify([event.data.palette, event.data.heading, event.data.body, assignments]);
+        if (JSON.stringify(assignments) !== JSON.stringify(elementRoles)) setElementRolesState(assignments);
         if (!samePalette(event.data.palette, history[index])) { setHistory([event.data.palette]); setIndex(0); }
         setPreviewPalette(null);
         const url = new URL(window.location.href);
@@ -342,12 +345,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     if (embedded) window.parent.postMessage({ type: "hexmix-comparison-ready" }, window.location.origin);
   }, [embedded]);
   useEffect(() => {
-    if (!comparisonToolbar) return;
-    const signature = JSON.stringify([history[index], heading, body]);
+    if (!comparisonToolbar || !rolesReadyPath) return;
+    const signature = JSON.stringify([history[index], heading, body, elementRoles]);
     if (signature === comparisonState.current) return;
     comparisonState.current = signature;
-    window.parent.postMessage({ type: 'hexmix-comparison-change', palette: history[index], heading, body }, window.location.origin);
-  }, [comparisonToolbar, history, index, heading, body]);
+    window.parent.postMessage({ type: 'hexmix-comparison-change', palette: history[index], heading, body, elements: elementRoles }, window.location.origin);
+  }, [comparisonToolbar, history, index, heading, body, elementRoles, rolesReadyPath]);
   useEffect(() => {
     if (!comparisonToolbar) return;
     const navigate = (event: MouseEvent) => {
@@ -473,7 +476,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const selected = previewCatalog.find(item => window.location.pathname === item.path || window.location.pathname.startsWith(item.path + '/'));
     const first = saved.find(item => samePalette(item.colors, palette));
     const second = saved.find(item => !samePalette(item.colors, palette));
-    router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', mode: isDarkPalette(palette) ? 'dark' : 'light' }));
+    router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', elements: elementRoles, mode: isDarkPalette(palette) ? 'dark' : 'light' }));
   }
   async function share() {
     const host = stateWindow();
