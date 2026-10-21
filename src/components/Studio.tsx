@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { usePreviewToolbarClearance } from '@/hooks/usePreviewToolbarClearance';
 import { useLinkState } from "@/hooks/useLinkState";
 import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
 import { createSharedLink } from "@/lib/shared-link";
@@ -37,7 +38,7 @@ import { comparisonHref } from "@/lib/comparison";
 import { copyText, readThemePaste } from "@/lib/clipboard";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
-import {copyPalette,copyTheme,parseTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
+import {copyPalette,copyTheme,readTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
 import SiteSwitcher from "./SiteSwitcher";
@@ -163,6 +164,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   const [toolbarHeight, setToolbarHeight] = useState(0);
   const [showCapture, setShowCapture] = useState(false);
   const [readyPreview, setReadyPreview] = useState<string | null>(null);
+  usePreviewToolbarClearance(frame, showCapture ? null : toolbarElement, preview);
   const attachFrame = useCallback((element: HTMLIFrameElement | null) => {
     frame.current = element;
     setReadyPreview(null);
@@ -177,7 +179,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const query = new URLSearchParams(window.location.search);
     setEmbedded(['1', 'toolbar'].includes(query.get("embed") ?? ''));
     setComparisonToolbar(query.get("embed") === "toolbar");
-    comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System']);
+    comparisonState.current = JSON.stringify([readPalette(window.location.search) ?? defaultPalette, query.get('heading') ?? 'System', query.get('body') ?? 'System', readElementRoles(window.location.search)]);
     const sharedHistory = readField(stateScope(), "Studio.Studio.history");
     if (!Array.isArray(sharedHistory) || !sharedHistory.length || !sharedHistory.every(isPalette)) setHistory([readPalette(window.location.search) ?? defaultPalette]);
     const h = query.get("heading"),
@@ -300,7 +302,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   useEffect(() => {
     const onReady = (event: MessageEvent) => {
       if (embedded && event.source === window.parent && event.origin === window.location.origin && event.data?.type === "hexmix-comparison-colors" && isPalette(event.data.palette)) {
-        comparisonState.current = JSON.stringify([event.data.palette, event.data.heading, event.data.body]);
+        const assignments = event.data.elements === undefined ? elementRoles : event.data.elements;
+        if (!Array.isArray(assignments) || assignments.length > maxElementRoles || !assignments.every(isElementRole) || JSON.stringify(assignments).length > maxElementRolesLength) return;
+        comparisonState.current = JSON.stringify([event.data.palette, event.data.heading, event.data.body, assignments]);
+        if (JSON.stringify(assignments) !== JSON.stringify(elementRoles)) setElementRolesState(assignments);
         if (!samePalette(event.data.palette, history[index])) { setHistory([event.data.palette]); setIndex(0); }
         setPreviewPalette(null);
         const url = new URL(window.location.href);
@@ -342,12 +347,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     if (embedded) window.parent.postMessage({ type: "hexmix-comparison-ready" }, window.location.origin);
   }, [embedded]);
   useEffect(() => {
-    if (!comparisonToolbar) return;
-    const signature = JSON.stringify([history[index], heading, body]);
+    if (!comparisonToolbar || !rolesReadyPath) return;
+    const signature = JSON.stringify([history[index], heading, body, elementRoles]);
     if (signature === comparisonState.current) return;
     comparisonState.current = signature;
-    window.parent.postMessage({ type: 'hexmix-comparison-change', palette: history[index], heading, body }, window.location.origin);
-  }, [comparisonToolbar, history, index, heading, body]);
+    window.parent.postMessage({ type: 'hexmix-comparison-change', palette: history[index], heading, body, elements: elementRoles }, window.location.origin);
+  }, [comparisonToolbar, history, index, heading, body, elementRoles, rolesReadyPath]);
   useEffect(() => {
     if (!comparisonToolbar) return;
     const navigate = (event: MouseEvent) => {
@@ -393,7 +398,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
       setPreviewPalette(null);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && panel === "fonts") { close(); focusMobileTools(); }
+      if (event.key === "Escape" && panel === "fonts") { close(); focusFontsTrigger(); }
     };
     const onPointer = (event: PointerEvent) => {
       if (panel === "fonts" && !toolbarElement?.contains(event.target as Node)) close();
@@ -457,10 +462,10 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     let text: string;
     try { text = await navigator.clipboard.readText(); }
     catch { setNotice("Use Command+V or Ctrl+V to paste a theme."); return; }
-    pasteText(text);
+    await pasteText(text);
   }
-  function pasteText(text: string) {
-    try { applyImport(parseTheme(text)); }
+  async function pasteText(text: string) {
+    try { applyImport(await readTheme(text, window.location.origin)); }
     catch { setNotice("Clipboard has no valid palette or theme."); }
   }
   useEffect(() => {
@@ -473,7 +478,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     const selected = previewCatalog.find(item => window.location.pathname === item.path || window.location.pathname.startsWith(item.path + '/'));
     const first = saved.find(item => samePalette(item.colors, palette));
     const second = saved.find(item => !samePalette(item.colors, palette));
-    router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', mode: isDarkPalette(palette) ? 'dark' : 'light' }));
+    router.push(comparisonHref({ a: palette, b: second?.colors ?? (samePalette(palette, initialPalette) ? defaultDarkPalette : initialPalette), preview: selected?.id ?? 'avenlo', heading, body, nameA: first?.name ?? 'Palette A', nameB: second?.name ?? 'Palette B', elements: elementRoles, mode: isDarkPalette(palette) ? 'dark' : 'light' }));
   }
   async function share() {
     const host = stateWindow();
@@ -507,10 +512,12 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     URL.revokeObjectURL(url);
     setNotice(`${format.label} file downloaded.`);
   }
-  function focusMobileTools() {
-    if (window.matchMedia("(max-width: 560px), (max-height: 500px) and (max-width: 1000px)").matches) toolsTrigger.current?.focus();
+  function focusFontsTrigger() {
+    const direct = toolbarElement?.querySelector<HTMLButtonElement>('button[aria-label="Fonts"]');
+    const trigger = direct?.getClientRects().length ? direct : toolsTrigger.current;
+    trigger?.focus();
   }
-  function closeFonts() { setPanel(null); focusMobileTools(); }
+  function closeFonts() { setPanel(null); focusFontsTrigger(); }
   function toggleInspector() { setInspecting(!inspecting); setSelection(null); setPanel(null); setActiveColor(null); }
   useEffect(() => { if (panel === "fonts") document.getElementById("heading-font")?.focus(); }, [panel]);
   function togglePanel(next: "fonts" | "saved") {

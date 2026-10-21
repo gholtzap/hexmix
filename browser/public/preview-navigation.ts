@@ -45,6 +45,19 @@
             return '/industries/' + label.split(/\s{2,}|\n/)[0].replace(/[^a-z0-9]+/g, '-').replace(/-$/, '');
         return pathname === '/' ? '/' : '/' + pathname.split('/').filter(Boolean).map(part => encodeURIComponent(decodeURIComponent(part))).join('/');
     }
+    function themedHref(path: string) {
+        const url = new URL(`${editor}/${slug}${path === '/' ? '' : path}`);
+        let query = new URLSearchParams(location.search);
+        try { query = new URLSearchParams(window.parent.location.search); } catch { /* Separate origins use the local document settings. */ }
+        for (const key of ['colors', 'heading', 'body', 'elements']) if (query.has(key)) url.searchParams.set(key, query.get(key)!);
+        return url.href;
+    }
+    const refreshLink = (event: Event) => {
+        const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[data-preview-path]') : null;
+        if (link) link.href = themedHref(link.dataset.previewPath!);
+    };
+    document.addEventListener('pointerdown', refreshLink, true);
+    document.addEventListener('keydown', refreshLink, true);
     function update() {
         // The local previews contain English content only.
         for (const picker of document.querySelectorAll<HTMLElement>('.lang, [data-framer-name="Language Switcher"]'))
@@ -55,7 +68,7 @@
                 continue;
             const path = original.replaceAll(site, slug);
             link.dataset.previewPath = path;
-            const href = `${editor}/${slug}${path === '/' ? '' : path}`;
+            const href = themedHref(path);
             if (link.href !== href)
                 link.href = href;
             link.target = '_top';

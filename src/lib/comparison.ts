@@ -1,12 +1,14 @@
+import {readElementRoles,setElementRoles,type ElementRole} from './element-roles.ts';
 import { fonts, type FontName } from './fonts.ts';
 import { defaultDarkPalette, initialPalette, paletteQuery, readPalette, samePalette, isDarkPalette, type Palette, type PaletteMode } from './palette.ts';
 import { previewCatalog } from './preview-catalog.ts';
 
-export type Comparison = { a: Palette; b: Palette; preview: string; heading: FontName; body: FontName; nameA: string; nameB: string; mode: PaletteMode; customA?: true; customB?: true; unlinked?: true };
+export type Comparison = { a: Palette; b: Palette; preview: string; heading: FontName; body: FontName; nameA: string; nameB: string; mode: PaletteMode; customA?: true; customB?: true; unlinked?: true; elements?: ElementRole[] };
 
 export function readComparison(search: string): Comparison {
   const query = new URLSearchParams(search);
   const a = readPalette(search, 'a') ?? readPalette(search) ?? defaultDarkPalette;
+  const elements = readElementRoles(search);
   const font = (key: string): FontName => {
     const name = query.get(key);
     return name && Object.hasOwn(fonts, name) ? name as FontName : 'System';
@@ -17,6 +19,7 @@ export function readComparison(search: string): Comparison {
   };
   return {
     a,
+    ...(elements.length ? { elements } : {}),
     ...(query.get('linked') === '0' ? { unlinked: true as const } : {}),
     ...(query.get('customA') === '1' ? { customA: true as const } : {}),
     ...(query.get('customB') === '1' ? { customB: true as const } : {}),
@@ -33,6 +36,7 @@ export function readComparison(search: string): Comparison {
 export function comparisonHref(value: Comparison): string {
   const query = new URLSearchParams(`${paletteQuery(value.a, 'a')}&${paletteQuery(value.b, 'b')}`);
   query.set('preview', value.preview);
+  setElementRoles(query,value.elements??[]);
   query.set('heading', value.heading);
   query.set('body', value.body);
   query.set('nameA', value.nameA);
