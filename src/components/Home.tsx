@@ -18,11 +18,9 @@ export default function Home() {
           <h1 id="home-title" style={{ fontFamily: fonts[heading] }}>See your colors on real pages.</h1>
         </div>
       </section>
-      <section className="home-gallery" aria-labelledby="preview-title">
-        <div className="home-gallery-heading"><h2 id="preview-title">Previews</h2>
-          <div className="home-categories" role="group" aria-label="Preview categories">
-            {["All", "Homepages", "Dashboards"].map((value) => <Button key={value} variant="ghost" aria-pressed={category === value} onClick={() => setCategory(value)}>{value}</Button>)}
-          </div>
+      <section className="home-gallery" aria-label="Choose a preview">
+        <div className="home-categories" role="group" aria-label="Preview categories">
+          {["All", "Homepages", "Dashboards"].map((value) => <Button key={value} variant="ghost" aria-pressed={category === value} onClick={() => setCategory(value)}>{value}</Button>)}
         </div>
         {["Homepages", "Dashboards"].filter(value => category === "All" || category === value).map(group => <section className="home-preview-group" key={group} aria-labelledby={`preview-${group.toLowerCase()}`}>
           <h3 id={`preview-${group.toLowerCase()}`}>{group}</h3>

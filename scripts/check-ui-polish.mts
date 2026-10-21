@@ -19,7 +19,7 @@ try{
   const context=await browser.newContext({viewport:{width,height:width===390?844:900},reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
   const colors=theme==='light'?'171717-ffffff-e98878-ffe291-a8655f':'ededed-171717-e98878-333333-a8655f';
   await page.goto('http://127.0.0.1:3000/?colors='+colors);await page.locator('[data-app-ready]').waitFor();
-  if(width===1440){const gap=await page.locator('.home-intro h1').evaluate(e=>document.querySelector('.home-gallery-heading h2').getBoundingClientRect().top-e.getBoundingClientRect().bottom);assert.ok(gap>=32);}
+  if(width===1440){const gap=await page.locator('.home-intro h1').evaluate(e=>document.querySelector('.home-categories').getBoundingClientRect().top-e.getBoundingClientRect().bottom);assert.ok(gap>=32);}
   await audit(page,'home alignment',width,theme);await page.screenshot({path:`${output}/home-${width}-${theme}.png`});
   for(const [name,path] of [['avenlo','/avenlo'],['chat','/dashboards/ai-chatbot'],['infra','/dashboards/infra-dashboard']] as const){
    await page.goto(`http://127.0.0.1:3000${path}?colors=${colors}`);await page.locator('[data-app-ready]').waitFor();const frame=page.frames().find(f=>f.parentFrame());await frame.locator('[data-app-ready]').waitFor();

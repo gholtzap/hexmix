@@ -951,10 +951,8 @@ html {
 .home-wordmark { font-size: 18px; font-weight: 650; letter-spacing: -0.04em; }
 .home-start { padding: 56px 0 44px; }
 .home-intro h1 { max-width: 850px; margin: 0; font-size: 48px; font-weight: 550; line-height: 1.1; letter-spacing: -0.04em; }
-.home-gallery-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .home-gallery { padding-bottom: 56px; }
-.home-gallery-heading h2 { margin: 0; font-size: 20px; font-weight: 500; }
-.home-categories { display: flex; gap: 8px; }
+.home-categories { display: flex; gap: 8px; margin-bottom: 16px; }
 .home-categories button[aria-pressed=true] { background: var(--color-accent); }
 .home-preview-group + .home-preview-group { margin-top: 32px; }
 .home-preview-group > h3 { margin: 0 0 16px; font-size: 18px; font-weight: 500; }
@@ -982,7 +980,6 @@ html {
   .home-start { padding: 40px 0 32px; }
   .home-gallery { padding-bottom: 40px; }
   .home-intro h1 { font-size: 32px; }
-  .home-gallery-heading { align-items: flex-start; flex-direction: column; }
   .home-preview-grid { grid-template-columns: 1fr; gap: 16px; }
   .home-categories button { min-height: 44px; }
 }
