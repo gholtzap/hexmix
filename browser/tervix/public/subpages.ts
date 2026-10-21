@@ -116,8 +116,8 @@
         if (searchTriggers.length) {
             const search = document.createElement('dialog');
             search.className = 'tervix-dialog tervix-doc-search';
-            search.setAttribute('aria-labelledby', 'doc-search-title');
-            search.innerHTML = '<div class="tervix-doc-head"><h2 id="doc-search-title">Search documentation</h2><button type="button" class="tervix-doc-close" aria-label="Close search" aria-describedby="doc-search-close-tip"><svg viewBox="0 0 20 20" aria-hidden="true"><use href="/dashboard-previews/workspace/assets/icons.svg#xmark-md-light-20"/></svg><span id="doc-search-close-tip" role="tooltip">Close search</span></button></div><input type="search" aria-label="Search documentation" placeholder="Search pages"><ul class="tervix-doc-results"></ul><p role="status" aria-live="polite"></p>';
+            search.setAttribute('aria-label', 'Search documentation');
+            search.innerHTML = '<div class="tervix-doc-head"><h2 id="doc-search-title">Search</h2><button type="button" class="tervix-doc-close" aria-label="Close search" aria-describedby="doc-search-close-tip"><svg viewBox="0 0 20 20" aria-hidden="true"><use href="/dashboard-previews/workspace/assets/icons.svg#xmark-md-light-20"/></svg><span id="doc-search-close-tip" role="tooltip">Close search</span></button></div><input type="search" aria-label="Search documentation" placeholder="Search pages"><ul class="tervix-doc-results"></ul><p role="status" aria-live="polite"></p>';
             document.body.append(search);
             const input = search.querySelector<HTMLInputElement>('input');
             const results = search.querySelector<HTMLUListElement>('ul');
