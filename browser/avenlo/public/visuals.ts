@@ -13,7 +13,6 @@
         s.addEventListener('pointerenter', () => { c.textContent = u[d]; });
         (async () => { for (await (document.fonts?.ready ?? Promise.resolve()), f(d);;) {
         await o(i); await waitForPointer();
-        if (window.parent !== window) { d = (d + 1) % u.length; c.textContent = u[d]; f(d); continue; }
         let e = u[d];
         for (let t = e.length - 1; t >= 0; t--)
             await waitForPointer(), c.textContent = e.slice(0, t), await o(r);
