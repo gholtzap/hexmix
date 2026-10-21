@@ -128,7 +128,7 @@
                 const matches = pages.filter(link => `${link.textContent} ${new URL(link.href).pathname}`.toLowerCase().includes(query));
                 results.replaceChildren(...matches.slice(0, 20).map(link => {
                     const row = document.createElement('li'), result = document.createElement('a');
-                    result.href = link.href; result.textContent = link.textContent.trim(); row.append(result); return row;
+                    result.href = link.href; result.dataset.previewPath = link.dataset.previewPath ?? localPath(new URL(link.href).pathname); result.target = '_top'; result.textContent = link.textContent.trim(); row.append(result); return row;
                 }));
                 status.textContent = matches.length ? '' : 'No pages found';
             };
