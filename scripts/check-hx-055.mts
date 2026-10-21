@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {runBugCheck} from './lib/confirmed-bug.mts';
-const sourceCopy=/\b(?:quotes?|tenders?|ERP|BoQs?|distributors?|manufacturers?|HVAC|SHK|technical wholesale)\b/i;
+const sourceCopy=/\b(?:quotes?|tenders?|ERP|BoQs?|distributors?|manufacturers?|HVAC|SHK|technical wholesale|technical suppliers|sales standard)\b/i;
 await runBugCheck('HX-055','/nuvexa',async({page,frame,audit})=>{
  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));const verify=async()=>{await frame.waitForTimeout(300);assert.doesNotMatch(await frame.locator('body').innerText(),sourceCopy);};await page.waitForLoadState('networkidle');await verify();await audit(page,'loaded-copy');
  const menu=frame.locator('.mh-header').getByRole('button').filter({visible:true}).first();if(await menu.count()){await menu.click();await verify();await audit(page,'mobile-menu');await menu.click();}else{for(const label of ['Platform','Ways to work']){await frame.locator('.mh-header').getByText(label,{exact:true}).first().hover();await verify();await audit(page,label==='Platform'?'platform-menu':'solutions-menu');}}

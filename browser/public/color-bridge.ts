@@ -7,7 +7,7 @@
     let mediaPalette;
     const nuvexaLabels: Record<string,string> = {
         'products':'Platform', 'solutions':'Ways to work', 'success stories':'Stories', 'book a demo':'Talk to us',
-        'industries':'Business areas', 'your industry':'Your team', 'customer story':'Team story',
+        'industries':'Business areas', 'your industry':'Your team', 'customer story':'Team story', 'foundations':'Shared work',
         'quotes & tenders':'Business planning', 'order processing':'Team coordination',
         'hvac / shk':'Operations', 'electrical':'Sales teams', 'building materials':'Customer teams',
         'building services (tga)':'Project teams', 'industrial supplies':'Growing businesses',
@@ -23,6 +23,8 @@
     };
     const rename = (value: string, prose = false) => {
         if (site !== 'nuvexa' || !prose) return value;
+        const headline=value.replace(/\bThe (?=new sales standard\b)/g,'A ').replace(/\bnew sales standard\b/gi,'clearer path forward').replace(/\btechnical suppliers\b/gi,'your business');
+        if (headline!==value) return headline;
         const text=value.trim(); if (!text) return value;
         const label=nuvexaLabels[text.replace(/\s+/g,' ').toLowerCase()];
         if (label) return value.replace(text,label);
@@ -135,6 +137,7 @@
         document.head.append(touchStyle);
         const copyStyle = document.createElement('style');
         copyStyle.textContent = '[data-business-copy]{text-transform:none!important}' + (site === 'avenlo' ? '.hero__typed{background-size:100% 100%!important}' : '') + (site === 'tervix' ? 'html,body{overflow-x:clip}' : '');
+        if (site === 'nuvexa') copyStyle.textContent += '.mh-header [data-business-copy]{font-family:var(--p-body-font,system-ui)!important}';
         document.head.append(copyStyle);
         document.documentElement.dataset.copyReady = 'true';
         const navigation = document.createElement("script");
