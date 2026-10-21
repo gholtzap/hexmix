@@ -7,6 +7,7 @@ import { oneOf } from "@/lib/link-state";
 import Link from 'next/link';
 import { comparisonHref, readComparison, type Comparison } from '@/lib/comparison';
 import { copyText, readThemePaste } from '@/lib/clipboard';
+import {paletteHistoryShortcut} from '@/lib/input-events';
 import { previewCatalog, previewHref } from '@/lib/preview-catalog';
 import { isDarkPalette, isPalette, samePalette, paletteForMode, type Palette } from '@/lib/palette';
 import { useSavedPalettes } from '@/hooks/useSavedPalettes';
@@ -38,7 +39,14 @@ export default function ComparisonPage() {
       document.querySelector<HTMLIFrameElement>(`iframe[title="Palette ${active.toUpperCase()} preview"]`)?.contentWindow?.postMessage({ type: 'hexmix-paste-theme', text }, window.location.origin);
     };
     document.addEventListener('paste', paste);
-    return () => document.removeEventListener('paste', paste);
+    const keydown = (event: KeyboardEvent) => {
+      const action = paletteHistoryShortcut(event);
+      if (!action) return;
+      const target = document.querySelector<HTMLIFrameElement>(`iframe[title="Palette ${active.toUpperCase()} preview"]`);
+      if (target?.contentWindow) { event.preventDefault(); target.contentWindow.postMessage({type:'hexmix-palette-history',action},window.location.origin); }
+    };
+    document.addEventListener('keydown', keydown);
+    return () => { document.removeEventListener('paste', paste); document.removeEventListener('keydown', keydown); };
   }, [active]);
   const [panels, setPanels] = useLinkState("ComparisonPage.ComparisonPage.panels", { a: false, b: false });
   const input = useRef<HTMLInputElement>(null);

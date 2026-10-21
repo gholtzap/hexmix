@@ -36,6 +36,7 @@ import { useVisibleViewport } from "@/hooks/useVisibleViewport";
 import IconButton from "./IconButton";
 import { comparisonHref } from "@/lib/comparison";
 import { copyText, readThemePaste } from "@/lib/clipboard";
+import {paletteHistoryShortcut} from '@/lib/input-events';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "./ui/dropdown-menu";
 import PalettePanel from "./PalettePanel";
 import {copyPalette,copyTheme,readTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
@@ -474,8 +475,8 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     setHistory([...history.slice(0, index + 1), next]);
     setIndex(index + 1);
   }
-  function undoPalette() { if (index > 0) { setPreviewPalette(null); setIndex(index - 1); } }
-  function redoPalette() { if (index < history.length - 1) { setPreviewPalette(null); setIndex(index + 1); } }
+  function undoPalette() { if (index <= 0) return false; setPreviewPalette(null); setIndex(index - 1); return true; }
+  function redoPalette() { if (index >= history.length - 1) return false; setPreviewPalette(null); setIndex(index + 1); return true; }
   function randomize() {
     const next = randomPalette(isDarkPalette(palette));
     locked.forEach((role) => (next[role] = palette[role]));
@@ -486,12 +487,18 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     else { setManualCopy(text); setPanel(null); setExportOpen(true); }
   }
   const pasteHandler = useRef(pasteText);
+  const historyHandler = useRef((action: 'undo' | 'redo') => action === 'undo' ? undoPalette() : redoPalette());
+  useEffect(() => { historyHandler.current = action => action === 'undo' ? undoPalette() : redoPalette(); });
   useEffect(() => { pasteHandler.current = pasteText; });
   useEffect(() => {
     const documents = new Set<Document>();
     const paste = (event: ClipboardEvent) => {
       const text = readThemePaste(event);
       if (text !== null) { event.preventDefault(); pasteHandler.current(text); }
+    };
+    const keydown = (event: KeyboardEvent) => {
+      const action = paletteHistoryShortcut(event);
+      if (action && historyHandler.current(action)) event.preventDefault();
     };
     const load = (event: Event) => {
       const node = event.target as HTMLIFrameElement;
@@ -500,14 +507,16 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     function attach(doc: Document) {
       if (documents.has(doc)) return;
       documents.add(doc); doc.addEventListener('paste', paste); doc.addEventListener('load', load, true);
+      doc.addEventListener('keydown', keydown);
       doc.querySelectorAll('iframe').forEach(node => { try { if (node.contentDocument) attach(node.contentDocument); } catch { /* Separate origins keep their native paste behavior. */ } });
     }
     attach(document);
     const message = (event: MessageEvent) => {
       if (comparisonToolbar && event.origin === window.location.origin && event.source === window.parent && event.data?.type === 'hexmix-paste-theme' && typeof event.data.text === 'string') pasteHandler.current(event.data.text);
+      if (comparisonToolbar && event.origin === window.location.origin && event.source === window.parent && event.data?.type === 'hexmix-palette-history' && ['undo', 'redo'].includes(event.data.action)) historyHandler.current(event.data.action);
     };
     window.addEventListener('message', message);
-    return () => { documents.forEach(doc => { doc.removeEventListener('paste', paste); doc.removeEventListener('load', load, true); }); window.removeEventListener('message', message); };
+    return () => { documents.forEach(doc => { doc.removeEventListener('paste', paste); doc.removeEventListener('keydown', keydown); doc.removeEventListener('load', load, true); }); window.removeEventListener('message', message); };
   }, [preview, comparisonToolbar, readyPreview]);
   function currentTheme(): Theme { return { colors: palette, fonts: { heading, body }, elements: elementRoles }; }
   async function pasteClipboard() {
@@ -819,6 +828,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <IconButton
                 className="icon-button toolbar-secondary"
                 aria-label="Undo palette"
+                aria-keyshortcuts="Control+z Meta+z"
                 data-quick-action=""
                 disabled={index === 0}
                 onClick={undoPalette}
@@ -828,6 +838,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
               <IconButton
                 className="icon-button toolbar-secondary"
                 aria-label="Redo palette"
+                aria-keyshortcuts="Control+Shift+z Meta+Shift+z"
                 disabled={index === history.length - 1}
                 onClick={redoPalette}
               >

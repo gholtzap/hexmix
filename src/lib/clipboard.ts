@@ -1,3 +1,5 @@
+import {isEditingText} from './input-events.ts';
+
 export async function copyText(text: string, container = document.body): Promise<boolean> {
   try { await navigator.clipboard.writeText(text); return true; }
   catch {
@@ -15,7 +17,6 @@ export async function copyText(text: string, container = document.body): Promise
 
 export function readThemePaste(event: ClipboardEvent): string | null {
   if (event.defaultPrevented || !event.clipboardData?.types.includes('text/plain')) return null;
-  const editable = 'input:not([type=button]):not([type=submit]):not([type=reset]),textarea,select,[contenteditable]:not([contenteditable="false"])';
-  if (event.composedPath().some(node => typeof (node as Element).closest === 'function' && (node as Element).closest(editable))) return null;
+  if (isEditingText(event)) return null;
   return event.clipboardData.getData('text/plain');
 }
