@@ -11,17 +11,24 @@ import './delivery.css';
 
 function useProjectFilter(key:string){
  const [project,setProject]=useLinkState(key,'All');
+ const [requested,setRequested]=useState<string|null>(null);
  useEffect(()=>{
-  const value=new URLSearchParams(window.parent.location.search).get('project');
-  if(value&&!projectNameError(value,[]))setProject(value);
+  const host=window.parent;
+  const sync=()=>{
+   const value=new URLSearchParams(host.location.search).get('project');
+   const valid=value&&!projectNameError(value,[])?value:null;
+   setRequested(valid);if(valid)setProject(valid);
+  };
+  sync();host.addEventListener('popstate',sync);
+  return()=>host.removeEventListener('popstate',sync);
  },[setProject]);
  const change=(value:string)=>{
-  setProject(value);
+  setRequested(value==='All'?null:value);setProject(value);
   const host=window.parent,url=new URL(host.location.href);
   if(value==='All')url.searchParams.delete('project');else url.searchParams.set('project',value);
   host.history.replaceState(host.history.state,'',url);
  };
- return [project,change] as const;
+ return [requested??project,change] as const;
 }
 type DeploymentStatus='Ready'|'Error'|'Building'|'Queued'|'Canceled';
 type Deployment={id:string;project:string;gradient:string;title:string;status:DeploymentStatus;environment:string;hash:string;branch:string;age:string;duration:string;author:string};
