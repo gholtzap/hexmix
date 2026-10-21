@@ -102,3 +102,6 @@ html[data-static-source-page] .tervix-doc-results { display: grid; gap: 8px; lis
 html[data-static-source-page] .tervix-doc-results a { display: block; padding: 12px; border: 1px solid color-mix(in srgb, var(--p-text) 25%, transparent); border-radius: 8px; color: var(--p-text); background: var(--p-background); font-size: 16px; text-decoration: none; }
 html[data-static-source-page] .tervix-doc-results a:is(:hover,:focus-visible) { outline: 2px solid var(--p-primary); outline-offset: 2px; }
 html[data-static-source-page] .tervix-doc-search { margin: auto; inset: 0; }
+html[data-static-source-page] .tervix-doc-search[open] { display: flex; flex-direction: column; height: min(680px, calc(100dvh - 32px)); }
+html[data-static-source-page] .tervix-doc-search > :not(.tervix-doc-results) { flex: none; }
+html[data-static-source-page] .tervix-doc-search .tervix-doc-results { flex: 1; min-height: 0; overflow: auto; align-content: start; }
