@@ -11,6 +11,13 @@ const labels = { chat: 'Home', space: 'Space', scheduled: 'Scheduled', plugins: 
 const icons = { chat: 'home', space: 'space', scheduled: 'clock', plugins: 'plugin', sites: 'sites' };
 let current = new URLSearchParams(location.search).get('view') || 'chat';
 let closed = false, renderId = 0;
+const mobileSidebar = matchMedia('(max-width: 700px)');
+function closeDrawer() {
+    document.body.classList.remove('drawer-open');
+    const main = document.querySelector<HTMLElement>('main');
+    if (main) main.inert = false;
+}
+mobileSidebar.addEventListener('change', event => { if (!event.matches) closeDrawer(); });
 let sharedProfile: string | null = null;
 linkPreviewData('profile', () => ({ name: profileName() }), value => { sharedProfile = value.name; });
 linkPreviewData('sidebar', () => ({ closed }), value => { closed = value.closed; }, { private: false });
@@ -53,7 +60,7 @@ async function render(view, push = false) {
     document.body.classList.toggle('sidebar-closed', closed);
     document.querySelector<HTMLElement>('#app').innerHTML = `<div class="scrim" aria-hidden="true"></div><nav class="rail" aria-label="App navigation">${['chat', 'space', 'scheduled', 'plugins', 'explore', 'sites'].map(v => v === 'explore' ? `<button class="icon-button" title="Explore" aria-label="Explore" data-explore>${icon('more')}</button><div class="divider"></div>` : `<button class="icon-button ${v === view || (v === 'chat' && view === 'work') || (v === 'plugins' && view === 'skills') ? 'active' : ''}" title="${labels[v]}" aria-label="${labels[v]}" data-nav="${v}">${icon(icons[v])}</button>`).join('')}<button class="icon-button avatar" aria-label="JD · Open profile menu"><span aria-hidden="true">JD</span></button></nav><aside class="sidebar" aria-label="${esc(page.title)} navigation"><header class="side-head"><span class="side-title">${esc(page.title)}</span><button class="icon-button" aria-label="Search" title="Search" data-search>${icon('search')}</button><button class="icon-button" aria-label="Toggle sidebar" title="Toggle sidebar" data-toggle>${icon('sidebar')}</button></header><div class="side-body">${page.sidebar}</div></aside><button class="icon-button mobile-toggle" aria-label="Open sidebar" title="Open sidebar">${icon('sidebar')}</button><main class="main" id="main-content">${page.main}</main>`;
     document.querySelectorAll<HTMLElement>('[data-nav]').forEach(b => b.onclick = () => navigate(b.dataset.nav));
-    document.querySelectorAll<HTMLElement>('[data-toggle],.mobile-toggle,.scrim').forEach(b => b.onclick = () => { if (innerWidth <= 700) {
+    document.querySelectorAll<HTMLElement>('[data-toggle],.mobile-toggle,.scrim').forEach(b => b.onclick = () => { if (mobileSidebar.matches) {
         document.body.classList.toggle('drawer-open');
         document.querySelector<HTMLElement>('main').inert = document.body.classList.contains('drawer-open');
     }
@@ -66,8 +73,7 @@ async function render(view, push = false) {
     else if (current === 'scheduled')
         searchTasks();
     else {
-        document.body.classList.remove('drawer-open');
-        document.querySelector<HTMLElement>('main').inert = false;
+        closeDrawer();
         const search = document.querySelector<HTMLInputElement>('main input[type=search],main input[placeholder*=Search]');
         if (search)
             search.focus();
@@ -98,15 +104,12 @@ function settings() {
             d.querySelector<HTMLElement>('[role=status]').textContent = 'Settings could not be saved. Allow browser storage and try again.';
         } };
         d.querySelector<HTMLElement>('[data-context]').onclick = () => { d.close(); contextDialog(); };
-        d.querySelector<HTMLElement>('[data-theme]').onclick = () => { window.parent.postMessage({ type: 'preview-toggle-theme' }, location.origin); d.close(); };
+        d.querySelector<HTMLElement>('[data-theme]').onclick = () => { if (!document.documentElement.hasAttribute('data-comparison-replay')) window.parent.postMessage({ type: 'preview-toggle-theme' }, location.origin); d.close(); };
     });
 }
 window.addEventListener('dashboard:navigate', e => render((e as CustomEvent).detail, true));
 window.addEventListener('keydown', e => { if (e.key === 'Escape') {
-    document.body.classList.remove('drawer-open');
-    const main = document.querySelector<HTMLElement>('main');
-    if (main)
-        main.inert = false;
+    closeDrawer();
 } });
 stateWindow().addEventListener('popstate', () => render(stateWindow() === window ? new URLSearchParams(location.search).get('view') || 'chat' : stateWindow().location.pathname.split('/')[3] || 'chat'));
 if (window.parent !== window) {

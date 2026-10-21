@@ -8,29 +8,52 @@ type Message = { role: 'user' | 'assistant'; text: string };
 const conversations = new Map<string, Message[]>();
 let messages: Message[] = [], power = 1, project = '', temporary = false, draft = '';
 let attachments: string[] = [];
-linkPreviewData('chat', () => ({ conversations: [...conversations], messages, power, project, temporary, draft, projects, attachments }), value => {
+let activeChat: string | null = null;
+linkPreviewData('chat', () => ({ conversations: [...conversations], messages, power, project, temporary, draft, projects, attachments, activeChat }), value => {
  conversations.clear(); for (const [name, thread] of value.conversations) conversations.set(name, thread);
  projects.splice(0, projects.length, ...value.projects); attachments = value.attachments;
- messages = value.messages; power = value.power; project = value.project; temporary = value.temporary; draft = value.draft;
+ activeChat = typeof value.activeChat === 'string' && conversations.has(value.activeChat) ? value.activeChat : null;
+ // Older shared views did not include the active conversation name.
+ activeChat ??= [...conversations].find(([, thread]) => JSON.stringify(thread) === JSON.stringify(value.messages))?.[0] ?? null;
+ power = value.power; project = value.project; temporary = value.temporary; draft = value.draft;
+ messages = !temporary && activeChat !== null ? conversations.get(activeChat)! : value.messages;
 }, { validate: value => matchesShape(value, { conversations: [['', [{ role: '', text: '' }]]], messages: [{ role: '', text: '' }], power: 1, project: '', temporary: false, draft: '', projects: [''], attachments: [''] }) });
 function openChat(title: string, view = 'chat') {
     if (!conversations.has(title)) conversations.set(title, [
         { role: 'user', text: title },
         { role: 'assistant', text: 'This sample chat is ready for your ideas. Add a message to try the local conversation view.' },
     ]);
+    activeChat = title;
     messages = conversations.get(title);
     draft = '';
     attachments = [];
     navigate(view);
 }
-function newChat(view: string) { messages = []; project = ''; draft = ''; attachments = []; navigate(view); }
+function newChat(view: string) { activeChat = null; messages = []; project = ''; draft = ''; attachments = []; navigate(view); }
+function chatTitles() { return [...new Set([...conversations.keys()].reverse().concat(chats))]; }
+function recentRows() { return chatTitles().map(title => `<button class="row side-recent" data-tooltip-label="${esc(title)}" data-sample-chat="${esc(title)}"><span>${esc(title)}</span></button>`).join(''); }
+function saveChat() {
+    if (temporary) return;
+    if (activeChat === null) {
+        const base = messages.find(message => message.role === 'user')!.text.slice(0, 80);
+        const names = new Set(chatTitles());
+        activeChat = base;
+        for (let suffix = 2; names.has(activeChat); suffix++) activeChat = `${base} (${suffix})`;
+    }
+    conversations.delete(activeChat);
+    conversations.set(activeChat, messages);
+}
 const powers = ['Light', 'Medium', 'High', 'Extra high', 'Maximum'];
 export function chatPage(view = 'chat') {
     const work = view === 'work';
-    return { title: 'Pebble', sidebar: `<button class="row" data-new-chat>${icon('edit')}<span>New chat</span></button><button class="row" data-dot><i class="dot"></i><span>personal assistant</span></button><div class="side-section">Pinned</div><button class="row" data-sample-chat="A guide to team planning">${icon('star')}<span>Team planning</span></button><div class="side-section"><span>Projects</span><button class="icon-button" aria-label="Add new project" data-new-project>${icon('plus')}</button></div>${projects.map(p => `<button class="row" data-project="${esc(p)}">${icon('folder')}<span>${esc(p)}</span></button>`).join('')}<div class="side-section"><span>Recents</span><button class="icon-button" aria-label="Chat sidebar options" data-chat-options>${icon('more')}</button></div>${chats.map(c => `<button class="row side-recent" data-tooltip-label="${esc(c)}" data-sample-chat="${esc(c)}"><span>${esc(c)}</span></button>`).join('')}`,
+    return { title: 'Pebble', sidebar: `<button class="row" data-new-chat>${icon('edit')}<span>New chat</span></button><button class="row" data-dot><i class="dot"></i><span>personal assistant</span></button><div class="side-section">Pinned</div><button class="row" data-sample-chat="A guide to team planning">${icon('star')}<span>Team planning</span></button><div class="side-section"><span>Projects</span><button class="icon-button" aria-label="Add new project" data-new-project>${icon('plus')}</button></div>${projects.map(p => `<button class="row" data-project="${esc(p)}">${icon('folder')}<span>${esc(p)}</span></button>`).join('')}<div class="side-section"><span>Recents</span><button class="icon-button" aria-label="Chat sidebar options" data-chat-options>${icon('more')}</button></div><div data-chat-recents>${recentRows()}</div>`,
         main: `<section class="chat-main ${work ? 'chat-work' : ''} ${messages.length ? 'has-messages' : ''}"><div class="mode-switch" data-mode-control></div><button class="icon-button temporary" aria-label="Temporary chat" aria-pressed="${temporary}" title="Temporary chat">${icon('temporary')}</button><h1 class="chat-welcome">${temporary ? 'Temporary chat' : work ? 'What should we work on?' : 'What’s on your mind today?'}</h1><div class="chat-conversation" aria-live="polite"></div><div class="chat-input-area"><div class="project-badge">${esc(project)}</div><div class="attachments"></div><form class="composer">${work ? '<textarea aria-label="Work with Pebble" placeholder="Work with Pebble" rows="1"></textarea>' : ''}<div class="chat-tools"><button type="button" class="icon-button add-button" aria-label="Add files and more">${icon('plus')}</button>${work ? '' : '<textarea aria-label="Ask Pebble" placeholder="Ask Pebble" rows="1"></textarea>'}<button type="button" class="model-button" aria-label="Select Pebble model · ${work ? 'Business assistant ' : ''}${powers[power]}">${work ? 'Business assistant ' : ''}<span class="power-label">${powers[power]}</span>${icon('chevron')}</button><button type="button" class="icon-button dictate" aria-label="Dictate">${icon('mic')}</button><button class="icon-button voice" type="button" aria-label="Start Voice">${icon('voice')}</button></div></form>${work ? `<div class="work-strip"><button data-choose-project>${icon('folder')}Choose project</button><button data-files>${icon('page')}Files</button><button data-plugins>${icon('plugin')}Plugins</button><button data-desktop>Open work view</button></div>` : ''}<div class="suggestions"><button class="suggestion"><span class="notion">N</span><span>Help me organize my notes so I can find what I need</span></button>${work ? '<button class="suggestion"><span class="notion">#</span><span>Catch me up on messages I missed</span></button>' : ''}</div></div><p class="disclaimer">Pebble is AI and can make mistakes. Check important info.</p><input type="file" id="chat-files" hidden multiple></section>`,
         mount() {
             const main = document.querySelector<HTMLElement>('.chat-main'), input = main.querySelector<HTMLTextAreaElement>('textarea'), form = main.querySelector<HTMLFormElement>('form'), voice = main.querySelector<HTMLElement>('.voice');
+            function renderRecents() {
+                document.querySelector<HTMLElement>('[data-chat-recents]').innerHTML = recentRows();
+                document.querySelectorAll<HTMLElement>('[data-sample-chat]').forEach(button => button.onclick = () => openChat(button.dataset.sampleChat, view));
+            }
             function renderMessages() { main.classList.toggle('has-messages', !!messages.length); window.dashboardComponents.unmountWithin(main.querySelector<HTMLElement>('.chat-conversation')); main.querySelector<HTMLElement>('.chat-conversation').innerHTML = messages.map(m => `<div class="chat-message ${m.role}">${m.role === 'assistant' ? '<div data-ai-response></div>' : esc(m.text)}${m.role === 'assistant' ? `<div class="message-actions"><button class="icon-button" data-copy aria-label="Copy response">${icon('copy')}</button></div>` : ''}</div>`).join(''); main.querySelectorAll<HTMLElement>('[data-ai-response]').forEach((host, i) => window.dashboardComponents.response(host, messages.filter(m => m.role === 'assistant')[i].text)); main.querySelectorAll<HTMLElement>('[data-copy]').forEach(b => b.onclick = async () => { try {
                 await navigator.clipboard.writeText((b.parentElement.parentElement.firstChild as HTMLElement).innerText);
                 toast('Copied');
@@ -39,7 +62,7 @@ export function chatPage(view = 'chat') {
                 toast('Copy is not available in this browser.');
             } }); }
             function submit() { const value = input.value.trim(); if (!value)
-                return; messages.push({ role: 'user', text: value }, { role: 'assistant', text: `Task: ${value}\n\n1. Define the result you need.\n2. Collect the required details.\n3. Review the next action with your team.\n\nAdd your notes below to develop this plan.` }); input.value = ''; updateSend(); renderMessages(); main.querySelector<HTMLElement>('.chat-conversation').scrollTop = 1e9; }
+                return; messages.push({ role: 'user', text: value }, { role: 'assistant', text: `Task: ${value}\n\n1. Define the result you need.\n2. Collect the required details.\n3. Review the next action with your team.\n\nAdd your notes below to develop this plan.` }); saveChat(); renderRecents(); input.value = ''; updateSend(); renderMessages(); main.querySelector<HTMLElement>('.chat-conversation').scrollTop = 1e9; }
             function updateSend() { draft = input.value; const sending = !!input.value.trim(); (voice as HTMLInputElement).type = sending ? 'submit' : 'button'; voice.setAttribute('aria-label', sending ? 'Send message' : 'Start Voice'); voice.innerHTML = icon(sending ? 'arrow' : 'voice'); }
             input.value = draft;
             updateSend();
@@ -77,7 +100,7 @@ export function chatPage(view = 'chat') {
             }
             main.querySelector<HTMLElement>('.dictate').onclick = () => dictate();
             window.dashboardComponents.mode(main.querySelector<HTMLElement>('[data-mode-control]'), work, navigate);
-            main.querySelector<HTMLElement>('.temporary').onclick = e => { temporary = !temporary; (e.currentTarget as Element).setAttribute('aria-pressed', String(temporary)); main.querySelector<HTMLElement>('h1').textContent = temporary ? 'Temporary chat' : work ? 'What should we work on?' : 'What’s on your mind today?'; };
+            main.querySelector<HTMLElement>('.temporary').onclick = e => { temporary = !temporary; if (temporary) { messages = [...messages]; activeChat = null; } (e.currentTarget as Element).setAttribute('aria-pressed', String(temporary)); main.querySelector<HTMLElement>('h1').textContent = temporary ? 'Temporary chat' : work ? 'What should we work on?' : 'What’s on your mind today?'; };
             main.querySelector<HTMLElement>('.model-button').onclick = e => {
                 const anchor = e.currentTarget;
                 document.querySelectorAll<HTMLElement>('.menu').forEach(m => m.remove());
@@ -139,7 +162,7 @@ export function chatPage(view = 'chat') {
                         d.querySelector<HTMLElement>('[data-attach]').onclick = () => canvas.toBlob(blob => { const transfer = new DataTransfer(); transfer.items.add(new File([blob], 'sketch.png', { type: 'image/png' })); (fileInput as HTMLInputElement).files = transfer.files; fileInput.dispatchEvent(new Event('change')); d.close(); });
                     }); };
             registerSharedDialog('sketch', () => openSketch(), value => value === null);
-            main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => fileInput.click() }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: openAddPage }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: openSketch }, { label: 'Plugins', action: () => navigate('plugins') }]);
+            main.querySelector<HTMLElement>('.add-button').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Add photos & files', action: () => { if (!document.documentElement.hasAttribute('data-comparison-replay')) fileInput.click(); } }, { label: 'Add from library', action: () => navigate('space') }, { label: 'Create image', action: () => { input.value = 'Create an image of '; input.focus(); updateSend(); } }, { label: 'Add browser tabs', action: openAddPage }, { label: 'Web search', action: () => { input.value = 'Search the web for '; input.focus(); updateSend(); } }, { label: 'Work in a project', action: chooseProject }, { label: 'Deep research', action: () => { input.value = 'Research '; input.focus(); updateSend(); } }, { label: 'Sketch', action: openSketch }, { label: 'Plugins', action: () => navigate('plugins') }]);
             main.querySelectorAll<HTMLElement>('.suggestion').forEach(b => b.onclick = () => { input.value = b.querySelector<HTMLElement>('span:last-child').textContent; input.focus(); updateSend(); });
             main.querySelector<HTMLElement>('[data-choose-project]')?.addEventListener('click', chooseProject);
             main.querySelector<HTMLElement>('[data-files]')?.addEventListener('click', () => fileInput.click());
@@ -147,7 +170,7 @@ export function chatPage(view = 'chat') {
             main.querySelector<HTMLElement>('[data-desktop]')?.addEventListener('click', () => navigate('work'));
             document.querySelector<HTMLElement>('[data-new-chat]').onclick = () => newChat(view);
             document.querySelector<HTMLElement>('[data-dot]').onclick = () => contextDialog();
-            document.querySelectorAll<HTMLElement>('[data-sample-chat]').forEach(b => b.onclick = () => openChat(b.dataset.sampleChat, view));
+            renderRecents();
             document.querySelectorAll<HTMLElement>('[data-project]').forEach(b => b.onclick = () => { project = b.dataset.project; main.querySelector<HTMLElement>('.project-badge').textContent = project; input.focus(); });
             const openNewProject = () => { rememberSharedDialog('newProject'); return dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const name = d.querySelector<HTMLInputElement>('input').value.trim(); if (!name)
                 return; projects.push(name); project = name; d.close(); navigate(view); }); };
@@ -157,6 +180,6 @@ export function chatPage(view = 'chat') {
             renderMessages();
         } };
 }
-export function searchChats() { rememberSharedDialog('chatSearch'); dialog('Search chats', `<input class="field" type="search" placeholder="Search chats" aria-label="Search chats"><div class="chat-search-results"></div>`, d => { const input = d.querySelector<HTMLInputElement>('input'), results = d.querySelector<HTMLElement>('.chat-search-results'); const render = () => { const list = chats.filter(c => c.toLowerCase().includes(input.value.toLowerCase())); results.innerHTML = list.length ? list.map(c => `<button class="row">${icon('edit')}${esc(c)}</button>`).join('') : '<p class="empty-state">No chats found</p>'; [...results.querySelectorAll<HTMLElement>('button')].forEach((b, i) => b.onclick = () => { d.close(); openChat(list[i]); }); }; input.oninput = render; render(); }); }
+export function searchChats() { rememberSharedDialog('chatSearch'); dialog('Search chats', `<input class="field" type="search" placeholder="Search chats" aria-label="Search chats"><div class="chat-search-results"></div>`, d => { const input = d.querySelector<HTMLInputElement>('input'), results = d.querySelector<HTMLElement>('.chat-search-results'); const render = () => { const list = chatTitles().filter(title => [title, ...(conversations.get(title) ?? []).map(message => message.text)].join(' ').toLowerCase().includes(input.value.toLowerCase())); results.innerHTML = list.length ? list.map(c => `<button class="row">${icon('edit')}${esc(c)}</button>`).join('') : '<p class="empty-state">No chats found</p>'; [...results.querySelectorAll<HTMLElement>('button')].forEach((b, i) => b.onclick = () => { d.close(); openChat(list[i]); }); }; input.oninput = render; render(); }); }
 
 registerSharedDialog("chatSearch", () => searchChats(), value => value === null);
