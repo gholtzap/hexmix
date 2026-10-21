@@ -1228,3 +1228,5 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 @media (min-width: 1201px) and (max-width: 1500px) {
   .toolbar-actions > [data-quick-action] { display: inline-flex; }
 }
+.toast:has(> .icon-button) { display: flex; align-items: center; gap: 16px; }
+.toast > .icon-button { width: 44px; height: 44px; }
