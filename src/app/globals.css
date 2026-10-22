@@ -1264,8 +1264,6 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 @media (prefers-reduced-motion: reduce) { .preview-loading-spinner { animation: none; } }
 .preview-loading > .icon-button:is(:hover, :focus-visible) { background: color-mix(in srgb, currentColor 10%, transparent); }
 
-/* Demo defect: thumbnails are blurred on the isolated review branch. */
-.home-thumbnail { filter: blur(7px); }
 
 /* Demo defect: mobile preview cards exceed the available page width. */
 @media (max-width: 600px) {
