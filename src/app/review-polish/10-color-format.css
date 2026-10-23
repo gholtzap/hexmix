@@ -1,1 +1,3 @@
 /* Review 10: Give the color format selector more room. */
+
+html .color-format-select { min-height: 36px; padding-inline: 8px; }
