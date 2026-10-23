@@ -28,11 +28,11 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, [setNotice]);
-  function change(update: (current: SavedPalette[]) => SavedPalette[] | null, message: string, onSuccess?: (before: SavedPalette[], after: SavedPalette[]) => void) {
+  async function change(update: (current: SavedPalette[]) => SavedPalette[] | null, message: string, onSuccess?: (before: SavedPalette[], after: SavedPalette[]) => void) {
     if (shared) {
       const next = update(shared);
       if (next) { setShared(next); setNotice('Shared palettes updated.'); onSuccess?.(shared, next); }
-      return;
+      return Boolean(next);
     }
     const write = () => {
       try {
@@ -42,15 +42,16 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
         setSaved(next ?? current);
         if (next) setNotice(message);
         if (next) onSuccess?.(current, next);
-      } catch { setNotice("Your browser could not save this palette."); }
+        return Boolean(next);
+      } catch { setNotice("Your browser could not save this palette."); return false; }
     };
-    if (navigator.locks) void navigator.locks.request(storageKey, write).catch(() => setNotice("Your browser could not save this palette."));
+    if (navigator.locks) return navigator.locks.request(storageKey, write).catch(() => { setNotice("Your browser could not save this palette."); return false; });
     // shortcut: older browsers without Web Locks cannot serialize simultaneous writes; use IndexedDB if they must support concurrent edits.
-    else write();
+    else return write();
   }
   function save(palette: Palette, name: string) {
-    if (!name.trim() || name.trim().length > 80) return;
-    change((current) => {
+    if (!name.trim() || name.trim().length > 80) return Promise.resolve(false);
+    return change((current) => {
       if (current.some(item => samePalette(item.colors, palette))) {
         setNotice("This palette is already saved.");
         return null;
@@ -60,8 +61,8 @@ export function useSavedPalettes(setNotice: (message: string) => void) {
   }
   function rename(id: string, name: string) {
     const trimmed = name.trim();
-    if (!trimmed || trimmed.length > 80) return;
-    change(items => items.map(item => item.id === id ? { ...item, name: trimmed } : item), "Palette renamed.");
+    if (!trimmed || trimmed.length > 80) return Promise.resolve(false);
+    return change(items => items.map(item => item.id === id ? { ...item, name: trimmed } : item), "Palette renamed.");
   }
   function remove(id: string) {
     change(items => items.some(item => item.id === id) ? items.filter(item => item.id !== id) : null, "Palette removed.", before => {
