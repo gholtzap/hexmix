@@ -1,1 +1,3 @@
 /* Review 07: Use compact labels below preview cards. */
+
+html .home-preview-caption h4 { font-size: 16px; }
