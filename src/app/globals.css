@@ -1,6 +1,27 @@
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./review-polish/01-selected-category.css";
+@import "./review-polish/02-sticky-categories.css";
+@import "./review-polish/03-rounded-card-focus.css";
+@import "./review-polish/04-preview-hover.css";
+@import "./review-polish/05-gallery-sections.css";
+@import "./review-polish/06-mobile-heading.css";
+@import "./review-polish/07-preview-labels.css";
+@import "./review-polish/08-color-field-focus.css";
+@import "./review-polish/09-locked-color.css";
+@import "./review-polish/10-color-format.css";
+@import "./review-polish/11-hue-handle.css";
+@import "./review-polish/12-color-value.css";
+@import "./review-polish/13-export-code.css";
+@import "./review-polish/14-export-actions.css";
+@import "./review-polish/15-font-labels.css";
+@import "./review-polish/16-font-targets.css";
+@import "./review-polish/17-palette-swatches.css";
+@import "./review-polish/18-selected-palette.css";
+@import "./review-polish/19-palette-hover.css";
+@import "./review-polish/20-remove-palette.css";
+
 @source "../components/reui";
 @source "../components/ui";
 
@@ -1263,11 +1284,3 @@ body:has(.studio[data-comparison-toolbar]) .clipboard-tools { display: grid; }
 @keyframes preview-loading-turn { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .preview-loading-spinner { animation: none; } }
 .preview-loading > .icon-button:is(:hover, :focus-visible) { background: color-mix(in srgb, currentColor 10%, transparent); }
-
-/* Demo defect: thumbnails are blurred on the isolated review branch. */
-.home-thumbnail { filter: blur(7px); }
-
-/* Demo defect: mobile preview cards exceed the available page width. */
-@media (max-width: 600px) {
-  .home-preview-grid { min-width: 620px; }
-}

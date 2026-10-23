@@ -1,8 +1,7 @@
 # Patch review demo
 
-This branch contains two intentional CSS defects for a video review demo:
+This isolated branch supplies small UI improvements for the Patch video review queue. The old blur and overflow defects have been removed.
 
-- Preview thumbnails are blurred.
-- Preview cards exceed the page width on mobile screens.
+Each improvement has a separate stylesheet so the review PRs can merge independently. The empty stylesheets are the baseline; each PR adds one focused rule set. Main is outside this demo.
 
-Fix pull requests must target `demo/patch-review-20261022`. Do not merge these demo changes into main. Record the same page, viewport, palette, theme, and steps before and after each fix. Recordings are stored on a separate evidence branch. Each PR records the exact reviewed head commit.
+Fix PRs target `demo/patch-review-20261022`. Before and after recordings use the same viewport, palette, theme, and interaction. Each review identifies its exact head commit. Evidence is stored on a separate branch.
