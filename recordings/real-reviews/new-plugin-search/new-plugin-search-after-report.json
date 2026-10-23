@@ -1,0 +1,306 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": true
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "new-plugin",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 15.555555555555555,
+        "width": 89.74358974358974,
+        "height": 12.444444444444445
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 42,
+        "controls": 7,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "plugin-details",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 15.555555555555555,
+        "width": 89.74358974358974,
+        "height": 12.444444444444445
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 23,
+        "controls": 2,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "new-plugin",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 15.555555555555555,
+        "width": 89.74358974358974,
+        "height": 12.444444444444445
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 42,
+        "controls": 7,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "plugin-details",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 15.555555555555555,
+        "width": 89.74358974358974,
+        "height": 12.444444444444445
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 23,
+        "controls": 2,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "new-plugin",
+      "focus": {
+        "x": 32.5,
+        "y": 18.80034722222222,
+        "width": 56.25,
+        "height": 11.598958333333334
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 97,
+        "controls": 21,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "plugin-details",
+      "focus": {
+        "x": 32.5,
+        "y": 18.80034722222222,
+        "width": 56.25,
+        "height": 11.598958333333334
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 23,
+        "controls": 2,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "new-plugin",
+      "focus": {
+        "x": 32.5,
+        "y": 18.80034722222222,
+        "width": 56.25,
+        "height": 11.598958333333334
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 97,
+        "controls": 21,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "plugin-details",
+      "focus": {
+        "x": 32.5,
+        "y": 18.80034722222222,
+        "width": 56.25,
+        "height": 11.598958333333334
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 23,
+        "controls": 2,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}

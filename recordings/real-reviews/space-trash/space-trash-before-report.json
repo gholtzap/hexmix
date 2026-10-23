@@ -1,0 +1,192 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "[{\"rule\":\"text-contrast\",\"selector\":\"html > body:nth-of-type(1) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(4)\",\"message\":\"Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.\",\"actual\":\"contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element\",\"expected\":\"text contrast of at least 4.5:1\",\"fix\":\"Use a measurable background or review the text and background. Record a scoped exception with a reason after review.\",\"status\":\"unresolved\",\"requiredContrastRatio\":4.5}]\n\n1 !== 0\n"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "[{\"rule\":\"text-contrast\",\"selector\":\"html > body:nth-of-type(1) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(4)\",\"message\":\"Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.\",\"actual\":\"contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element\",\"expected\":\"text contrast of at least 4.5:1\",\"fix\":\"Use a measurable background or review the text and background. Record a scoped exception with a reason after review.\",\"status\":\"unresolved\",\"requiredContrastRatio\":4.5}]\n\n1 !== 0\n"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "Trash must show the deleted file."
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "Trash must show the deleted file."
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "trash",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 59.111111111111114
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "text-contrast",
+            "selector": "html > body:nth-of-type(1) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(4)",
+            "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+            "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+            "expected": "text contrast of at least 4.5:1",
+            "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+            "status": "unresolved",
+            "requiredContrastRatio": 4.5
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 36,
+        "controls": 9,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "trash",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 59.111111111111114
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "text-contrast",
+            "selector": "html > body:nth-of-type(1) > div:nth-of-type(2) > main:nth-of-type(1) > section:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button:nth-of-type(4)",
+            "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+            "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+            "expected": "text contrast of at least 4.5:1",
+            "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+            "status": "unresolved",
+            "requiredContrastRatio": 4.5
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 36,
+        "controls": 9,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "trash",
+      "focus": {
+        "x": 21.25,
+        "y": 0,
+        "width": 78.75,
+        "height": 43.39930555555556
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 121,
+        "controls": 29,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "trash",
+      "focus": {
+        "x": 21.25,
+        "y": 0,
+        "width": 78.75,
+        "height": 43.39930555555556
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 121,
+        "controls": 29,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}

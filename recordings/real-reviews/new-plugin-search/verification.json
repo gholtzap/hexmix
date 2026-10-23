@@ -1,0 +1,11 @@
+{
+  "base": "9c61010f81778a9b3daf127ee898373f6f741a72",
+  "commit": "58581ef7fa58666e2ba9a74a3600914a3d7995b9",
+  "commands": [
+    "node scripts/check-review-new-plugin-search.mts",
+    "npm test",
+    "npm run typecheck",
+    "APP_URL=http://127.0.0.1:3419 npm run --silent lint:ui"
+  ],
+  "result": "passed"
+}
