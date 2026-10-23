@@ -1,1 +1,3 @@
 /* Review 08: Show keyboard focus around the color value field. */
+
+html .color-picker-content [data-slot="color-picker-fields"]:focus-within { border-color: var(--color-foreground); }
