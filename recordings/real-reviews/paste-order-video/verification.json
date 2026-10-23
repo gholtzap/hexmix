@@ -1,0 +1,263 @@
+{
+  "head": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+  "parent": "9c61010f81778a9b3daf127ee898373f6f741a72",
+  "controlledDelay": true,
+  "results": [
+    {
+      "phase": "before",
+      "width": 1440,
+      "theme": "dark",
+      "record": true,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 1.048,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 4.511,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 7.418,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "theme": "light",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.297,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.549,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.009,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "theme": "dark",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.753,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 1.323,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.729,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 1440,
+      "theme": "light",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.141,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.423,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.006,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "theme": "dark",
+      "record": true,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 1.051,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 4.117,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 7.407,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "theme": "light",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.282,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.517,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.005,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "theme": "dark",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.283,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.481,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.004,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "theme": "light",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.141,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.424,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.005,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "uiFindings": 0
+    }
+  ]
+}
