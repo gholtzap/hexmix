@@ -31,8 +31,8 @@ export type Props = {
   previewId?: string;
   onOpenChange: (open: boolean) => void;
   onApply: (palette: Palette, item?: SavedPalette) => void;
-  onSave: (name: string) => void;
-  onRename: (id: string, name: string) => void;
+  onSave: (name: string) => Promise<boolean>;
+  onRename: (id: string, name: string) => Promise<boolean>;
   onRemove: (id: string) => void;
   onUndoRemove?: () => void;
   onShare?: () => void;
@@ -104,13 +104,13 @@ export default function PalettePanelContent({
           ref={restoreBodyScroll}
           onScroll={event => { scroll.current[String(tab)] = event.currentTarget.scrollTop; }}>
         {notice && <p className="palette-notice" role="status">{notice}</p>}
-        {editing && <form className="palette-name-form" noValidate onSubmit={(event) => {
+        {editing && <form className="palette-name-form" noValidate onSubmit={async (event) => {
           event.preventDefault();
           const name = editing.name.trim();
           if (!name) { setNameError("Enter a palette name."); return; }
           if (name.length > 80) { setNameError("Use 80 characters or fewer."); return; }
-          if (editing.id) onRename(editing.id, name);
-          else onSave(name);
+          const saved = editing.id ? await onRename(editing.id, name) : await onSave(name);
+          if (!saved) return;
           setEditing(null);
           setTab("saved");
           setFilters({ query: "", color: "", mode: "", style: "" });
