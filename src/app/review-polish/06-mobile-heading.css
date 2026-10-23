@@ -1,1 +1,3 @@
 /* Review 06: Give the mobile introduction more line spacing. */
+
+@media (max-width: 600px) { html .home-intro h1 { line-height: 1.2; } }
