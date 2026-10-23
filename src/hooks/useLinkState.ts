@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { isJson, matchesShape, readField, privateField, registerRedactor, stateScope, stateWindow, writeField } from '../../browser/public/share-state';
 
@@ -12,7 +13,8 @@ export function useLinkState<T>(key: string, initial: T | (() => T), options: Op
   const [value, setValue] = useState(defaults.current.value);
   const latest = useRef(value); latest.current = value;
   const config = useRef(options); config.current = options;
-  const pageScope = typeof window === 'undefined' ? '' : stateScope();
+  const pathname = usePathname();
+  const pageScope = typeof window === 'undefined' ? '' : window === stateWindow() ? pathname ?? stateScope() : stateScope();
   const scope = options.scope === 'shared' ? 'shared' : options.scope ? `${pageScope}:${options.scope}` : pageScope;
   const restore = useCallback(() => {
     const raw = readField(scope, key);
