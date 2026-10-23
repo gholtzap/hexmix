@@ -537,9 +537,13 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     catch { setNotice("Use Command+V or Ctrl+V to paste a theme."); return; }
     await pasteText(text);
   }
+  const pasteRequest = useRef(0);
   async function pasteText(text: string) {
-    try { applyImport(await readTheme(text, window.location.origin)); }
-    catch { setNotice("Clipboard has no valid palette or theme."); }
+    const request = ++pasteRequest.current;
+    try {
+      const value = await readTheme(text, window.location.origin);
+      if (request === pasteRequest.current) applyImport(value);
+    } catch { if (request === pasteRequest.current) setNotice("Clipboard has no valid palette or theme."); }
   }
   useEffect(() => {
     if (!exportOpen || manualCopy === null) return;
