@@ -1,0 +1,11 @@
+{
+  "base": "9c61010f81778a9b3daf127ee898373f6f741a72",
+  "commit": "7a92e0e5406a1e859e97e405240027c60fd3f060",
+  "commands": [
+    "node scripts/check-review-gallery-elements.mts",
+    "npm test",
+    "npm run typecheck",
+    "APP_URL=http://127.0.0.1:3419 npm run --silent lint:ui"
+  ],
+  "result": "passed"
+}

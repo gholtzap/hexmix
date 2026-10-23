@@ -1,0 +1,170 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ null\n- [\n-   {\n-     path: '/avenlo',\n-     property: 'color',\n-     role: 'accent',\n-     selector: 'body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)'\n-   }\n- ]\n"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ null\n- [\n-   {\n-     path: '/avenlo',\n-     property: 'color',\n-     role: 'accent',\n-     selector: 'body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)'\n-   }\n- ]\n"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ null\n- [\n-   {\n-     path: '/avenlo',\n-     property: 'color',\n-     role: 'accent',\n-     selector: 'body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)'\n-   }\n- ]\n"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ null\n- [\n-   {\n-     path: '/avenlo',\n-     property: 'color',\n-     role: 'accent',\n-     selector: 'body > div:nth-of-type(2) > main:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > header:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > h1:nth-of-type(1)'\n-   }\n- ]\n"
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "preview",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 36,
+        "controls": 9,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "preview",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 36,
+        "controls": 9,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "preview",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 83,
+        "controls": 19,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "preview",
+      "focus": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 83,
+        "controls": 19,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}
