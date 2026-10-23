@@ -1,1 +1,3 @@
 /* Review 15: Make the font field labels easier to scan. */
+
+html .font-panel label { font-size: 14px; }
