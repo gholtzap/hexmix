@@ -1,1 +1,3 @@
 /* Review 13: Make the exported code easier to read. */
+
+html .export-dialog pre { font-size: 14px; line-height: 1.65; }
