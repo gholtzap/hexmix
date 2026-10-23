@@ -1,0 +1,170 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "Use the clipboard fallback.\n\n0 !== 1\n"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "Use the clipboard fallback.\n\n0 !== 1\n"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "Use the clipboard fallback.\n\n0 !== 1\n"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "Use the clipboard fallback.\n\n0 !== 1\n"
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "picker-copy",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 53.77777777777778,
+        "width": 95.8974358974359,
+        "height": 45.333333333333336
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 129,
+        "controls": 15,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "picker-copy",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 53.77777777777778,
+        "width": 95.8974358974359,
+        "height": 45.333333333333336
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 129,
+        "controls": 15,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "picker-copy",
+      "focus": {
+        "x": 0,
+        "y": 1.7777777777777777,
+        "width": 20,
+        "height": 40.666666666666664
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 176,
+        "controls": 25,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "picker-copy",
+      "focus": {
+        "x": 0,
+        "y": 1.7777777777777777,
+        "width": 20,
+        "height": 40.666666666666664
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 180,
+        "controls": 25,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}

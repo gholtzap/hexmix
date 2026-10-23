@@ -1,0 +1,12 @@
+{
+  "base": "9c61010f81778a9b3daf127ee898373f6f741a72",
+  "commit": "bc6c5cef4b84eacb17885ba0195d935222d3b041",
+  "commands": [
+    "node scripts/check-review-clipboard-focus.mts",
+    "node scripts/check-review-picker-copy.mts",
+    "npm test",
+    "npm run typecheck",
+    "APP_URL=http://127.0.0.1:3419 npm run --silent lint:ui"
+  ],
+  "result": "passed"
+}

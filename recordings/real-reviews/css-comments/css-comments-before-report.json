@@ -1,0 +1,170 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '111111-eeeeee-ff0000-ddeeff-112233'\n- '111111-eeeeee-aabbcc-ddeeff-112233'\n                 ^\n"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '111111-eeeeee-ff0000-ddeeff-112233'\n- '111111-eeeeee-aabbcc-ddeeff-112233'\n                 ^\n"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '111111-eeeeee-ff0000-ddeeff-112233'\n- '111111-eeeeee-aabbcc-ddeeff-112233'\n                 ^\n"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '111111-eeeeee-ff0000-ddeeff-112233'\n- '111111-eeeeee-aabbcc-ddeeff-112233'\n                 ^\n"
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "pasted-css",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 92.22222222222223,
+        "width": 95.8974358974359,
+        "height": 6.888888888888889
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 96,
+        "controls": 11,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "pasted-css",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 92.22222222222223,
+        "width": 95.8974358974359,
+        "height": 6.888888888888889
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 96,
+        "controls": 11,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "pasted-css",
+      "focus": {
+        "x": 14.51931423611111,
+        "y": 89.77777777777777,
+        "width": 70.96137152777777,
+        "height": 7.555555555555555
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 142,
+        "controls": 21,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "pasted-css",
+      "focus": {
+        "x": 14.51931423611111,
+        "y": 89.77777777777777,
+        "width": 70.96137152777777,
+        "height": 7.555555555555555
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 142,
+        "controls": 21,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}

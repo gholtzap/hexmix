@@ -1,0 +1,170 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "Keep the draft form open after a save error.\n\n0 !== 1\n"
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "Keep the draft form open after a save error.\n\n0 !== 1\n"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "Keep the draft form open after a save error.\n\n0 !== 1\n"
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "Keep the draft form open after a save error.\n\n0 !== 1\n"
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "save-error",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 60.22222222222222,
+        "width": 95.8974358974359,
+        "height": 38.888888888888886
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 120,
+        "controls": 17,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "save-error",
+      "focus": {
+        "x": 2.051282051282051,
+        "y": 60.22222222222222,
+        "width": 95.8974358974359,
+        "height": 38.888888888888886
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 120,
+        "controls": 17,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "save-error",
+      "focus": {
+        "x": 60.486111111111114,
+        "y": 50.666666666666664,
+        "width": 25,
+        "height": 37.77777777777778
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 166,
+        "controls": 27,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "save-error",
+      "focus": {
+        "x": 60.486111111111114,
+        "y": 50.666666666666664,
+        "width": 25,
+        "height": 37.77777777777778
+      },
+      "report": {
+        "findings": [],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 170,
+        "controls": 27,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "passed": false,
+      "error": "lintapple found 1 UI findings.\n\ndialog-focus: html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)\nExpected focus inside the open modal. Found focus outside the open modal.\nFix: Move focus into the modal when it opens. Test focus containment and return with an interaction plan."
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "passed": false,
+      "error": "lintapple found 1 UI findings.\n\ndialog-focus: html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)\nExpected focus inside the open modal. Found focus outside the open modal.\nFix: Move focus into the modal when it opens. Test focus containment and return with an interaction plan."
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "passed": false,
+      "error": "lintapple found 1 UI findings.\n\ndialog-focus: html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)\nExpected focus inside the open modal. Found focus outside the open modal.\nFix: Move focus into the modal when it opens. Test focus containment and return with an interaction plan."
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "passed": false,
+      "error": "lintapple found 1 UI findings.\n\ndialog-focus: html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)\nExpected focus inside the open modal. Found focus outside the open modal.\nFix: Move focus into the modal when it opens. Test focus containment and return with an interaction plan."
+    }
+  ],
+  "reports": [
+    {
+      "width": 390,
+      "theme": "light",
+      "state": "fallback-copy",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 1,
+        "width": 89.74358974358974,
+        "height": 63.55555555555556
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "dialog-focus",
+            "selector": "html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)",
+            "message": "Expected focus inside the open modal. Found focus outside the open modal.",
+            "actual": "focus outside the open modal",
+            "expected": "focus inside the open modal",
+            "fix": "Move focus into the modal when it opens. Test focus containment and return with an interaction plan.",
+            "status": "failed",
+            "category": "accessibility"
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 116,
+        "controls": 15,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "state": "fallback-copy",
+      "focus": {
+        "x": 5.128205128205129,
+        "y": 1,
+        "width": 89.74358974358974,
+        "height": 63.55555555555556
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "dialog-focus",
+            "selector": "html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)",
+            "message": "Expected focus inside the open modal. Found focus outside the open modal.",
+            "actual": "focus outside the open modal",
+            "expected": "focus inside the open modal",
+            "fix": "Move focus into the modal when it opens. Test focus containment and return with an interaction plan.",
+            "status": "failed",
+            "category": "accessibility"
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 116,
+        "controls": 15,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "state": "fallback-copy",
+      "focus": {
+        "x": 31.319444444444443,
+        "y": 18.5,
+        "width": 37.361111111111114,
+        "height": 63
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "dialog-focus",
+            "selector": "html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)",
+            "message": "Expected focus inside the open modal. Found focus outside the open modal.",
+            "actual": "focus outside the open modal",
+            "expected": "focus inside the open modal",
+            "fix": "Move focus into the modal when it opens. Test focus containment and return with an interaction plan.",
+            "status": "failed",
+            "category": "accessibility"
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 163,
+        "controls": 25,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "state": "fallback-copy",
+      "focus": {
+        "x": 31.319444444444443,
+        "y": 18.5,
+        "width": 37.361111111111114,
+        "height": 63
+      },
+      "report": {
+        "findings": [
+          {
+            "rule": "dialog-focus",
+            "selector": "html > body:nth-of-type(1) > main:nth-of-type(1) > dialog:nth-of-type(1)",
+            "message": "Expected focus inside the open modal. Found focus outside the open modal.",
+            "actual": "focus outside the open modal",
+            "expected": "focus inside the open modal",
+            "fix": "Move focus into the modal when it opens. Test focus containment and return with an interaction plan.",
+            "status": "failed",
+            "category": "accessibility"
+          }
+        ],
+        "suppressed": [],
+        "accessibilityCoverage": {
+          "pageRules": [
+            "accessible-name",
+            "form-label",
+            "label-consistency",
+            "control-state",
+            "keyboard-operation",
+            "target-size",
+            "aria-reference",
+            "icon-button-tooltip",
+            "dialog-focus"
+          ],
+          "interactionRules": "not tested without an interaction plan"
+        },
+        "elements": 167,
+        "controls": 25,
+        "insetControls": 0,
+        "numericElements": 0,
+        "alignmentGroups": 0,
+        "radiusContracts": 0
+      }
+    }
+  ]
+}
