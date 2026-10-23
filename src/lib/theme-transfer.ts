@@ -54,8 +54,9 @@ export function parseTheme(input:string):ThemeImport {
   }
  }
  if(text.includes('--')){
-  const values=Object.fromEntries([...text.matchAll(/--(?:color-)?(text|background|primary|secondary|accent)\s*:\s*([^;}]+)(?:;|(?=\}))/g)].map(m=>[m[1],m[2].trim()]));
-  const family=Object.fromEntries([...text.matchAll(/--font-(heading|body)\s*:\s*([^;}]+)(?:;|(?=\}))/g)].map(m=>[m[1],m[2].trim()]));
+  const css=text.replace(/\/\*[\s\S]*?\*\//g,'');
+  const values=Object.fromEntries([...css.matchAll(/--(?:color-)?(text|background|primary|secondary|accent)\s*:\s*([^;}]+)(?:;|(?=\}))/g)].map(m=>[m[1],m[2].trim()]));
+  const family=Object.fromEntries([...css.matchAll(/--font-(heading|body)\s*:\s*([^;}]+)(?:;|(?=\}))/g)].map(m=>[m[1],m[2].trim()]));
   return {colors:palette(values),fonts:importFonts(family)};
  }
  return list(text.split(/[\s,;\-]+/).filter(Boolean));
