@@ -1,0 +1,307 @@
+{
+  "head": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+  "parent": "9c61010f81778a9b3daf127ee898373f6f741a72",
+  "controlledDelay": true,
+  "results": [
+    {
+      "phase": "before",
+      "width": 1440,
+      "theme": "dark",
+      "record": true,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 1.249,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 4.057,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 7.411,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "inputs": [
+        {
+          "type": "click",
+          "x": 730.9199829101562,
+          "y": 842,
+          "button": 0,
+          "label": "Paste palette or theme",
+          "trusted": true,
+          "at": 1792766266706,
+          "time": 1.234
+        },
+        {
+          "type": "key",
+          "label": "Cmd+V",
+          "trusted": true,
+          "at": 1792766269475,
+          "time": 4.003
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "theme": "light",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.264,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.332,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.004,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "theme": "dark",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.259,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.335,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.004,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    },
+    {
+      "phase": "before",
+      "width": 1440,
+      "theme": "light",
+      "record": false,
+      "commit": "9c61010f81778a9b3daf127ee898373f6f741a72",
+      "expected": "ffffff-111111-ff0000-333333-ffcc00",
+      "actual": "ffffff-111111-ff0000-333333-ffcc00",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.13,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.376,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.005,
+          "colors": "ffffff-111111-ff0000-333333-ffcc00"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "theme": "dark",
+      "record": true,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 1.352,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 4.098,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 7.408,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "inputs": [
+        {
+          "type": "click",
+          "x": 730.9199829101562,
+          "y": 842,
+          "button": 0,
+          "label": "Paste palette or theme",
+          "trusted": true,
+          "at": 1792766288993,
+          "time": 1.336
+        },
+        {
+          "type": "key",
+          "label": "Cmd+V",
+          "trusted": true,
+          "at": 1792766291668,
+          "time": 4.011
+        }
+      ],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "theme": "light",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.286,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.338,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.005,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "theme": "dark",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.289,
+          "colors": "ffffff-0c0a09-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.334,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.004,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "theme": "light",
+      "record": false,
+      "commit": "eca6e3b152fbe087f94c66f2848f1046ce9366da",
+      "expected": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "actual": "111111-ffffff-00a896-b8e0d2-f9c80e",
+      "events": [
+        {
+          "label": "Initial palette",
+          "time": 0,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "First paste is waiting for its share response",
+          "time": 0.135,
+          "colors": "0c0a09-ffffff-e98878-ffe291-a8655f"
+        },
+        {
+          "label": "Second paste applied the green palette",
+          "time": 0.39,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        },
+        {
+          "label": "Earlier red share response completed",
+          "time": 1.005,
+          "colors": "111111-ffffff-00a896-b8e0d2-f9c80e"
+        }
+      ],
+      "inputs": [],
+      "uiFindings": 0
+    }
+  ]
+}
