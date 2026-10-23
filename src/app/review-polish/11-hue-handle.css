@@ -1,1 +1,3 @@
 /* Review 11: Make the hue slider handle easier to track. */
+
+html .color-picker-content [data-slot="color-picker-slider-thumb"] { width: 20px; height: 20px; }
