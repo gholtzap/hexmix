@@ -1,1 +1,3 @@
 /* Review 16: Give desktop font controls a comfortable target. */
+
+html .font-panel select { min-height: 44px; }
