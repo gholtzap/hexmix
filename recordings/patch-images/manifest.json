@@ -1,0 +1,586 @@
+{
+  "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+  "reviews": [
+    {
+      "id": 1,
+      "number": 64,
+      "sha": "67f32c006d765035a4a5aa29b317867e18865c5b",
+      "key": "selected-category",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 13.571428571428571,
+          "y": 42.7490234375,
+          "width": 20.647321428571427,
+          "height": 15
+        },
+        "after": {
+          "x": 13.571428571428571,
+          "y": 42.7490234375,
+          "width": 20.647321428571427,
+          "height": 15
+        }
+      },
+      "values": {
+        "before": "none",
+        "after": "rgb(237, 237, 237) 0px -2px 0px 0px inset"
+      },
+      "clip": {
+        "x": 0,
+        "y": 56,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 2,
+      "number": 65,
+      "sha": "ab1317b953ea4445667be4ef6c30bd0c097666fc",
+      "key": "sticky-categories",
+      "kind": "video",
+      "focus": {},
+      "values": {
+        "before": "static",
+        "after": "sticky"
+      },
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 900
+      }
+    },
+    {
+      "id": 3,
+      "number": 66,
+      "sha": "48bea5ef76bed42c1adcc5acd6f58249a6aa2765",
+      "key": "rounded-card-focus",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 4.285714285714286,
+          "y": 10.048491379310345,
+          "width": 80.71428571428572,
+          "height": 80.2185960591133
+        },
+        "after": {
+          "x": 4.285714285714286,
+          "y": 10.048491379310345,
+          "width": 80.71428571428572,
+          "height": 80.2185960591133
+        }
+      },
+      "values": {
+        "before": "0px",
+        "after": "12px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 243,
+        "width": 560,
+        "height": 406
+      }
+    },
+    {
+      "id": 4,
+      "number": 67,
+      "sha": "9122c3371830aa202b8da08950914c6cb197a632",
+      "key": "preview-hover",
+      "kind": "video",
+      "focus": {},
+      "values": {
+        "before": "rgb(56, 56, 56)",
+        "after": "rgb(237, 237, 237)"
+      },
+      "clip": {
+        "x": 0,
+        "y": 243,
+        "width": 560,
+        "height": 369
+      }
+    },
+    {
+      "id": 5,
+      "number": 68,
+      "sha": "f7f29f580750de1a513629d6d14d8c4d341356e9",
+      "key": "gallery-sections",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 2.5,
+          "y": 42.5537109375,
+          "width": 95,
+          "height": 15
+        },
+        "after": {
+          "x": 2.5,
+          "y": 34.7412109375,
+          "width": 95,
+          "height": 15
+        }
+      },
+      "values": {
+        "before": "0px",
+        "after": "1px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 292,
+        "width": 960,
+        "height": 320
+      }
+    },
+    {
+      "id": 6,
+      "number": 69,
+      "sha": "a17d902fb9c0e85350707af48d49d25881d40c55",
+      "key": "mobile-heading",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 3.076923076923077,
+          "y": 31.25,
+          "width": 93.84615384615384,
+          "height": 26.992187499999996
+        },
+        "after": {
+          "x": 3.076923076923077,
+          "y": 31.25,
+          "width": 93.84615384615384,
+          "height": 28.994140624999996
+        }
+      },
+      "values": {
+        "before": "35.2px",
+        "after": "38.4px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 320
+      }
+    },
+    {
+      "id": 7,
+      "number": 70,
+      "sha": "ec3d8b2af1ed21b03bc640fb7fe63df90a77c642",
+      "key": "preview-labels",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 4.642857142857143,
+          "y": 43.8427734375,
+          "width": 80,
+          "height": 12.871093750000002
+        },
+        "after": {
+          "x": 4.642857142857143,
+          "y": 43.8427734375,
+          "width": 80,
+          "height": 11.9970703125
+        }
+      },
+      "values": {
+        "before": "18px",
+        "after": "16px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 428,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 8,
+      "number": 71,
+      "sha": "671e3dbe64daa6c773e344ac9280aa64377eb907",
+      "key": "color-field-focus",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 8.75,
+          "y": 57.8125,
+          "width": 82.5,
+          "height": 19.375
+        },
+        "after": {
+          "x": 8.75,
+          "y": 57.8125,
+          "width": 82.5,
+          "height": 19.375
+        }
+      },
+      "values": {
+        "before": "rgb(56, 56, 56)",
+        "after": "rgb(237, 237, 237)"
+      },
+      "clip": {
+        "x": 200,
+        "y": 580,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 9,
+      "number": 72,
+      "sha": "8e8d6d649fd0064ed2fbcad356af48398ad056a2",
+      "key": "locked-color",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 44.642857142857146,
+          "y": 40.625,
+          "width": 10.714285714285714,
+          "height": 18.75
+        },
+        "after": {
+          "x": 44.642857142857146,
+          "y": 40.625,
+          "width": 10.714285714285714,
+          "height": 18.75
+        }
+      },
+      "values": {
+        "before": "none",
+        "after": "rgb(237, 237, 237) 0px 0px 0px 1px inset"
+      },
+      "clip": {
+        "x": 349,
+        "y": 363,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 10,
+      "number": 73,
+      "sha": "82f275b4b14c9db1779524a0fb7c628b945bc962",
+      "key": "color-format",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 3.214285714285714,
+          "y": 43.125,
+          "width": 11.964285714285715,
+          "height": 13.750000000000002
+        },
+        "after": {
+          "x": 3.214285714285714,
+          "y": 41.875,
+          "width": 13.392857142857142,
+          "height": 16.25
+        }
+      },
+      "values": {
+        "before": "4px",
+        "after": "8px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 149,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 11,
+      "number": 74,
+      "sha": "0fbb57868ee24cc4338a15682314ec638ef5262e",
+      "key": "hue-handle",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 47.232142857142854,
+          "y": 45,
+          "width": 5.714285714285714,
+          "height": 10
+        },
+        "after": {
+          "x": 46.875,
+          "y": 44.375,
+          "width": 6.428571428571428,
+          "height": 11.25
+        }
+      },
+      "values": {
+        "before": "16px",
+        "after": "20px"
+      },
+      "clip": {
+        "x": 48,
+        "y": 579,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 12,
+      "number": 75,
+      "sha": "ae067db5a38c1eefc9b751501e735e8b5842bc2b",
+      "key": "color-value",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 12.890625,
+          "y": 42.8125,
+          "width": 36.752232142857146,
+          "height": 14.374999999999998
+        },
+        "after": {
+          "x": 12.890625,
+          "y": 42.8125,
+          "width": 36.752232142857146,
+          "height": 14.374999999999998
+        }
+      },
+      "values": {
+        "before": "14px",
+        "after": "16px"
+      },
+      "clip": {
+        "x": 0,
+        "y": 149,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 13,
+      "number": 76,
+      "sha": "4f5f6809701fbc0b8a678fd31e0ec5090fb779ab",
+      "key": "export-code",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 6.825938566552901,
+          "y": 8.771929824561402,
+          "width": 86.3481228668942,
+          "height": 82.45614035087719
+        },
+        "after": {
+          "x": 6.825938566552901,
+          "y": 8.771929824561402,
+          "width": 86.3481228668942,
+          "height": 82.45614035087719
+        }
+      },
+      "values": {
+        "before": "12px",
+        "after": "14px"
+      },
+      "clip": {
+        "x": 187,
+        "y": 93,
+        "width": 586,
+        "height": 456
+      }
+    },
+    {
+      "id": 14,
+      "number": 77,
+      "sha": "d1ebe274c30268aec7975a904a062348884f1c93",
+      "key": "export-actions",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 6.825938566552901,
+          "y": 40.625,
+          "width": 86.3481228668942,
+          "height": 18.75
+        },
+        "after": {
+          "x": 6.825938566552901,
+          "y": 40.625,
+          "width": 86.3481228668942,
+          "height": 24.0625
+        }
+      },
+      "values": {
+        "before": "0px",
+        "after": "1px"
+      },
+      "clip": {
+        "x": 187,
+        "y": 383,
+        "width": 586,
+        "height": 320
+      }
+    },
+    {
+      "id": 15,
+      "number": 78,
+      "sha": "c2205302132796ba1e2e7f207b41078623e4f3be",
+      "key": "font-labels",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 9.107142857142856,
+          "y": 45.3125,
+          "width": 81.78571428571428,
+          "height": 9.6875
+        },
+        "after": {
+          "x": 9.107142857142856,
+          "y": 44.0625,
+          "width": 81.78571428571428,
+          "height": 10.3125
+        }
+      },
+      "values": {
+        "before": "12px",
+        "after": "14px"
+      },
+      "clip": {
+        "x": 200,
+        "y": 501,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 16,
+      "number": 79,
+      "sha": "650ff86343556a117a19a93f356e68b85ddd9c2a",
+      "key": "font-targets",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 26.236049107142854,
+          "y": 41.5625,
+          "width": 47.85714285714286,
+          "height": 17.1875
+        },
+        "after": {
+          "x": 26.236049107142854,
+          "y": 38.4375,
+          "width": 47.85714285714286,
+          "height": 18.75
+        }
+      },
+      "values": {
+        "before": "39px",
+        "after": "44px"
+      },
+      "clip": {
+        "x": 805,
+        "y": 521,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 17,
+      "number": 80,
+      "sha": "3cfdca9fbc3a46e423823879de975cf202c68486",
+      "key": "palette-swatches",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 29.642857142857142,
+          "y": 41.005859375,
+          "width": 40.89285714285714,
+          "height": 18.310546875
+        },
+        "after": {
+          "x": 29.642857142857142,
+          "y": 25.039062499999996,
+          "width": 40.89285714285714,
+          "height": 23.6328125
+        }
+      },
+      "values": {
+        "before": "5 / 1",
+        "after": "5 / 1.4"
+      },
+      "clip": {
+        "x": 86,
+        "y": 385,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 18,
+      "number": 81,
+      "sha": "bd0937ce2a719125a6b8cdb243232a3b52362a5e",
+      "key": "selected-palette",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 29.642857142857142,
+          "y": 40.87890625,
+          "width": 40.89285714285714,
+          "height": 18.75
+        },
+        "after": {
+          "x": 29.642857142857142,
+          "y": 40.87890625,
+          "width": 40.89285714285714,
+          "height": 18.75
+        }
+      },
+      "values": {
+        "before": "rgba(0, 0, 0, 0)",
+        "after": "rgb(238, 238, 238)"
+      },
+      "clip": {
+        "x": 86,
+        "y": 428,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 19,
+      "number": 82,
+      "sha": "34370b23e507638e44390267f5631c5e4d38942d",
+      "key": "palette-hover",
+      "kind": "video",
+      "focus": {},
+      "values": {
+        "before": "rgb(56, 56, 56)",
+        "after": "rgb(179, 179, 179)"
+      },
+      "clip": {
+        "x": 86,
+        "y": 407,
+        "width": 560,
+        "height": 320
+      }
+    },
+    {
+      "id": 20,
+      "number": 83,
+      "sha": "b4f72385eeec59017203ab87b716f608cf93287a",
+      "key": "remove-palette",
+      "kind": "image",
+      "focus": {
+        "before": {
+          "x": 35.892857142857146,
+          "y": 40.625,
+          "width": 28.214285714285715,
+          "height": 18.75
+        },
+        "after": {
+          "x": 35.892857142857146,
+          "y": 40.625,
+          "width": 28.214285714285715,
+          "height": 18.75
+        }
+      },
+      "values": {
+        "before": "0px",
+        "after": "1px"
+      },
+      "clip": {
+        "x": 109,
+        "y": 565,
+        "width": 560,
+        "height": 320
+      }
+    }
+  ]
+}
