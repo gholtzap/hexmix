@@ -1,1 +1,3 @@
 /* Review 17: Show more of each palette color in quick picks. */
+
+html .palette-panel:not(.saved-panel) .palette-preview, html .palette-panel .palette-card:not(.saved-row) .palette-preview { aspect-ratio: 5 / 1.4; }
