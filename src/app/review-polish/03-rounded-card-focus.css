@@ -1,1 +1,3 @@
 /* Review 03: Match preview focus rings to the card corners. */
+
+html .home-preview-card:has(a:focus-visible) { border-radius: 12px; }
