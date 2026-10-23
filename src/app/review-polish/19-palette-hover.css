@@ -1,1 +1,3 @@
 /* Review 19: Highlight the palette under the pointer. */
+
+html .palette-card:has(.palette-apply:hover) { border-color: var(--color-muted-foreground); }
