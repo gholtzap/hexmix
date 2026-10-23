@@ -1,0 +1,1862 @@
+[
+  {
+    "id": 1,
+    "key": "selected-category",
+    "title": "Make the selected preview category easier to spot",
+    "summary": "A thin underline distinguishes the active category from a hovered category.",
+    "css": "html .home-categories button[aria-pressed=\"true\"] { box-shadow: inset 0 -2px 0 var(--color-foreground); }\n",
+    "scene": "category",
+    "selector": ".home-categories button[aria-pressed=\"true\"]",
+    "property": "boxShadow",
+    "width": 960,
+    "file": "src/app/review-polish/01-selected-category.css",
+    "branch": "demo/polish-01-selected-category-20261022",
+    "sha": "67f32c006d765035a4a5aa29b317867e18865c5b",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          }
+        ],
+        "recording": {
+          "value": "none",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(237, 237, 237) 0px -2px 0px 0px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237) 0px -2px 0px 0px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(237, 237, 237) 0px -2px 0px 0px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237) 0px -2px 0px 0px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+          }
+        ],
+        "recording": {
+          "value": "rgb(237, 237, 237) 0px -2px 0px 0px inset",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/01-selected-category"
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "key": "sticky-categories",
+    "title": "Keep preview filters available while scrolling",
+    "summary": "The category controls stay at the top of the gallery while browsing a long list.",
+    "css": "html .home-categories { position: sticky; top: 0; z-index: 10; padding-block: 8px; background: var(--color-background); }\n",
+    "scene": "scroll",
+    "selector": ".home-categories",
+    "property": "position",
+    "width": 960,
+    "file": "src/app/review-polish/02-sticky-categories.css",
+    "branch": "demo/polish-02-sticky-categories-20261022",
+    "sha": "ab1317b953ea4445667be4ef6c30bd0c097666fc",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "static",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "static",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "static",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "static",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          }
+        ],
+        "recording": {
+          "value": "static",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "sticky",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "sticky",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "sticky",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "sticky",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+          }
+        ],
+        "recording": {
+          "value": "sticky",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/02-sticky-categories"
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "key": "rounded-card-focus",
+    "title": "Match preview focus rings to the card corners",
+    "summary": "Keyboard focus follows the rounded preview card instead of a square outline.",
+    "css": "html .home-preview-card:has(a:focus-visible) { border-radius: 12px; }\n",
+    "scene": "card-focus",
+    "selector": ".home-preview-card:first-child",
+    "property": "borderRadius",
+    "width": 960,
+    "file": "src/app/review-polish/03-rounded-card-focus.css",
+    "branch": "demo/polish-03-rounded-card-focus-20261022",
+    "sha": "48bea5ef76bed42c1adcc5acd6f58249a6aa2765",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "0px",
+            "findings": 88,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          }
+        ],
+        "recording": {
+          "value": "0px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+          }
+        ],
+        "recording": {
+          "value": "12px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/03-rounded-card-focus"
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "key": "preview-hover",
+    "title": "Highlight preview borders on hover",
+    "summary": "A light border identifies the preview under the pointer without moving the card.",
+    "css": "html .home-preview-link:hover .home-thumbnail { border-color: var(--color-foreground); }\n",
+    "scene": "card-hover",
+    "selector": ".home-thumbnail",
+    "property": "borderTopColor",
+    "width": 960,
+    "file": "src/app/review-polish/04-preview-hover.css",
+    "branch": "demo/polish-04-preview-hover-20261022",
+    "sha": "9122c3371830aa202b8da08950914c6cb197a632",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          }
+        ],
+        "recording": {
+          "value": "rgb(56, 56, 56)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+          }
+        ],
+        "recording": {
+          "value": "rgb(237, 237, 237)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/04-preview-hover"
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "key": "gallery-sections",
+    "title": "Separate homepage and dashboard preview groups",
+    "summary": "A quiet divider makes the two preview groups easier to scan.",
+    "css": "html .home-preview-group + .home-preview-group { border-top: 1px solid var(--color-border); padding-top: 24px; }\n",
+    "scene": "groups",
+    "selector": ".home-preview-group + .home-preview-group",
+    "property": "borderTopWidth",
+    "width": 960,
+    "file": "src/app/review-polish/05-gallery-sections.css",
+    "branch": "demo/polish-05-gallery-sections-20261022",
+    "sha": "f7f29f580750de1a513629d6d14d8c4d341356e9",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          }
+        ],
+        "recording": {
+          "value": "0px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+          }
+        ],
+        "recording": {
+          "value": "1px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/05-gallery-sections"
+        }
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "key": "mobile-heading",
+    "title": "Give the mobile introduction more line spacing",
+    "summary": "The two-line introduction has more space between its lines on phones.",
+    "css": "@media (max-width: 600px) { html .home-intro h1 { line-height: 1.2; } }\n",
+    "scene": "home",
+    "selector": ".home-intro h1",
+    "property": "lineHeight",
+    "width": 390,
+    "file": "src/app/review-polish/06-mobile-heading.css",
+    "branch": "demo/polish-06-mobile-heading-20261022",
+    "sha": "a17d902fb9c0e85350707af48d49d25881d40c55",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "35.2px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "35.2px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "52.8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "52.8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          }
+        ],
+        "recording": {
+          "value": "35.2px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "38.4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "38.4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "52.8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "52.8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+          }
+        ],
+        "recording": {
+          "value": "38.4px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/06-mobile-heading"
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "key": "preview-labels",
+    "title": "Use compact labels below preview cards",
+    "summary": "Preview names use a restrained 16px size so the thumbnails keep their visual priority.",
+    "css": "html .home-preview-caption h4 { font-size: 16px; }\n",
+    "scene": "home",
+    "selector": ".home-preview-caption h4",
+    "property": "fontSize",
+    "width": 960,
+    "file": "src/app/review-polish/07-preview-labels.css",
+    "branch": "demo/polish-07-preview-labels-20261022",
+    "sha": "ec3d8b2af1ed21b03bc640fb7fe63df90a77c642",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "18px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "18px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "18px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "18px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          }
+        ],
+        "recording": {
+          "value": "18px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+          }
+        ],
+        "recording": {
+          "value": "16px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/07-preview-labels"
+        }
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "key": "color-field-focus",
+    "title": "Give the focused color field a clearer border",
+    "summary": "The focused color field gains a clear border while its keyboard focus ring stays in place.",
+    "css": "html .color-picker-content [data-slot=\"color-picker-fields\"]:focus-within { border-color: var(--color-foreground); }\n",
+    "scene": "color-focus",
+    "selector": "[data-slot=\"color-picker-fields\"]",
+    "property": "borderTopColor",
+    "width": 960,
+    "file": "src/app/review-polish/08-color-field-focus.css",
+    "branch": "demo/polish-08-color-field-focus-20261022",
+    "sha": "671e3dbe64daa6c773e344ac9280aa64377eb907",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          }
+        ],
+        "recording": {
+          "value": "rgb(56, 56, 56)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+          }
+        ],
+        "recording": {
+          "value": "rgb(237, 237, 237)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/08-color-field-focus"
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "key": "locked-color",
+    "title": "Make the locked color state easier to recognize",
+    "summary": "The lock control has a clear outline when the color is locked.",
+    "css": "html .color-picker-heading .icon-button[aria-pressed=\"true\"] { box-shadow: inset 0 0 0 1px var(--color-foreground); }\n",
+    "scene": "color-lock",
+    "selector": ".color-picker-heading .icon-button[aria-pressed=\"true\"]",
+    "property": "boxShadow",
+    "width": 960,
+    "file": "src/app/review-polish/09-locked-color.css",
+    "branch": "demo/polish-09-locked-color-20261022",
+    "sha": "8e8d6d649fd0064ed2fbcad356af48398ad056a2",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "none",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          }
+        ],
+        "recording": {
+          "value": "none",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(237, 237, 237) 0px 0px 0px 1px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237) 0px 0px 0px 1px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(237, 237, 237) 0px 0px 0px 1px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(237, 237, 237) 0px 0px 0px 1px inset",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+          }
+        ],
+        "recording": {
+          "value": "rgb(237, 237, 237) 0px 0px 0px 1px inset",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/09-locked-color"
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "key": "color-format",
+    "title": "Give the color format selector more room",
+    "summary": "The format selector has more space around its label and a larger desktop target.",
+    "css": "html .color-format-select { min-height: 36px; padding-inline: 8px; }\n",
+    "scene": "color",
+    "selector": ".color-format-select",
+    "property": "paddingLeft",
+    "width": 1440,
+    "file": "src/app/review-polish/10-color-format.css",
+    "branch": "demo/polish-10-color-format-20261022",
+    "sha": "82f275b4b14c9db1779524a0fb7c628b945bc962",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "4px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          }
+        ],
+        "recording": {
+          "value": "4px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "8px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+          }
+        ],
+        "recording": {
+          "value": "8px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/10-color-format"
+        }
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "key": "hue-handle",
+    "title": "Make the hue slider handle easier to track",
+    "summary": "A slightly larger hue handle is easier to follow on the color track.",
+    "css": "html .color-picker-content [data-slot=\"color-picker-slider-thumb\"] { width: 20px; height: 20px; }\n",
+    "scene": "color",
+    "selector": "[data-slot=\"color-picker-slider-thumb\"]",
+    "property": "width",
+    "width": 960,
+    "file": "src/app/review-polish/11-hue-handle.css",
+    "branch": "demo/polish-11-hue-handle-20261022",
+    "sha": "0fbb57868ee24cc4338a15682314ec638ef5262e",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          }
+        ],
+        "recording": {
+          "value": "16px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "20px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "20px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "20px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "20px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+          }
+        ],
+        "recording": {
+          "value": "20px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/11-hue-handle"
+        }
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "key": "color-value",
+    "title": "Make editable color values easier to read",
+    "summary": "Color values use a readable 16px size in the desktop picker.",
+    "css": "html .color-picker-content input { font-size: 16px; }\n",
+    "scene": "color",
+    "selector": ".color-picker-content input",
+    "property": "fontSize",
+    "width": 1440,
+    "file": "src/app/review-polish/12-color-value.css",
+    "branch": "demo/polish-12-color-value-20261022",
+    "sha": "ae067db5a38c1eefc9b751501e735e8b5842bc2b",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          }
+        ],
+        "recording": {
+          "value": "14px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "16px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+          }
+        ],
+        "recording": {
+          "value": "16px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/12-color-value"
+        }
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "key": "export-code",
+    "title": "Make the exported code easier to read",
+    "summary": "The code panel uses 14px text with comfortable line spacing.",
+    "css": "html .export-dialog pre { font-size: 14px; line-height: 1.65; }\n",
+    "scene": "export",
+    "selector": ".export-dialog pre",
+    "property": "fontSize",
+    "width": 960,
+    "file": "src/app/review-polish/13-export-code.css",
+    "branch": "demo/polish-13-export-code-20261022",
+    "sha": "4f5f6809701fbc0b8a678fd31e0ec5090fb779ab",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          }
+        ],
+        "recording": {
+          "value": "12px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+          }
+        ],
+        "recording": {
+          "value": "14px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/13-export-code"
+        }
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "key": "export-actions",
+    "title": "Separate export actions from the code panel",
+    "summary": "A thin divider gives the copy and download controls a clear action row.",
+    "css": "html .export-dialog .dialog-actions { border-top: 1px solid var(--color-border); padding-top: 16px; gap: 16px; }\n",
+    "scene": "export",
+    "selector": ".export-dialog .dialog-actions",
+    "property": "borderTopWidth",
+    "width": 960,
+    "file": "src/app/review-polish/14-export-actions.css",
+    "branch": "demo/polish-14-export-actions-20261022",
+    "sha": "d1ebe274c30268aec7975a904a062348884f1c93",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          }
+        ],
+        "recording": {
+          "value": "0px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+          }
+        ],
+        "recording": {
+          "value": "1px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/14-export-actions"
+        }
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "key": "font-labels",
+    "title": "Make the font field labels easier to scan",
+    "summary": "The heading and body labels use the same readable size as other form labels.",
+    "css": "html .font-panel label { font-size: 14px; }\n",
+    "scene": "fonts",
+    "selector": ".font-panel label",
+    "property": "fontSize",
+    "width": 960,
+    "file": "src/app/review-polish/15-font-labels.css",
+    "branch": "demo/polish-15-font-labels-20261022",
+    "sha": "c2205302132796ba1e2e7f207b41078623e4f3be",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "12px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          }
+        ],
+        "recording": {
+          "value": "12px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "14px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+          }
+        ],
+        "recording": {
+          "value": "14px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/15-font-labels"
+        }
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "key": "font-targets",
+    "title": "Give desktop font controls a comfortable target",
+    "summary": "The desktop font selectors use a 44px height that matches the phone controls.",
+    "css": "html .font-panel select { min-height: 44px; }\n",
+    "scene": "fonts",
+    "selector": ".font-panel select",
+    "property": "height",
+    "width": 1440,
+    "file": "src/app/review-polish/16-font-targets.css",
+    "branch": "demo/polish-16-font-targets-20261022",
+    "sha": "650ff86343556a117a19a93f356e68b85ddd9c2a",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "39px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "39px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          }
+        ],
+        "recording": {
+          "value": "39px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "44px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+          }
+        ],
+        "recording": {
+          "value": "44px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/16-font-targets"
+        }
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "key": "palette-swatches",
+    "title": "Show more of each palette color in quick picks",
+    "summary": "Taller color strips make it easier to compare palette choices.",
+    "css": "html .palette-panel:not(.saved-panel) .palette-preview, html .palette-panel .palette-card:not(.saved-row) .palette-preview { aspect-ratio: 5 / 1.4; }\n",
+    "scene": "palettes",
+    "selector": ".palette-preview",
+    "property": "aspectRatio",
+    "width": 960,
+    "file": "src/app/review-polish/17-palette-swatches.css",
+    "branch": "demo/polish-17-palette-swatches-20261022",
+    "sha": "3cfdca9fbc3a46e423823879de975cf202c68486",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "5 / 1",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "5 / 1",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "5 / 1",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "5 / 1",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          }
+        ],
+        "recording": {
+          "value": "5 / 1",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "5 / 1.4",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "5 / 1.4",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "5 / 1.4",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "5 / 1.4",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+          }
+        ],
+        "recording": {
+          "value": "5 / 1.4",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/17-palette-swatches"
+        }
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "key": "selected-palette",
+    "title": "Make the current palette easier to find",
+    "summary": "The selected palette caption has a distinct surface in addition to its outline and checkmark.",
+    "css": "html .palette-card[data-selected] .palette-card-caption { background: var(--color-primary); color: var(--color-primary-foreground); }\n",
+    "scene": "palette-selected",
+    "selector": ".palette-card[data-selected] .palette-card-caption",
+    "property": "backgroundColor",
+    "width": 960,
+    "file": "src/app/review-polish/18-selected-palette.css",
+    "branch": "demo/polish-18-selected-palette-20261022",
+    "sha": "bd0937ce2a719125a6b8cdb243232a3b52362a5e",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgba(0, 0, 0, 0)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgba(0, 0, 0, 0)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgba(0, 0, 0, 0)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgba(0, 0, 0, 0)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          }
+        ],
+        "recording": {
+          "value": "rgba(0, 0, 0, 0)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(238, 238, 238)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(238, 238, 238)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(238, 238, 238)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(238, 238, 238)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+          }
+        ],
+        "recording": {
+          "value": "rgb(238, 238, 238)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/18-selected-palette"
+        }
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "key": "palette-hover",
+    "title": "Highlight the palette under the pointer",
+    "summary": "The hovered palette has a clearer border while its colors remain unchanged.",
+    "css": "html .palette-card:has(.palette-apply:hover) { border-color: var(--color-muted-foreground); }\n",
+    "scene": "palette-hover",
+    "selector": ".palette-card",
+    "property": "borderTopColor",
+    "width": 960,
+    "file": "src/app/review-polish/19-palette-hover.css",
+    "branch": "demo/polish-19-palette-hover-20261022",
+    "sha": "34370b23e507638e44390267f5631c5e4d38942d",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(237, 237, 237)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(56, 56, 56)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          }
+        ],
+        "recording": {
+          "value": "rgb(56, 56, 56)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "rgb(179, 179, 179)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "rgb(179, 179, 179)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "rgb(179, 179, 179)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "rgb(179, 179, 179)",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+          }
+        ],
+        "recording": {
+          "value": "rgb(179, 179, 179)",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/19-palette-hover"
+        }
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "key": "remove-palette",
+    "title": "Separate removal from other saved-palette actions",
+    "summary": "A divider separates Remove palette from actions that keep the saved palette.",
+    "css": "html .palette-menu .palette-remove { border-top: 1px solid var(--color-border); border-radius: 0; margin-top: 8px; padding-top: 12px; }\n",
+    "scene": "palette-remove",
+    "selector": ".palette-remove",
+    "property": "borderTopWidth",
+    "width": 960,
+    "file": "src/app/review-polish/20-remove-palette.css",
+    "branch": "demo/polish-20-remove-palette-20261022",
+    "sha": "b4f72385eeec59017203ab87b716f608cf93287a",
+    "base": "fdc13feacd2464c092a17c7cf6ca3eb89dff873f",
+    "record": [
+      {
+        "phase": "before",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "0px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          }
+        ],
+        "recording": {
+          "value": "0px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+        }
+      },
+      {
+        "phase": "after",
+        "states": [
+          {
+            "width": 390,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 390,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "light",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          },
+          {
+            "width": 1440,
+            "theme": "dark",
+            "value": "1px",
+            "findings": 0,
+            "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+          }
+        ],
+        "recording": {
+          "value": "1px",
+          "findings": 0,
+          "directory": "/Users/gmh/dev/future-of-swe/artifacts/polish-batch/20-remove-palette"
+        }
+      }
+    ]
+  }
+]
