@@ -52,8 +52,10 @@ function taskForm(task = undefined) {
                 return;
             if (saved)
                 Object.assign(task, values);
-            else
+            else {
                 tasks.push({ ...values, id: nextId++, paused: false });
+                filter = 'All';
+            }
             renderTasks();
             d.close();
             toast(saved ? 'Task updated' : 'Task saved');
