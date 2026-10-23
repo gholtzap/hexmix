@@ -82,7 +82,7 @@ import {
 import { fonts, type FontName } from "@/lib/fonts";
 import { isElementSelection, isElementRole, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
 
-type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
+type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName; elements: ElementRole[] }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
 const siteLogoSelectors: Record<string, string> = {
   avenlo: '.nav__logo img',
   tervix: 'nav a[data-preview-path="/"]',
@@ -637,7 +637,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
   }
   return (
     <main className={collapsed || embedded ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} data-comparison-toolbar={comparisonToolbar || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
-      {children ? children({ palette, heading, body }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
+      {children ? children({ palette, heading, body, elements: elementRoles }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
         <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body,elementRoles)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
         <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body,elementRoles)}>{label}</a>)}</nav></div>
       </div> : <iframe
