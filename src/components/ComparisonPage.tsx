@@ -138,7 +138,7 @@ export default function ComparisonPage() {
               <Link href={href(rendered[side])}>Use palette {side.toUpperCase()}</Link>
               <div className="comparison-share"><label htmlFor={`comparison-link-${side}`}>Comparison link</label><Input ref={input} id={`comparison-link-${side}`} value={sharedLink || link} readOnly onFocus={event => event.target.select()} /><Button variant="outline" disabled={!ready} onClick={share}>Copy comparison link</Button></div>
               {notice && <p role="status">{notice}</p>}
-              <Link href={previewHref('/', rendered.a, value.heading, value.body, value.elements)}>All previews</Link>
+              <Link href={previewHref('/', rendered[side], value.heading, value.body, value.elements)}>All previews</Link>
             </PopoverContent>
           </Popover>
         </header>
