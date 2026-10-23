@@ -42,3 +42,11 @@ test('shared theme links resolve only same-origin validated snapshots', async ()
   globalThis.fetch=async()=>new Response('',{status:404});await assert.rejects(()=>readTheme(origin+path,origin));
  }finally{globalThis.fetch=original;}
 });
+
+
+test('CSS comments cannot replace active palette tokens or font settings',()=>{
+ const css=paletteCSS(initialPalette,fonts.Inter,fonts.Lora);
+ const parsed=parseTheme('/* --color-primary: #000000; */'+css+'/* Old token: --color-primary: #ff0000; --font-heading: Arial; */');
+ assert.deepEqual(parsed.colors,initialPalette);
+ assert.deepEqual(parsed.fonts,{heading:'Inter',body:'Lora'});
+});
