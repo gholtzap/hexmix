@@ -92,7 +92,7 @@ export function startViewCapture() {
   });
   const contentNodes = 'dialog h2, dialog p, #form-status, .nuvexa-form-result, .agent-status, #demo-description, #interval';
   const validContent = (value: unknown) => !!value && typeof value === 'object' && !Array.isArray(value) && Object.values(value).every(item => typeof item === 'string');
-  const applyContent = (value: Record<string, string>) => { for (const [key, text] of Object.entries(value)) { if (restored.has(`text:${key}`)) continue; try { const node = document.querySelector(key); if (node?.matches(contentNodes) && !node.closest(controlled)) { restored.add(`text:${key}`); node.textContent = text; } } catch { /* Invalid selectors are ignored. */ } } };
+  const applyContent = (value: Record<string, string>) => { for (const [key, text] of Object.entries(value)) { if (restored.has(`text:${key}`)) continue; try { const node = document.querySelector(key); if (node?.matches(contentNodes) && !node.closest(controlled)) { restored.add(`text:${key}`); if (node.id === 'interval' && node.firstChild?.nodeType === Node.TEXT_NODE) node.firstChild.textContent = text; else node.textContent = text; } } catch { /* Invalid selectors are ignored. */ } } };
   registerSharedView('document.content', { private: true, read: () => Object.fromEntries([...document.querySelectorAll(contentNodes)].filter(node => !node.closest(controlled)).map(node => [selector(node), node.textContent ?? ''])), restore: value => { pendingContent = value; applyContent(value as Record<string, string>); }, validate: validContent });
   // Controls can mount after fonts, preview data, or a named dialog have loaded.
   const retry = () => {
