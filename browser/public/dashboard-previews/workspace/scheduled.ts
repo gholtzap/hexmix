@@ -29,7 +29,7 @@ function renderTasks() {
     }
 }
 function taskForm(task = undefined) {
-    rememberSharedDialog("task", task?.id ?? null);
+    rememberSharedDialog("task", task && !('id' in task) ? { title: task.title, prompt: task.prompt, schedule: task.schedule } : task?.id ?? null);
     const saved = task && 'id' in task;
     dialog(saved ? 'Task details' : 'New task', `<form id="sched-form">
     <label class="field-label" for="sched-title">Title</label><input class="field" id="sched-title" name="title" required maxlength="160" value="${esc(task?.title || '')}">
@@ -96,5 +96,5 @@ export function searchTasks() {
     });
 }
 
-registerSharedDialog("task", value => taskForm(value === null ? undefined : tasks.find(item => item.id === value)), value => value === null || typeof value === "number" && tasks.some(item => item.id === value));
+registerSharedDialog("task", value => taskForm(value === null ? undefined : typeof value === "number" ? tasks.find(item => item.id === value) : value), value => value === null || typeof value === "number" && tasks.some(item => item.id === value) || matchesShape(value, { title: "", prompt: "", schedule: "" }));
 registerSharedDialog("taskSearch", () => searchTasks(), value => value === null);
