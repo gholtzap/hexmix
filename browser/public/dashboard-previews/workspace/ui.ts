@@ -40,3 +40,9 @@ function addTooltips() {
 }
 new MutationObserver(addTooltips).observe(document.body, { childList: true, subtree: true });
 addTooltips();
+
+export function requireText(field: HTMLInputElement | HTMLTextAreaElement) {
+    field.setCustomValidity(field.value.trim() ? '' : 'Enter a value.');
+    field.oninput = () => field.setCustomValidity('');
+    return field.reportValidity();
+}
