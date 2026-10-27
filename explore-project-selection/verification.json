@@ -1,0 +1,317 @@
+{
+  "reports": [
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "selected-project",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "selected-project",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 51,
+            "controls": 13,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 16,
+            "controls": 5,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "selected-project",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "selected-project",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 51,
+            "controls": 13,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 16,
+            "controls": 5,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "selected-project",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "selected-project",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 140,
+            "controls": 42,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 16,
+            "controls": 5,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "selected-project",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "selected-project",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 140,
+            "controls": 42,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "current-project-list",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 16,
+            "controls": 5,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failures": []
+}
