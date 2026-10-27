@@ -22,7 +22,7 @@ export function startViewCapture() {
   if (document.documentElement.dataset.sharedView === 'true') return () => {};
   document.documentElement.dataset.sharedView = 'true';
   const restored = new Set<string>();
-  let restoredScroll = new WeakSet<Element>();
+  const restoredScroll = new Map<string, { node: Element; width: number; height: number }>();
   let pendingFields: unknown, pendingView: unknown, pendingContent: unknown;
   const scrollers = new Set<Element>();
   const authored = (node: Element) => !node.closest(controlled) && (node.id && !/^(?:_r_|radix-|base-ui-)/.test(node.id) || node.matches('.agent-card,[data-cookie-banner]'));
@@ -52,21 +52,26 @@ export function startViewCapture() {
       if (restored.has(`control:${key}`)) continue;
       let node: Element | null; try { node = document.querySelector(key); } catch { continue; }
       if (!(node instanceof HTMLElement) || !node.matches(`button[aria-expanded],button[role=tab],[role=tab][tabindex],${workspaceMenu}`)) continue;
-      restored.add(`control:${key}`);
       const close = value.collapsed?.includes(key);
       if (close ? node.getAttribute('aria-expanded') === 'true' : node.getAttribute('aria-expanded') === 'false' || node.getAttribute('aria-selected') === 'false' || node.matches(workspaceMenu) && node.getAttribute('aria-expanded') !== 'true') node.click();
+      if (close ? node.getAttribute('aria-expanded') === 'false' : node.getAttribute('aria-expanded') === 'true' || node.getAttribute('aria-selected') === 'true' || node.matches(workspaceMenu)) restored.add(`control:${key}`);
     }
     for (const key of value.details) { try { const node = document.querySelector(key); if (node instanceof HTMLDetailsElement) node.open = true; } catch { /* Invalid selectors are ignored. */ } }
     for (const key of value.dialogs) { try { const node = document.querySelector(key); if (node instanceof HTMLDialogElement && !restored.has(`dialog:${key}`)) { restored.add(`dialog:${key}`); if (!node.open) node.showModal(); } } catch { /* Detached dialogs cannot open. */ } }
     for (const [key, names] of Object.entries(value.classes)) { if (restored.has(`classes:${key}`)) continue; try { const node = document.querySelector(key); if (node) { restored.add(`classes:${key}`); viewClasses.forEach(name => node.classList.toggle(name, names.includes(name))); } } catch { /* Invalid selectors are ignored. */ } }
     for (const [key, hidden] of Object.entries(value.hidden)) { if (restored.has(`hidden:${key}`)) continue; try { const node = document.querySelector(key); if (node instanceof HTMLElement && hiddenNodes.has(node) && node !== document.body && node !== document.documentElement) { restored.add(`hidden:${key}`); node.hidden = hidden; if (node.hasAttribute('data-cookie-banner')) node.inert = hidden; } } catch { /* Invalid selectors are ignored. */ } }
     for (const [key, position] of Object.entries(value.scroll)) {
+      // Preview scripts can change carousel widths before the page is ready.
+      if (document.documentElement.dataset.editorSite && document.documentElement.dataset.contrastReady !== 'true') continue;
       const node = key === 'document' ? document.scrollingElement : (() => { try { return document.querySelector(key); } catch { return null; } })();
-      if (!node || restoredScroll.has(node)) continue;
+      if (!node) continue;
       if ((position.top > 0 && node.scrollHeight <= node.clientHeight) || (position.left > 0 && node.scrollWidth <= node.clientWidth)) continue;
-      node.scrollTop = position.top * Math.max(0, node.scrollHeight - node.clientHeight);
-      node.scrollLeft = position.left * Math.max(0, node.scrollWidth - node.clientWidth);
-      restoredScroll.add(node);
+      const width = Math.max(0, node.scrollWidth - node.clientWidth), height = Math.max(0, node.scrollHeight - node.clientHeight);
+      const previous = restoredScroll.get(key);
+      if (previous?.node === node && previous.width === width && previous.height === height) continue;
+      node.scrollTop = position.top * height;
+      node.scrollLeft = position.left * width;
+      restoredScroll.set(key, { node, width, height });
     }
   };
   registerSharedView('document.fields', {
@@ -84,8 +89,10 @@ export function startViewCapture() {
       }
       document.querySelectorAll(viewClasses.map(name => `.${name}`).join(',')).forEach(node => { if (!node.closest(controlled)) classNodes.add(node); });
       document.querySelectorAll('[hidden]').forEach(node => { if (authored(node)) hiddenNodes.add(node); });
-      const openControls = (query: string) => [...document.querySelectorAll(query)].filter(node => !node.closest(controlled)).map(selector);
-      return { expanded: openControls('button[aria-expanded=true]'), collapsed: openControls('button[aria-expanded=false]'), tabs: openControls('[role=tab][aria-selected=true]'), details: openControls('details[open]'), dialogs: openControls('dialog[open]'), current: openControls('button[data-plan][aria-current=true]'), classes: Object.fromEntries([...classNodes].filter(node => node.isConnected && !node.closest(controlled)).map(node => [node === document.documentElement ? 'html' : node === document.body ? 'body' : selector(node), viewClasses.filter(name => node.classList.contains(name))])), hidden: Object.fromEntries([...hiddenNodes].filter(node => node.isConnected && authored(node)).map(node => [selector(node), (node as HTMLElement).hidden])), scroll };
+      // Keep requested controls until their page handlers can restore them.
+      const controls = (query: string, pending: string[] = [], opposite: string[] = []) => [...new Set([...document.querySelectorAll(query)].filter(node => !node.closest(controlled)).map(selector).filter(key => !opposite.includes(key) || restored.has(`control:${key}`)).concat(pending.filter(key => !restored.has(`control:${key}`))))];
+      const pending = validView(pendingView) ? pendingView as View : undefined;
+      return { expanded: controls('button[aria-expanded=true]', pending?.expanded, pending?.collapsed), collapsed: controls('button[aria-expanded=false]', pending?.collapsed, pending?.expanded), tabs: controls('[role=tab][aria-selected=true]', pending?.tabs), details: controls('details[open]'), dialogs: controls('dialog[open]'), current: controls('button[data-plan][aria-current=true]'), classes: Object.fromEntries([...classNodes].filter(node => node.isConnected && !node.closest(controlled)).map(node => [node === document.documentElement ? 'html' : node === document.body ? 'body' : selector(node), viewClasses.filter(name => node.classList.contains(name))])), hidden: Object.fromEntries([...hiddenNodes].filter(node => node.isConnected && authored(node)).map(node => [selector(node), (node as HTMLElement).hidden])), scroll };
     },
     restore: value => { pendingView = value; restoring = true; applyView(value as View); restoring = false; },
     validate: validView,
@@ -103,11 +110,12 @@ export function startViewCapture() {
     if (validContent(pendingContent)) applyContent(pendingContent as Record<string, string>);
     restoring = false;
   };
-  const observer = new MutationObserver(retry); observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-expanded'] });
+  const observer = new MutationObserver(retry); observer.observe(document, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-expanded', 'data-contrast-ready'] });
   const scroll = (event: Event) => { if (event.target instanceof Element) scrollers.add(event.target); if (!restoring && !timer) timer = setTimeout(() => { timer = undefined; window.dispatchEvent(new Event('hexmix:capture')); }, 200); };
   document.addEventListener('scroll', scroll, true);
   window.addEventListener('pageshow', retry);
-  const restoreHistory = () => { restored.clear(); restoredScroll = new WeakSet(); pendingFields = readField(stateScope(), 'document.fields'); pendingView = readField(stateScope(), 'document.view'); pendingContent = readField(stateScope(), 'document.content'); requestAnimationFrame(retry); };
+  document.addEventListener('load', retry, true);
+  const restoreHistory = () => { restored.clear(); restoredScroll.clear(); pendingFields = readField(stateScope(), 'document.fields'); pendingView = readField(stateScope(), 'document.view'); pendingContent = readField(stateScope(), 'document.content'); requestAnimationFrame(retry); };
   stateWindow().addEventListener('popstate', restoreHistory);
-  return () => { observer.disconnect(); clearTimeout(timer); document.removeEventListener('scroll', scroll, true); window.removeEventListener('pageshow', retry); stateWindow().removeEventListener('popstate', restoreHistory); delete document.documentElement.dataset.sharedView; };
+  return () => { observer.disconnect(); clearTimeout(timer); document.removeEventListener('scroll', scroll, true); document.removeEventListener('load', retry, true); window.removeEventListener('pageshow', retry); stateWindow().removeEventListener('popstate', restoreHistory); delete document.documentElement.dataset.sharedView; };
 }

@@ -1,3 +1,5 @@
+import { gzipSync, gunzipSync } from 'fflate';
+
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type ViewState = { v: 1; views: Record<string, Record<string, Json>> };
 export const maxStateBytes = 4_000_000;
@@ -23,7 +25,20 @@ export function isJson(value: unknown, depth = 0): value is Json {
 export function parseState(raw: string | null): ViewState {
   if (!raw || raw.length > maxStateBytes * 2) return emptyState();
   try {
-    const json = raw.startsWith('{') ? raw : new TextDecoder().decode(Uint8Array.from(atob(raw.replaceAll('-', '+').replaceAll('_', '/')), c => c.charCodeAt(0)));
+    let json = raw;
+    if (!raw.startsWith('{')) {
+      const compressed = raw.startsWith('gz1.');
+      let bytes: Uint8Array = Uint8Array.from(atob((compressed ? raw.slice(4) : raw).replaceAll('-', '+').replaceAll('_', '/')), c => c.charCodeAt(0));
+      if (compressed) {
+        if (bytes.length < 18) return emptyState();
+        const size = new DataView(bytes.buffer).getUint32(bytes.length - 4, true);
+        if (size > maxStateBytes) return emptyState();
+        // Bound output allocation even when the gzip size is forged.
+        bytes = gunzipSync(bytes, { out: new Uint8Array(size + 1) });
+        if (bytes.length !== size) return emptyState();
+      }
+      json = new TextDecoder().decode(bytes);
+    }
     if (new TextEncoder().encode(json).length > maxStateBytes) return emptyState();
     const value: unknown = JSON.parse(json);
     if (!isJson(value) || !value || Array.isArray(value) || typeof value !== 'object' || value.v !== 1 || !value.views || Array.isArray(value.views) || typeof value.views !== 'object') return emptyState();
@@ -35,9 +50,11 @@ export function parseState(raw: string | null): ViewState {
 export function encodeState(state: ViewState): string {
   const bytes = new TextEncoder().encode(JSON.stringify(state));
   if (bytes.length > maxStateBytes) throw new Error('This view is too large to share.');
+  const compressed = gzipSync(bytes, { mtime: 0 });
+  const useCompressed = 4 + Math.ceil(compressed.length * 4 / 3) < Math.ceil(bytes.length * 4 / 3);
   let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
+  for (const byte of useCompressed ? compressed : bytes) binary += String.fromCharCode(byte);
+  return (useCompressed ? 'gz1.' : '') + btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
 }
 export function stateParameter(url: URL): string | null {
   return url.hash.startsWith('#state=') ? url.hash.slice(7) : url.searchParams.get('state');

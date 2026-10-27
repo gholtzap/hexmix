@@ -1,7 +1,60 @@
 import test from 'node:test';
 import { runInNewContext } from 'node:vm';
 import assert from 'node:assert/strict';
-import { encodeState, parseState, matchesShape, redactFields, isJson, type ViewState } from '../../browser/public/share-state.ts';
+import { gzipSync } from 'fflate';
+import { encodeState, parseState, matchesShape, redactFields, isJson, maxStateBytes, stateParameter, writeField, type ViewState } from '../../browser/public/share-state.ts';
+
+const legacyEncode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
+const compressedEncode = (value: Uint8Array) => 'gz1.' + Buffer.from(value).toString('base64url');
+
+test('compressed links keep every view and field and reduce repeated selector data', () => {
+  const state: ViewState = { v: 1, views: Object.fromEntries(['/avenlo', '/nuvexa', '/nuvexa|Page preview'].map(scope => [scope, {
+    history: [{ text: '#1d0b20', background: '#fff8f7' }],
+    open: false, selected: null, query: '青 🎨',
+    expanded: Array.from({ length: 30 }, (_, i) => `body > main:nth-child(2) > section:nth-child(${i + 1}) > div:nth-child(1) > button:nth-child(1)`),
+  }])) };
+  const encoded = encodeState(state);
+  assert.match(encoded, /^gz1\./);
+  assert(encoded.length < legacyEncode(state).length / 4);
+  assert.deepEqual(parseState(encoded), state);
+  assert.deepEqual(parseState(legacyEncode(state)), state);
+  assert.deepEqual(parseState(JSON.stringify(state)), state);
+  assert.equal(encodeState(state), encoded);
+});
+
+test('small links do not grow and compressed input keeps validation and size limits', () => {
+  const state: ViewState = { v: 1, views: {} };
+  assert.equal(encodeState(state), legacyEncode(state));
+  const gzip = (text: string) => gzipSync(new TextEncoder().encode(text), { mtime: 0 });
+  const forged = gzip(JSON.stringify({ v: 1, views: {} }) + ' '.repeat(100));
+  new DataView(forged.buffer).setUint32(forged.length - 4, 2, true);
+  for (const raw of ['gz1.', 'gz1.bad', compressedEncode(gzip('{"v":2,"views":{}}')), compressedEncode(gzip('x'.repeat(maxStateBytes + 1))), compressedEncode(forged)]) {
+    assert.deepEqual(parseState(raw), state);
+  }
+  assert.throws(() => encodeState({ v: 1, views: { '/': { value: 'x'.repeat(maxStateBytes) } } }), /too large/);
+});
+
+test('editing a legacy URL compresses it without removing other page states', () => {
+  const state: ViewState = { v: 1, views: { '/avenlo': { history: ['#ffffff', '#000000'] }, '/nuvexa|Page preview': { expanded: Array.from({ length: 20 }, (_, i) => `body > main > section:nth-child(${i}) > button`) } } };
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    for (const hash of [false, true]) {
+      const url = new URL('https://hexmix.test/nuvexa?colors=ffffff-000000-ff0000-00ff00-0000ff');
+      if (hash) url.hash = `state=${legacyEncode(state)}`;
+      else url.searchParams.set('state', legacyEncode(state));
+      const host = Object.assign(new EventTarget(), { location: url, history: { state: null, replaceState(_state: unknown, _title: string, next: URL) { host.location = next; } } });
+      Object.defineProperty(globalThis, 'window', { value: host, configurable: true });
+      Object.assign(host, { parent: host });
+      writeField('/nuvexa', 'open', true);
+      assert.match(stateParameter(host.location)!, /^gz1\./);
+      assert.deepEqual(parseState(stateParameter(host.location)), { v: 1, views: { ...state.views, '/nuvexa': { open: true } } });
+      assert.equal(host.location.searchParams.get('colors'), url.searchParams.get('colors'));
+    }
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else Reflect.deleteProperty(globalThis, 'window');
+  }
+});
 
 test('links round trip Unicode, views, arrays, and errors without executable data', () => {
   const state: ViewState = { v: 1, views: { '/': { category: 'Dashboards', query: '青 🎨', limit: 48, open: true } } };
