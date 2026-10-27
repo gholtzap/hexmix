@@ -19,6 +19,7 @@ linkPreviewData('chat', () => ({ conversations: [...conversations], messages, po
  messages = !temporary && activeChat !== null ? conversations.get(activeChat)! : value.messages;
 }, { validate: value => matchesShape(value, { conversations: [['', [{ role: '', text: '' }]]], messages: [{ role: '', text: '' }], power: 1, project: '', temporary: false, draft: '', projects: [''], attachments: [''] }) });
 function openChat(title: string, view = 'chat') {
+    temporary = false;
     if (!conversations.has(title)) conversations.set(title, [
         { role: 'user', text: title },
         { role: 'assistant', text: 'This sample chat is ready for your ideas. Add a message to try the local conversation view.' },
