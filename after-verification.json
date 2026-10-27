@@ -1,0 +1,349 @@
+{
+  "reports": [
+    {
+      "path": "/dashboards/infra-dashboard/flags",
+      "width": 390,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 114,
+            "controls": 18,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/flags",
+      "width": 390,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 114,
+            "controls": 18,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/flags",
+      "width": 1440,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 214,
+            "controls": 33,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/flags",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 214,
+            "controls": 33,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/storage",
+      "width": 390,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 133,
+            "controls": 16,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/storage",
+      "width": 390,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 133,
+            "controls": 16,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/storage",
+      "width": 1440,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 233,
+            "controls": 31,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/storage",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "created-resource",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "created-resource",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 233,
+            "controls": 31,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failures": []
+}
