@@ -6,23 +6,27 @@ const chats = ['Plan the next quarter', 'Ideas for the next project', 'Write a w
 const projects = ['Design studio', 'Team planning', 'Business priorities'];
 type Message = { role: 'user' | 'assistant'; text: string; attachments?: string[] };
 const conversations = new Map<string, Message[]>();
+const conversationProjects = new Map<string, string>();
 let messages: Message[] = [], power = 1, project = '', temporary = false, draft = '';
 let attachments: string[] = [];
 let activeChat: string | null = null;
-linkPreviewData('chat', () => ({ conversations: [...conversations], messages, power, project, temporary, draft, projects, attachments, activeChat }), value => {
+linkPreviewData('chat', () => ({ conversations: [...conversations], messages, power, project, temporary, draft, projects, attachments, activeChat, conversationProjects: [...conversationProjects] }), value => {
  conversations.clear(); for (const [name, thread] of value.conversations) conversations.set(name, thread);
+ conversationProjects.clear(); for (const [name, selected] of value.conversationProjects ?? []) conversationProjects.set(name, selected);
  projects.splice(0, projects.length, ...value.projects); attachments = value.attachments;
  activeChat = typeof value.activeChat === 'string' && conversations.has(value.activeChat) ? value.activeChat : null;
  // Older shared views did not include the active conversation name.
  activeChat ??= [...conversations].find(([, thread]) => JSON.stringify(thread) === JSON.stringify(value.messages))?.[0] ?? null;
  power = value.power; project = value.project; temporary = value.temporary; draft = value.draft;
+ if (activeChat !== null && !conversationProjects.has(activeChat)) conversationProjects.set(activeChat, project);
  messages = !temporary && activeChat !== null ? conversations.get(activeChat)! : value.messages;
-}, { validate: value => matchesShape(value, { conversations: [['', [{ role: '', text: '' }]]], messages: [{ role: '', text: '' }], power: 1, project: '', temporary: false, draft: '', projects: [''], attachments: [''] }) });
+}, { validate: value => matchesShape(value, { conversations: [['', [{ role: '', text: '' }]]], messages: [{ role: '', text: '' }], power: 1, project: '', temporary: false, draft: '', projects: [''], attachments: [''] }) && value && typeof value === 'object' && (!('conversationProjects' in value) || matchesShape(value.conversationProjects, [['','']])) });
 function openChat(title: string, view = 'chat') {
     if (!conversations.has(title)) conversations.set(title, [
         { role: 'user', text: title },
         { role: 'assistant', text: 'This sample chat is ready for your ideas. Add a message to try the local conversation view.' },
     ]);
+    project = conversationProjects.get(title) ?? "";
     activeChat = title;
     messages = conversations.get(title);
     draft = '';
@@ -42,7 +46,19 @@ function saveChat() {
     }
     conversations.delete(activeChat);
     conversations.set(activeChat, messages);
+    conversationProjects.set(activeChat, project);
 }
+function assignProject(name: string) {
+    project = name;
+    if (!temporary && activeChat !== null) conversationProjects.set(activeChat, name);
+}
+export function openProjects() {
+    rememberSharedDialog("Projects");
+    dialog("Projects", projects.map(name => `<button class="row" data-project-demo="${esc(name)}">${esc(name)}</button>`).join(""), panel => {
+        panel.querySelectorAll<HTMLElement>("[data-project-demo]").forEach(button => { button.onclick = () => { assignProject(button.dataset.projectDemo); panel.close(); navigate("work"); }; });
+    });
+}
+
 function attachmentMarkup(names: unknown) {
     return Array.isArray(names) ? names.filter(name => typeof name === 'string').map(name => `<span class="attachment">${esc(name)}</span>`).join('') : '';
 }
@@ -131,7 +147,7 @@ export function chatPage(view = 'chat') {
             const renderAttachments = () => { main.querySelector<HTMLElement>('.chat-input-area > .attachments').innerHTML = attachmentMarkup(attachments); };
             fileInput.onchange = () => { attachments.push(...[...fileInput.files].map(file => file.name)); renderAttachments(); };
             renderAttachments();
-            function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { project = b.dataset.select; main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
+            function chooseProject() { rememberSharedDialog('chooseProject'); dialog('Choose project', projects.map(p => `<button class="row" data-select="${esc(p)}">${icon('folder')}${esc(p)}</button>`).join(''), d => d.querySelectorAll<HTMLElement>('[data-select]').forEach(b => b.onclick = () => { assignProject(b.dataset.select); main.querySelector<HTMLElement>('.project-badge').textContent = project; d.close(); })); }
             registerSharedDialog('dictate', value => dictate(Boolean(value)), value => typeof value === 'boolean');
             registerSharedDialog('chooseProject', () => chooseProject(), value => value === null);
             const openAddPage = () => { rememberSharedDialog('addPage'); return dialog('Add a page', '<form><label class="field-label" for="page-url">Page URL</label><input id="page-url" class="field" type="url" required placeholder="https://example.com"><div class="actions"><button class="pill primary">Add page</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const url = d.querySelector<HTMLInputElement>('input').value; input.value = `Review this page: ${url}`; updateSend(); d.close(); input.focus(); }); };
@@ -174,9 +190,9 @@ export function chatPage(view = 'chat') {
             document.querySelector<HTMLElement>('[data-new-chat]').onclick = () => newChat(view);
             document.querySelector<HTMLElement>('[data-dot]').onclick = () => contextDialog();
             renderRecents();
-            document.querySelectorAll<HTMLElement>('[data-project]').forEach(b => b.onclick = () => { project = b.dataset.project; main.querySelector<HTMLElement>('.project-badge').textContent = project; input.focus(); });
+            document.querySelectorAll<HTMLElement>('[data-project]').forEach(b => b.onclick = () => { assignProject(b.dataset.project); main.querySelector<HTMLElement>('.project-badge').textContent = project; input.focus(); });
             const openNewProject = () => { rememberSharedDialog('newProject'); return dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const name = d.querySelector<HTMLInputElement>('input').value.trim(); if (!name)
-                return; projects.push(name); project = name; d.close(); navigate(view); }); };
+                return; projects.push(name); assignProject(name); d.close(); navigate(view); }); };
             registerSharedDialog('newProject', () => openNewProject(), value => value === null);
             document.querySelector<HTMLElement>('[data-new-project]').onclick = openNewProject;
             document.querySelector<HTMLElement>('[data-chat-options]').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Search chats', action: searchChats }, { label: 'New chat', action: () => newChat(view) }]);
