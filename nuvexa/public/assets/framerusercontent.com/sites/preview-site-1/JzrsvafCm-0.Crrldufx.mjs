@@ -1,1 +1,0 @@
-import{t as e}from"./rolldown-runtime.Dh6celcD.mjs";var t,n;e((()=>{t=`Lies die Geschichte`,n={exports:{v0:{type:`variable`,annotations:{framerContractVersion:`1`}},__FramerMetadata__:{type:`variable`}}}}))();export{n as __FramerMetadata__,t as v0};
