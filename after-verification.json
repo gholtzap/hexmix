@@ -1,0 +1,629 @@
+{
+  "reports": [
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 37,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 37,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 125,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 125,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 84,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 83,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 84,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 83,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "light",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 85,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 84,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "passed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 85,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 84,
+            "controls": 15,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failures": []
+}

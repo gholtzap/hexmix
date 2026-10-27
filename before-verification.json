@@ -1,0 +1,810 @@
+{
+  "reports": [
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 38,
+            "controls": 9,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 126,
+            "controls": 37,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 152,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 152,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 152,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 152,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(16) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(17) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(18) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              }
+            ],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 170,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(16) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(17) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(18) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              }
+            ],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 170,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "focused-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "focused-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(16) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(17) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(18) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              }
+            ],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 170,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "dismissed-tooltip",
+          "surface": "preview",
+          "report": {
+            "findings": [
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(16) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(17) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              },
+              {
+                "rule": "text-contrast",
+                "selector": "html > body:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > aside:nth-of-type(1) > nav:nth-of-type(1) > button:nth-of-type(18) > span:nth-of-type(2)",
+                "message": "Expected text contrast of at least 4.5:1. Found contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element.",
+                "actual": "contrast could not be measured: Element's background color could not be determined because it's partially obscured by another element",
+                "expected": "text contrast of at least 4.5:1",
+                "fix": "Use a measurable background or review the text and background. Record a scoped exception with a reason after review.",
+                "status": "unresolved",
+                "requiredContrastRatio": 4.5
+              }
+            ],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 170,
+            "controls": 32,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 390,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/ai-chatbot",
+      "width": 1440,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 390,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    },
+    {
+      "path": "/tervix/demo",
+      "width": 1440,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n",
+      "errors": []
+    }
+  ]
+}
