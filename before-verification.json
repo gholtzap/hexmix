@@ -1,0 +1,206 @@
+{
+  "reports": [
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 390,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "project-details",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "project-details",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 27,
+            "controls": 1,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 390,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "project-details",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "project-details",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 27,
+            "controls": 1,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 1440,
+      "theme": "light",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "project-details",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "project-details",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 27,
+            "controls": 1,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 1440,
+      "theme": "dark",
+      "actions": "failed",
+      "scans": [
+        {
+          "state": "project-details",
+          "surface": "editor",
+          "report": {
+            "findings": []
+          }
+        },
+        {
+          "state": "project-details",
+          "surface": "preview",
+          "report": {
+            "findings": [],
+            "suppressed": [],
+            "accessibilityCoverage": {
+              "pageRules": [
+                "accessible-name",
+                "form-label",
+                "label-consistency",
+                "control-state",
+                "keyboard-operation",
+                "target-size",
+                "aria-reference",
+                "icon-button-tooltip",
+                "dialog-focus"
+              ],
+              "interactionRules": "not tested without an interaction plan"
+            },
+            "elements": 27,
+            "controls": 1,
+            "insetControls": 0,
+            "numericElements": 0,
+            "alignmentGroups": 0,
+            "radiusContracts": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 390,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'acme-web'\n- 'atlas-commerce'\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 390,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'acme-web'\n- 'atlas-commerce'\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 1440,
+      "theme": "light",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'acme-web'\n- 'atlas-commerce'\n",
+      "errors": []
+    },
+    {
+      "path": "/dashboards/infra-dashboard/speed-insights",
+      "width": 1440,
+      "theme": "dark",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'acme-web'\n- 'atlas-commerce'\n",
+      "errors": []
+    }
+  ]
+}
