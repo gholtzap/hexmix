@@ -11,8 +11,12 @@ const compiled = new Map(Object.values(files).map(source => [source, readFileSyn
 await loadBindings();
 for (const [source, code] of compiled) {
   const module = ts.isExternalModule(ts.createSourceFile(source, code, ts.ScriptTarget.ES2022));
-  compiled.set(source, (await minify(code, {module, compress:false, mangle:false})).code);
+  compiled.set(source, (await minify(code.replace(/from (['"])fflate\1/g, "from './vendor/fflate.js'"), {module, compress:false, mangle:false})).code);
 }
+// Serve the same MIT-licensed codec to unbundled preview modules and Next.js.
+mkdirSync(new URL('../public/vendor/', import.meta.url), {recursive:true});
+writeFileSync(new URL('../public/vendor/fflate.js', import.meta.url), (await minify(readFileSync(new URL('../node_modules/fflate/esm/browser.js', import.meta.url), 'utf8'), {module:true})).code);
+writeFileSync(new URL('../public/vendor/fflate-LICENSE.txt', import.meta.url), readFileSync(new URL('../node_modules/fflate/LICENSE', import.meta.url)));
 for (const [output, source] of Object.entries(files)) {
   const path = new URL('../'+output, import.meta.url);
   mkdirSync(new URL('.', path), {recursive:true});

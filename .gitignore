@@ -75,3 +75,5 @@ test-results/
 /public/share-state.js
 /public/preview-view.js
 /public/dashboard-previews/workspace/shared.js
+/public/vendor/fflate.js
+/public/vendor/fflate-LICENSE.txt
