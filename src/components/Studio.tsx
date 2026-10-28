@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { usePreviewToolbarClearance } from '@/hooks/usePreviewToolbarClearance';
 import { useLinkState } from "@/hooks/useLinkState";
 import { readField, sharedState, stateScope, stateWindow, type ViewState } from "../../browser/public/share-state";
 import { captureSharedViews, createSharedLink } from "@/lib/shared-link";
 import { oneOf } from "@/lib/link-state";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowDownToLine,
   ArrowLeft,
@@ -30,7 +30,6 @@ import {
   SlidersHorizontal,
   Sun,
   Type,
-  UnlockKeyhole,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -44,23 +43,11 @@ import PalettePanel, { preloadPalettePanel } from "./PalettePanel";
 import {copyPalette,copyTheme,readTheme,themePrompt,type Theme,type ThemeImport} from "@/lib/theme-transfer";
 import { useSavedPalettes } from "@/hooks/useSavedPalettes";
 import PreviewThumbnail from "./PreviewThumbnail";
-import SiteSwitcher from "./SiteSwitcher";
+import ColorToolbarFallback from "./ColorToolbarFallback";
+import SiteSwitcher from "./DeferredSiteSwitcher";
+import { useDeferredComponent } from "@/hooks/useDeferredComponent";
 import {previewCatalog,previewHref} from "@/lib/preview-catalog";
-import { PopoverAnchor } from "./ui/popover";
 import {
-  ColorPicker,
-  ColorPickerArea,
-  ColorPickerContent,
-  ColorPickerCopy,
-  ColorPickerEyeDropper,
-  ColorPickerFields,
-  ColorPickerPanel,
-  ColorPickerSlider,
-  ColorPickerSwatches,
-  ColorPickerTrigger,
-} from "./reui/color-picker";
-import {
-  contrast,
   surfaceForegrounds,
   isPalette,
   isDarkPalette,
@@ -70,7 +57,6 @@ import {
   paletteExportFormats,
   paletteForMode,
   paletteQuery,
-  quickPickPresets,
   randomPalette,
   readPalette,
   roles,
@@ -81,6 +67,8 @@ import {
 } from "@/lib/palette";
 import { fonts, type FontName } from "@/lib/fonts";
 import { isElementSelection, isElementRole, maxElementRoles, maxElementRolesLength, readElementRoles, setElementRoles, type ElementRole, type ElementSelection } from "@/lib/element-roles";
+
+const loadColorToolbar = () => import("./ColorToolbar");
 
 type StudioProps = { children?: (state: { palette: Palette; heading: FontName; body: FontName }) => ReactNode; preview?: string; defaultPalette?: Palette; waitForPreview?: boolean; capture?: { id: string; name: string } };
 const siteLogoSelectors: Record<string, string> = {
@@ -122,6 +110,7 @@ function elementSwatchStyle(selection: ElementSelection, color: string, recolor 
 }
 
 export default function Studio({ children, preview = "/preview/index.html", defaultPalette = defaultDarkPalette, waitForPreview = false, capture }: StudioProps) {
+  const query = useSearchParams();
   useVisibleViewport();
   const toolsTrigger = useRef<HTMLButtonElement>(null);
   const [toolsOpen, setToolsOpen] = useLinkState("Studio.toolsOpen", false);
@@ -136,21 +125,29 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     window.addEventListener('pointerdown', capture, true); window.addEventListener('keydown', capture, true);
     return () => { window.removeEventListener('pointerdown', capture, true); window.removeEventListener('keydown', capture, true); };
   }, []);
-  const [history, setHistory] = useLinkState<Palette[]>("Studio.Studio.history", [defaultPalette], { validate: value => Array.isArray(value) && value.length > 0 && value.every(isPalette) });
+  const [history, setHistory] = useLinkState<Palette[]>("Studio.Studio.history", () => [readPalette(query?.toString() ?? "") ?? defaultPalette], { validate: value => Array.isArray(value) && value.length > 0 && value.every(isPalette) });
   const [index, setIndex] = useLinkState("Studio.Studio.index", 0, { validate: value => Number.isSafeInteger(value) && Number(value) >= 0 });
   const [previewPalette, setPreviewPalette] = useState<Palette | null>(null);
+  const { Component: ColorToolbar, error: colorLoadError, loading: colorLoading, request: requestColorToolbar } = useDeferredComponent(loadColorToolbar);
+  const [colorToolbarMounted, setColorToolbarMounted] = useState(false);
+  const colorToolbarReady = useCallback(() => setColorToolbarMounted(true), []);
   const [activeColor, setActiveColor] = useLinkState<Role | null>("Studio.Studio.activeColor", null, { validate: oneOf(null, ...roles) });
+  function openColor(role: Role) {
+    setActiveColor(role);
+    setPanel(null);
+    setPreviewPalette(null);
+  }
+  useEffect(() => { if (activeColor) requestColorToolbar(); }, [activeColor, requestColorToolbar]);
   const palette = previewPalette ?? history[Math.min(index, history.length - 1)];
   const [locked, setLocked] = useLinkState<Role[]>("Studio.Studio.locked", [], { validate: value => Array.isArray(value) && value.every(role => roles.includes(role)) });
-  const [heading, setHeading] = useState<FontName>("System");
-  const [body, setBody] = useState<FontName>("System");
+  const [heading, setHeading] = useState<FontName>(() => { const name = query?.get("heading"); return name && Object.hasOwn(fonts, name) ? name as FontName : "System"; });
+  const [body, setBody] = useState<FontName>(() => { const name = query?.get("body"); return name && Object.hasOwn(fonts, name) ? name as FontName : "System"; });
   const [panel, setPanel] = useLinkState<"fonts" | "saved" | null>("Studio.Studio.panel", null, { validate: oneOf(null, "fonts", "saved") });
-  const [embedded, setEmbedded] = useState(false);
-  const [comparisonToolbar, setComparisonToolbar] = useState(false);
+  const [embedded, setEmbedded] = useState(() => ['1', 'toolbar'].includes(query?.get('embed') ?? ''));
+  const [comparisonToolbar, setComparisonToolbar] = useState(() => query?.get('embed') === 'toolbar');
   const comparisonState = useRef('');
   const [collapsed, setCollapsed] = useLinkState("Studio.Studio.collapsed", false);
   const [notice, setNotice] = useState("");
-  const swatchTooltip = useId();
   const [exportOpen, setExportOpen] = useLinkState("Studio.Studio.exportOpen", false);
   const [pasteUndo, setPasteUndo] = useLinkState<Theme | null>("Studio.pasteUndo", null, { validate: value => {
     if (value === null) return true;
@@ -636,7 +633,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
     setSelection(null);
   }
   return (
-    <main className={collapsed || embedded ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} data-comparison-toolbar={comparisonToolbar || undefined} style={{ visibility: storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
+    <main className={collapsed || embedded ? "studio studio-collapsed" : "studio"} data-app-ready={storageReady || undefined} data-comparison-toolbar={comparisonToolbar || undefined} style={{ visibility: children || storageReady ? "visible" : "hidden", background: children ? "var(--color-background)" : palette.background, "--toolbar-height": `${toolbarHeight}px` } as CSSProperties}>
       {children ? children({ palette, heading, body }) : showCapture && capture && capturePreview ? <div className="website-frame remote-preview" data-preview-capture={capture.id}>
         <a className="remote-preview-image" href={previewHref(`${capturePreview.path}/overview`,palette,heading,body,elementRoles)} aria-label={`Explore ${capture.name} pages`}><PreviewThumbnail id={capture.id} palette={palette} /></a>
         <div className="remote-preview-copy"><h1>{capture.name}</h1><nav className="remote-preview-links" aria-label={`${capture.name} pages`}>{[["overview","Explore pages"],["demo","Try the product"],["contact","Plan a session"]].map(([path,label])=><a key={path} href={previewHref(`${capturePreview.path}/${path}`,palette,heading,body,elementRoles)}>{label}</a>)}</nav></div>
@@ -729,108 +726,7 @@ export default function Studio({ children, preview = "/preview/index.html", defa
             role="region"
             aria-label="Color toolbar"
           >
-            <div className="toolbar-colors">
-              {roles.map((role) => (
-                <div className="toolbar-color" key={role}>
-                  <ColorPicker
-                    value={palette[role]}
-                    format="hex"
-                    open={activeColor === role}
-                    onOpenChange={(open) => {
-                      setActiveColor((current) => open ? role : current === role ? null : current);
-                      setPreviewPalette(null);
-                      if (open) setPanel(null);
-                    }}
-                    onValueChange={(value) => {
-                      const next = { ...history[index], [role]: value };
-                      if (isPalette(next)) setPreviewPalette(next);
-                    }}
-                    onValueCommit={(value) => {
-                      const next = { ...history[index], [role]: value };
-                      if (isPalette(next)) apply(next);
-                    }}
-                    aria-label={`${role[0].toUpperCase() + role.slice(1)} color`}
-                  >
-                    <PopoverAnchor virtualRef={{ current: toolbarElement }} />
-                    <ColorPickerTrigger
-                      className="color-trigger"
-                      aria-describedby={`${swatchTooltip}-${role}`}
-                      style={{
-                        background: palette[role],
-                        color:
-                          contrast(palette[role], "#ffffff") >=
-                          contrast(palette[role], "#000000")
-                            ? "#ffffff"
-                            : "#000000",
-                      }}
-                    >
-                      <span className="color-trigger-name">{role === "background" ? <><span className="background-name-wide">Background</span><span className="background-name-narrow" aria-hidden="true" /></> : role === "secondary" ? <>Secon<wbr />dary</> : role === "primary" ? <>Pri<wbr />mary</> : role === "accent" ? <>Acc<wbr />ent</> : role[0].toUpperCase() + role.slice(1)}</span>
-                      {locked.includes(role) && <LockKeyhole size={12} aria-hidden="true" />}
-                      <span className="control-tooltip swatch-tooltip" role="tooltip" id={`${swatchTooltip}-${role}`}>
-                        {role[0].toUpperCase() + role.slice(1)} color
-                      </span>
-                    </ColorPickerTrigger>
-                    <ColorPickerContent
-                      className="color-picker-content"
-                      side="top"
-                      sideOffset={16}
-                      align="center"
-                      onCloseAutoFocus={(event) => {
-                        if (panel || (activeColor && activeColor !== role)) event.preventDefault();
-                      }}
-                    >
-                      <div className="color-picker-heading">
-                        <h2>{role[0].toUpperCase() + role.slice(1)}</h2>
-                        <IconButton
-                          className="icon-button"
-                          aria-pressed={locked.includes(role)}
-                          title={`${locked.includes(role) ? "Unlock" : "Lock"} ${role}`}
-                          aria-label={`${locked.includes(role) ? "Unlock" : "Lock"} ${role}`}
-                          onClick={() =>
-                            setLocked(
-                              locked.includes(role)
-                                ? locked.filter((item) => item !== role)
-                                : [...locked, role],
-                            )
-                          }
-                        >
-                          {locked.includes(role) ? (
-                            <LockKeyhole size={11} />
-                          ) : (
-                            <UnlockKeyhole size={11} />
-                          )}
-                        </IconButton>
-                        <IconButton
-                          className="icon-button"
-                          aria-label="Close color picker"
-                          onClick={() => {
-                            setActiveColor(null);
-                            setPreviewPalette(null);
-                          }}
-                        >
-                          <X size={16} />
-                        </IconButton>
-                      </div>
-                      <ColorPickerPanel>
-                        <ColorPickerArea />
-                        <div className="flex items-center gap-3">
-                          <ColorPickerEyeDropper className="icon-button" />
-                          <ColorPickerSlider channel="hue" className="flex-1" />
-                          <ColorPickerCopy className="icon-button" />
-                        </div>
-                        <ColorPickerFields formats={["hex", "rgb", "hsl"]} />
-                        <ColorPickerSwatches
-                          colors={quickPickPresets.map((preset) => ({
-                            value: preset.colors[role],
-                            label: preset.name,
-                          }))}
-                        />
-                      </ColorPickerPanel>
-                    </ColorPickerContent>
-                  </ColorPicker>
-                </div>
-              ))}
-            </div>
+            {ColorToolbar && (colorToolbarMounted || activeColor) ? <ColorToolbar palette={palette} committedPalette={history[index]} locked={locked} activeColor={activeColor} toolbarElement={toolbarElement} panel={panel} setActiveColor={setActiveColor} setPreviewPalette={setPreviewPalette} setPanel={setPanel} setLocked={setLocked} apply={apply} onReady={colorToolbarReady} /> : <ColorToolbarFallback palette={palette} locked={locked} activeColor={activeColor} toolbarElement={toolbarElement} onOpen={openColor} onClose={() => setActiveColor(null)} onCopy={color => void copy(color, "Color copied.")} error={colorLoadError} loading={colorLoading} onRetry={requestColorToolbar} />}
             <div className="toolbar-transfer" role="group" aria-label="Palette clipboard">
               <IconButton className="icon-button" aria-label="Copy palette" onClick={()=>void copy(copyPalette(palette), "Palette copied.")}><Copy size={17}/></IconButton>
               <IconButton className="icon-button" aria-label="Paste palette or theme" onClick={()=>void pasteClipboard()}><ClipboardPaste size={17}/></IconButton>

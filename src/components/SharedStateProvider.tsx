@@ -1,13 +1,26 @@
 "use client";
 import { useEffect, useState, type ReactNode } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { installSnapshot, publishSnapshotBase, snapshotId, emptyState } from '../../browser/public/share-state';
 import { startViewCapture } from "../../browser/public/preview-view";
 import { parseSnapshot } from '@/lib/shared-snapshot';
 
 export default function SharedStateProvider({ children }: { children: ReactNode }) {
+  const path = usePathname() ?? '';
+  return path.startsWith('/dashboard-previews/')
+    ? <PreviewState>{children}</PreviewState>
+    : <SnapshotState>{children}</SnapshotState>;
+}
+
+function PreviewState({ children }: { children: ReactNode }) {
+  // The editor supplies the snapshot base to its preview frames.
+  useEffect(() => startViewCapture(), []);
+  return children;
+}
+
+function SnapshotState({ children }: { children: ReactNode }) {
   const requestedId = useSearchParams()?.get('snapshot') ?? '';
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(!requestedId);
   const [error, setError] = useState('');
   useEffect(() => {
     let active = true;

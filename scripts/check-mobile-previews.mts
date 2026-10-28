@@ -13,6 +13,7 @@ try{
   await page.goto(`${base}/${route}?colors=${colors}`);await page.locator('iframe[data-preview-ready=true]').waitFor();
   const frame=page.frames().find(f=>f.parentFrame());assert(frame);
   await frame.waitForFunction(()=>[...document.styleSheets].some(s=>s.href?.endsWith('/mobile-preview.css')));
+  await frame.waitForFunction(expected=>document.documentElement.dataset.contrastReady==='true'&&document.documentElement.dataset.contrastPalette===expected,colors.split('-').map(color=>'#'+color).join('|'));
   await frame.evaluate(async()=>{await document.fonts.ready;await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));});
   const measure=()=>frame.evaluate(()=>{
    const controls=[...document.querySelectorAll<HTMLElement>('button,[role=button],[role=menuitem],[role=tab],summary,select,nav a,header a,a[class*="button"],a[class*="btn"],a[class*="inline-flex"]')].filter(e=>e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})).map(e=>{const r=e.getBoundingClientRect();return{name:(e.getAttribute('aria-label')||e.innerText).trim().slice(0,80),width:r.width,height:r.height,x:r.x,y:r.y};}).filter(r=>r.width&&r.height&&r.y>=0&&r.y<innerHeight&&r.x>=0&&r.x<innerWidth);

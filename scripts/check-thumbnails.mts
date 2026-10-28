@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import sharp from 'sharp';
-import { initialPalette, paletteQuery } from '../src/lib/palette.ts';
+import { defaultDarkPalette, initialPalette, paletteQuery } from '../src/lib/palette.ts';
 import { previewCatalog } from '../src/lib/preview-catalog.ts';
 
 const base = process.env.APP_URL || 'http://127.0.0.1:3000';
@@ -32,10 +32,13 @@ try {
   await page.locator('[data-app-ready]').waitFor();
   for (const preview of previewCatalog) {
     const thumbnail = page.locator(`[data-capture="${preview.id}"]`);
-    assert.equal(await thumbnail.locator('rect').count(), 0, 'The capture palette must use the original image');
+    await thumbnail.scrollIntoViewIfNeeded();
+    await thumbnail.locator('image[href]').waitFor({ state: 'attached' });
+    assert.ok(await thumbnail.locator('.thumbnail-placeholder rect').count(), 'The capture must have a placeholder while the image loads');
     await thumbnail.locator('image').evaluate(async node => {
       const image = new Image(); image.src = node.getAttribute('href'); await image.decode();
     });
+    await thumbnail.locator('image[opacity="1"]').waitFor();
     const screenshot = await captureThumbnail(page, thumbnail);
     const { data, info } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
     const original = await sharp(await readFile(`public/preview-captures/${preview.id}/light/original.webp`)).resize(info.width, info.height, { fit: 'fill' }).removeAlpha().raw().toBuffer();
@@ -56,7 +59,7 @@ try {
     await page.getByRole('textbox', { name: 'Hex', exact: true }).fill(value);
     await page.getByRole('textbox', { name: 'Hex', exact: true }).press('Enter');
     await page.getByRole('button', { name: /^Close(?: color picker)?$/ }).click();
-    assert.equal(await target.locator('rect').count(), 1, 'A changed palette must apply the color filter');
+    assert.equal(await target.locator('rect[filter]').count(), 1, 'A changed palette must apply the color filter');
     const screenshot = await captureThumbnail(page, target);
     const current = await sharp(screenshot).removeAlpha().raw().toBuffer();
     const changed = current.reduce((sum, byte, index) => sum + (byte !== previous[index] ? 1 : 0), 0);
@@ -73,6 +76,19 @@ try {
     await page.locator(`[data-capture="${preview.id}"]`).screenshot({ path: `${directory}/${preview.id}-dark.png` });
   }
   await page.screenshot({ path: `${directory}/dark-desktop.png` });
+  const fallback = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await fallback.route('**/preview-captures/**', route => route.abort());
+  await fallback.goto(`${base}?${paletteQuery(defaultDarkPalette)}`, { waitUntil: 'domcontentloaded' });
+  await fallback.locator('[data-app-ready]').waitFor();
+  const waiting = fallback.locator('[data-capture="nuvexa"]');
+  assert.equal(await waiting.locator('.thumbnail-placeholder rect').first().getAttribute('fill'), defaultDarkPalette.background);
+  const fallbackImage = await captureThumbnail(fallback, waiting);
+  await writeFile(`${directory}/nuvexa-loading.png`, fallbackImage);
+  const { data: fallbackPixels, info: fallbackInfo } = await sharp(fallbackImage).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const pixel = (Math.floor(fallbackInfo.height * .6) * fallbackInfo.width + Math.floor(fallbackInfo.width * .8)) * fallbackInfo.channels;
+  const expected = defaultDarkPalette.secondary.slice(1).match(/../g)!.map(channel => parseInt(channel, 16));
+  assert.deepEqual([...fallbackPixels.subarray(pixel, pixel + 3)], expected, 'A failed image download must leave the colored placeholder visible');
+  await fallback.close();
   assert.deepEqual(errors, []);
 } finally {
   await browser.close();

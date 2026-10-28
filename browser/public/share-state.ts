@@ -70,6 +70,8 @@ export function matchesShape(value: unknown, sample: unknown): boolean {
 
 let baseline = emptyState();
 let baselineId = '';
+let cachedParameter: string | null | undefined;
+let cachedPatch = emptyState();
 
 export function stateWindow(): Window {
   let host: Window = window;
@@ -83,19 +85,26 @@ export function stateScope() {
   return [stateWindow().location.pathname, ...parts].join('|');
 }
 export function installSnapshot(id: string, state: ViewState) { if (id !== baselineId) window.hexmixPrivateViews = {}; baselineId = id; baseline = state; }
-export function readViewState(): ViewState {
+function mergedViewState(): ViewState {
   const host = stateWindow();
   // Each iframe has its own module instance. The host supplies the snapshot base.
   const base = host.hexmixSharedBase ?? baseline;
-  const patch = parseState(stateParameter(new URL(host.location.href)));
+  const parameter = stateParameter(new URL(host.location.href));
+  // Every state hook reads the same URL after an update. Decode it once.
+  if (parameter !== cachedParameter) { cachedPatch = parseState(parameter); cachedParameter = parameter; }
+  const patch = cachedPatch;
   const views = { ...base.views };
   for (const [scope, fields] of Object.entries(patch.views)) views[scope] = { ...views[scope], ...fields };
   return { v: 1, views };
 }
+export function readViewState(): ViewState { return structuredClone(mergedViewState()); }
 export function publishSnapshotBase() { window.hexmixSharedBase = baseline; }
 export function readField(scope: string, key: string): Json | undefined {
   const fields = stateWindow().hexmixPrivateViews?.[scope];
-  return fields && Object.hasOwn(fields, key) ? fields[key] : readViewState().views[scope]?.[key];
+  if (fields && Object.hasOwn(fields, key)) return fields[key];
+  const value = mergedViewState().views[scope]?.[key];
+  // A caller can edit its value without changing the cached URL state.
+  return value && typeof value === 'object' ? structuredClone(value) : value;
 }
 export function privateField(scope: string, key: string) { return Object.hasOwn(stateWindow().hexmixPrivateViews?.[scope] ?? {}, key); }
 export function registerRedactor(scope: string, key: string, redact: (value: unknown) => unknown) {

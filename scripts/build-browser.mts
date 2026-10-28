@@ -11,7 +11,7 @@ const compiled = new Map(Object.values(files).map(source => [source, readFileSyn
 await loadBindings();
 for (const [source, code] of compiled) {
   const module = ts.isExternalModule(ts.createSourceFile(source, code, ts.ScriptTarget.ES2022));
-  compiled.set(source, (await minify(code.replace(/from (['"])fflate\1/g, "from './vendor/fflate.js'"), {module, compress:false, mangle:false})).code);
+  compiled.set(source, (await minify(code.replace(/from (['"])fflate\1/g, "from './vendor/fflate.js'"), {module, compress:true, mangle:true})).code);
 }
 // Serve the same MIT-licensed codec to unbundled preview modules and Next.js.
 mkdirSync(new URL('../public/vendor/', import.meta.url), {recursive:true});

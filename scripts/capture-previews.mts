@@ -8,7 +8,7 @@ import { defaultDarkPalette, initialPalette, paletteQuery, roles } from '../src/
 
 const base = process.env.APP_URL || 'http://127.0.0.1:3000';
 const width = 1200, height = 750;
-const compress = input => sharp(input).resize(720, 450).webp({ lossless: true }).toBuffer();
+const compress = (input, original = false) => sharp(input).resize(720, 450).webp(original ? { quality: 80, effort: 6 } : { lossless: true }).toBuffer();
 const requested = process.argv.slice(2);
 assert.ok(requested.every(id => previewCatalog.some(preview => preview.id === id)), "Unknown preview ID");
 const targets = requested.length ? previewCatalog.filter(preview => requested.includes(preview.id)) : previewCatalog;
@@ -90,7 +90,7 @@ try {
       }, { png: image.toString('base64'), palette, roles, width, height });
       assert.ok(layers.changed > width * height / 1000, `${preview.id}: capture must contain palette-colored pixels`);
       assert.ok(layers.meanError < 3, `${preview.id}: reconstruction must retain the captured colors`);
-      await writeFile(`${directory}/original.webp`, await compress(image));
+      await writeFile(`${directory}/original.webp`, await compress(image, true));
       await writeFile(`${directory}/fixed.webp`, await compress(Buffer.from(layers.fixed, 'base64')));
       for (const [i, role] of roles.entries()) await writeFile(`${directory}/${role}.webp`, await compress(Buffer.from(layers.masks[i], 'base64')));
       reports.push({ id: preview.id, mode, captureWidth: width, captureHeight: height, width: 720, height: 450, meanError: layers.meanError, recoloredPixels: layers.changed });

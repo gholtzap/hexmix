@@ -50,7 +50,12 @@
     "test:mobile": "node scripts/check-mobile.mts",
     "test:mobile:previews": "node scripts/check-mobile-previews.mts",
     "test:sharing": "node scripts/check-sharing.mts",
-    "test:url-compression": "node scripts/check-url-compression.mts"
+    "test:url-compression": "node scripts/check-url-compression.mts",
+    "test:performance": "node scripts/check-performance.mts",
+    "test:performance:loading": "node scripts/check-performance-loading.mts",
+    "test:performance:state": "node scripts/check-performance-state.mts",
+    "test:palettes:lazy": "node scripts/check-lazy-palettes.mts",
+    "test:performance:errors": "node scripts/check-deferred-errors.mts"
   },
   "dependencies": {
     "@aicss/react": "0.1.3",
@@ -61,7 +66,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fflate": "^0.8.2",
-    "lucide-react": "^0.468.0",
+    "lucide-react": "^1.62.0",
     "next": "^16.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

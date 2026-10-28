@@ -2,10 +2,57 @@ import test from 'node:test';
 import { runInNewContext } from 'node:vm';
 import assert from 'node:assert/strict';
 import { gzipSync } from 'fflate';
-import { encodeState, parseState, matchesShape, redactFields, isJson, maxStateBytes, stateParameter, writeField, type ViewState } from '../../browser/public/share-state.ts';
+import { encodeState, parseState, matchesShape, redactFields, isJson, maxStateBytes, stateParameter, writeField, readField, readViewState, sharedState, type ViewState } from '../../browser/public/share-state.ts';
 
 const legacyEncode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
 const compressedEncode = (value: Uint8Array) => 'gz1.' + Buffer.from(value).toString('base64url');
+
+test('editing a returned field cannot change cached state or prevent its next write', () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    const state: ViewState = { v: 1, views: { '/': { items: [{ name: 'original' }] } } };
+    const host = Object.assign(new EventTarget(), { location: new URL(`https://hexmix.test/?state=${encodeState(state)}`), parent: undefined as unknown, history: { state: null, replaceState(_state: unknown, _title: string, next: URL) { host.location = next; } } });
+    host.parent = host;
+    Object.defineProperty(globalThis, 'window', { value: host, configurable: true });
+    const items = readField('/', 'items') as { name: string }[];
+    items[0].name = 'edited';
+    assert.deepEqual(readField('/', 'items'), [{ name: 'original' }]);
+    writeField('/', 'items', items);
+    assert.deepEqual(parseState(stateParameter(host.location)).views['/'].items, items);
+    const copy = readViewState();
+    (copy.views['/'].items as { name: string }[])[0].name = 'outside';
+    assert.deepEqual(readField('/', 'items'), [{ name: 'edited' }]);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else Reflect.deleteProperty(globalThis, 'window');
+  }
+});
+
+test('state readers decode once per URL and retain other scopes after a share', () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const decode = globalThis.atob;
+  let decodes = 0;
+  try {
+    const state: ViewState = { v: 1, views: { '/': { value: 'first' }, '/avenlo': { value: 'other page' } } };
+    const host = { location: new URL(`https://hexmix.test/?state=${encodeState(state)}`), parent: undefined as unknown };
+    host.parent = host;
+    Object.defineProperty(globalThis, 'window', { value: host, configurable: true });
+    globalThis.atob = value => { decodes++; return decode(value); };
+    for (let i = 0; i < 100; i++) assert.equal(readField('/', 'value'), 'first');
+    assert.equal(decodes, 1);
+    assert.deepEqual(sharedState().views, { '/': { value: 'first' } });
+    assert.equal(readField('/avenlo', 'value'), 'other page');
+    host.location.searchParams.set('state', encodeState({ v: 1, views: { '/': { value: 'second' } } }));
+    assert.equal(readField('/', 'value'), 'second');
+    assert.equal(decodes, 2);
+    host.location.search = '';
+    assert.equal(readField('/', 'value'), undefined);
+  } finally {
+    globalThis.atob = decode;
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else Reflect.deleteProperty(globalThis, 'window');
+  }
+});
 
 test('compressed links keep every view and field and reduce repeated selector data', () => {
   const state: ViewState = { v: 1, views: Object.fromEntries(['/avenlo', '/nuvexa', '/nuvexa|Page preview'].map(scope => [scope, {

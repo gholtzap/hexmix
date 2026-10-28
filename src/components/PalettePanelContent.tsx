@@ -9,6 +9,7 @@ import { samePalette } from "@/lib/palette";
 import { presets, presetForTheme } from "@/lib/palette-presets";
 import PreviewThumbnail from "./PreviewThumbnail";
 import IconButton from "./IconButton";
+import FloatingIconButton from "./FloatingIconButton";
 import { ColorPickerSwatch } from "./reui/color-picker";
 import { Card } from "./ui/card";
 import {
@@ -187,10 +188,10 @@ export default function PalettePanelContent({
                         </div>
                         {value === "saved" && (
                           <div className="palette-card-actions">
-                            <IconButton floatingTooltip className="icon-button" aria-label={`Copy ${item.name}`} onClick={()=>onCopy(item)}><Copy size={17}/></IconButton>
+                            <FloatingIconButton className="icon-button" aria-label={`Copy ${item.name}`} onClick={()=>onCopy(item)}><Copy size={17}/></FloatingIconButton>
                             <DropdownMenu modal={false}>
                               <DropdownMenuTrigger asChild>
-                                <IconButton floatingTooltip className="icon-button palette-more" aria-label={`More actions for ${item.name}`}><MoreHorizontal size={17}/></IconButton>
+                                <FloatingIconButton className="icon-button palette-more" aria-label={`More actions for ${item.name}`}><MoreHorizontal size={17}/></FloatingIconButton>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent className="palette-menu" side="top" sideOffset={8} align="end"
                                 onCloseAutoFocus={(event) => {

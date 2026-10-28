@@ -97,6 +97,7 @@ try {
     assert.deepEqual(current(), shuffled);
     await clickToolbarAction(page, 'Palettes');
     await page.getByRole('tab', { name: 'Saved', exact: true }).click();
+    await page.getByRole('searchbox', { name: 'Search palettes', exact: true }).fill('');
     await page.getByRole('button', { name: 'Apply Home colors', exact: true }).waitFor();
     await context.close();
   }
