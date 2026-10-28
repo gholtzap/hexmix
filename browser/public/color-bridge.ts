@@ -240,6 +240,7 @@
     html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid), html[data-editor-site="nuvexa"] body:has(#hero-dark) .mh-header:not(.mh-solid) nav { background-color: var(--p-background, #fff) !important; }
     html[data-editor-site="nuvexa"] .mh-header a:has(img[data-editor-wordmark]) { filter: none !important; }
     html[data-editor-site="nuvexa"] [data-framer-name="Eyebrow"] { display: none !important; }
+    html[data-editor-site="nuvexa"] [data-framer-name="Customer Stories"] :is([data-framer-name="Card Head"],[data-framer-name="Story Copy"]) { --preview-readable-surface: var(--p-background, #1d1d1b); background: var(--preview-readable-surface) !important; }
     html[data-editor-site="nuvexa"] #hero-dark { --nuvexa-artwork-surface: var(--p-background, #fff); background: var(--nuvexa-artwork-surface) !important; }
     html[data-editor-site="nuvexa"] #hero-dark > [data-framer-name="Image Overlay"] { background: linear-gradient(90deg, var(--nuvexa-artwork-surface) 0 24%, color-mix(in srgb, var(--nuvexa-artwork-surface) 96%, transparent) 48%, color-mix(in srgb, var(--nuvexa-artwork-surface) 34%, transparent) 100%), linear-gradient(0deg, var(--nuvexa-artwork-surface) 0 8%, transparent 36%), linear-gradient(180deg, var(--nuvexa-artwork-surface), transparent 28%) !important; }
     html[data-editor-site="nuvexa"] [data-framer-name="Hero Background Video"] { background-color: var(--p-background) !important; opacity: .88; }
@@ -489,6 +490,9 @@
         if (!mediaPalette)
             return;
         updateAvenloProof();
+        if (site === "nuvexa")
+            for (const content of document.querySelectorAll<HTMLElement>('[data-framer-name="Customer Stories"] :is([data-framer-name="Card Head"],[data-framer-name="Story Copy"])'))
+                content.dataset.previewReadableArtwork = "";
         for (const image of document.images) {
             const imageRole = image.dataset.editorGradientRole;
             image.style.setProperty("--preview-image-background", roles.includes(imageRole) ? `url("${gradient(0, imageRole)}")` : "");
