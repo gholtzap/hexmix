@@ -2,7 +2,7 @@ import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSha
 import { stateWindow } from '../../share-state.ts';
 import { startTask, contextDialog } from './context.js';
 import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
-import { chatPage, searchChats } from './chat.js';
+import { chatPage, searchChats, openProjects } from './chat.js';
 import { spacePage, openImages } from './space.js';
 import { scheduledPage, searchTasks } from './scheduled.js';
 import { pluginsPage } from './plugins.js';
@@ -121,7 +121,6 @@ render(current).catch(() => { document.querySelector<HTMLElement>('#app').innerH
 
 registerSharedDialog("settings", () => settings(), value => value === null);
 
-function openProjects() { rememberSharedDialog('Projects'); return dialog('Projects', '<button class="row" data-project-demo>Design studio</button><button class="row" data-project-demo>Learning journal</button>', d => d.querySelectorAll<HTMLElement>('button[data-project-demo]').forEach(b => b.onclick = () => { d.close(); navigate('work'); })); }
 registerSharedDialog('Projects', () => openProjects(), value => value === null);
 
 function openHelp() { rememberSharedDialog('Help'); return dialog('Help', '<p>Choose a task to get started.</p><div class="actions"><button class="pill" data-help="work">Start a task</button><button class="pill" data-help="space">Create a document</button><button class="pill" data-help="scheduled">Schedule a task</button></div>', d => d.querySelectorAll<HTMLElement>('[data-help]').forEach(b => b.onclick = () => { d.close(); navigate(b.dataset.help); })); }
