@@ -1,5 +1,6 @@
 "use client"
 
+import { copyText } from '@/lib/clipboard';
 import { useLinkState } from "@/hooks/useLinkState";
 
 import { CheckIcon, ChevronDownIcon, CopyIcon, PipetteIcon } from "lucide-react"
@@ -1298,8 +1299,9 @@ export function ColorPicker({
     setFieldsFormat,
     copy: (to = shownFormat) => {
       if (!color) return
-      navigator.clipboard?.writeText(formatColor(color, to)).then(
-        () => {
+      void copyText(formatColor(color, to)).then(
+        (success) => {
+          if (!success) return
           setCopied(to)
           window.clearTimeout(copiedTimer.current)
           copiedTimer.current = window.setTimeout(() => setCopied(null), 1500)

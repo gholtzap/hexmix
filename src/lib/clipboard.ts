@@ -1,8 +1,9 @@
 import {isEditingText} from './input-events.ts';
 
-export async function copyText(text: string, container = document.body): Promise<boolean> {
+export async function copyText(text: string, container = document.activeElement?.closest<HTMLElement>('dialog,[role="dialog"]') ?? document.body): Promise<boolean> {
   try { await navigator.clipboard.writeText(text); return true; }
   catch {
+    const focused = document.activeElement;
     const input = document.createElement('textarea');
     input.value = text;
     input.style.position = 'fixed';
@@ -11,7 +12,10 @@ export async function copyText(text: string, container = document.body): Promise
     input.select();
     try { return document.execCommand('copy'); }
     catch { return false; }
-    finally { input.remove(); }
+    finally {
+      input.remove();
+      if (focused instanceof HTMLElement && focused.isConnected) focused.focus({ preventScroll: true });
+    }
   }
 }
 
