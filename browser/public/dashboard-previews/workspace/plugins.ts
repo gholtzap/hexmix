@@ -101,6 +101,8 @@ export async function pluginsPage(view = 'plugins') {
                 }
                 custom.push({ name, description });
                 installed.add(name);
+                search = name;
+                document.querySelector<HTMLInputElement>('#plug-search').value = name;
                 refresh();
                 d.close();
                 toast('Sample plugin added');
