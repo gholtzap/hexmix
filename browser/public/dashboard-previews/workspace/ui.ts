@@ -40,3 +40,4 @@ function addTooltips() {
 }
 new MutationObserver(addTooltips).observe(document.body, { childList: true, subtree: true });
 addTooltips();
+document.addEventListener('keydown', event => { if (event.key === 'Escape') document.querySelectorAll<HTMLElement>('.ui-tooltip').forEach(tip => { tip.hidden = true; }); });

@@ -30,6 +30,7 @@
         const show=()=>{tip.hidden=false;const rect=control.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(rect.left,innerWidth-tip.offsetWidth-8))+'px';tip.style.top=Math.max(8,rect.top-tip.offsetHeight-8)+'px';};
         control.addEventListener('mouseenter',show);control.addEventListener('focus',show);for(const event of ['mouseleave','blur','click'])control.addEventListener(event,()=>{tip.hidden=true;});
     };
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') document.querySelectorAll<HTMLElement>('.demo-tip').forEach(tip => { tip.hidden = true; }); });
     for (const [id, symbol] of [['display-action','square-grid-2x2'],['close-agent','xmark-md']]) {
         const control=$('#'+id);control.innerHTML=glyph(symbol);tooltip(control,control.getAttribute('aria-label'));
     }
