@@ -1,7 +1,7 @@
 import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
 import { matchesShape } from '../../share-state.ts';
 import { contextDialog } from './context.js';
-import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
+import { icon, esc, dialog, menu, toast, navigate, requireText } from './ui.js';
 const chats = ['Plan the next quarter', 'Ideas for the next project', 'Write a weekly update', 'Explore a business idea', 'Organize meeting notes', 'A shared business plan', 'Build a resource list', 'Compare design options', 'A guide to team planning', 'Explore new opportunities', 'Prepare for a presentation', 'Create a project checklist'];
 const projects = ['Design studio', 'Team planning', 'Business priorities'];
 type Message = { role: 'user' | 'assistant'; text: string; attachments?: string[] };
@@ -175,8 +175,7 @@ export function chatPage(view = 'chat') {
             document.querySelector<HTMLElement>('[data-dot]').onclick = () => contextDialog();
             renderRecents();
             document.querySelectorAll<HTMLElement>('[data-project]').forEach(b => b.onclick = () => { project = b.dataset.project; main.querySelector<HTMLElement>('.project-badge').textContent = project; input.focus(); });
-            const openNewProject = () => { rememberSharedDialog('newProject'); return dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const name = d.querySelector<HTMLInputElement>('input').value.trim(); if (!name)
-                return; projects.push(name); project = name; d.close(); navigate(view); }); };
+            const openNewProject = () => { rememberSharedDialog('newProject'); return dialog('New project', '<form><label class="field-label" for="project-name">Project name</label><input id="project-name" class="field" required maxlength="80"><div class="actions"><button class="pill primary">Create project</button></div></form>', d => d.querySelector<HTMLFormElement>('form').onsubmit = e => { e.preventDefault(); const field = d.querySelector<HTMLInputElement>('input'); if (!requireText(field)) return; const name = field.value.trim(); projects.push(name); project = name; d.close(); navigate(view); }); };
             registerSharedDialog('newProject', () => openNewProject(), value => value === null);
             document.querySelector<HTMLElement>('[data-new-project]').onclick = openNewProject;
             document.querySelector<HTMLElement>('[data-chat-options]').onclick = e => menu((e.currentTarget as HTMLElement), [{ label: 'Search chats', action: searchChats }, { label: 'New chat', action: () => newChat(view) }]);

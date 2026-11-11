@@ -1,6 +1,6 @@
 import { linkPreviewData, registerSharedDialog, rememberSharedDialog, restoreSharedDialog } from './shared.js';
 import { matchesShape } from '../../share-state.ts';
-import { icon, esc, dialog, menu, toast, navigate } from './ui.js';
+import { icon, esc, dialog, menu, toast, navigate, requireText } from './ui.js';
 const installed = new Set(['Team tool 01', 'Team tool 03', 'Team tool 35']);
 const custom = [];
 const skills = [{ name: 'Writing style', description: 'Write clear, direct answers.', content: 'Use short sentences. Give the main answer first.' }, { name: 'Code review', description: 'Review changes for errors and risks.', content: 'Check behavior, validation, and error handling. Explain each finding.' }];
@@ -91,8 +91,7 @@ export async function pluginsPage(view = 'plugins') {
             d.querySelector<HTMLFormElement>('form').onsubmit = event => {
                 event.preventDefault();
                 const form = event.currentTarget, name = ((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement).value.trim(), description = ((form as HTMLFormElement).elements.namedItem('description') as HTMLInputElement).value.trim();
-                if (!name || !description)
-                    return;
+                if (!requireText((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement) || !requireText((form as HTMLFormElement).elements.namedItem('description') as HTMLTextAreaElement)) return;
                 if (allItems().some(item => item.name.toLocaleLowerCase() === name.toLocaleLowerCase())) {
                     ((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement).setCustomValidity('A plugin with this name already exists.');
                     ((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement).oninput = () => ((form as HTMLFormElement).elements.namedItem('name') as HTMLInputElement).setCustomValidity('');
