@@ -40,12 +40,12 @@
     "test:fonts": "node scripts/check-fonts.mts",
     "test:identity": "node scripts/check-identity.mts",
     "build:browser": "node scripts/build-browser.mts",
-    "typecheck:browser": "tsc -p tsconfig.browser.json --noEmit",
-    "typecheck:scripts": "tsc -p tsconfig.scripts.json",
-    "typecheck:apps": "next typegen && tsc --noEmit",
-    "typecheck": "npm run check:typescript && npm run typecheck:browser && npm run typecheck:scripts && npm run typecheck:apps",
+    "typecheck:browser": "bun check --no-script -p tsconfig.browser.json",
+    "typecheck:scripts": "bun check --no-script -p tsconfig.scripts.json",
+    "typecheck:apps": "next typegen && bun check --no-script",
+    "typecheck": "npm run check:typescript && bun run --parallel --no-exit-on-error typecheck:browser typecheck:scripts typecheck:apps",
     "predev": "npm run build:browser",
-    "prebuild": "npm run check:typescript && npm run typecheck:scripts && npm run build:browser",
+    "prebuild": "npm run check:typescript && tsc -p tsconfig.scripts.json && npm run build:browser",
     "check:typescript": "node scripts/check-typescript.mts",
     "test:mobile": "node scripts/check-mobile.mts",
     "test:mobile:previews": "node scripts/check-mobile-previews.mts",
@@ -67,7 +67,7 @@
     "clsx": "^2.1.1",
     "fflate": "^0.8.2",
     "lucide-react": "^1.62.0",
-    "next": "^16.0.0",
+    "next": "^16.4.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.7.0"
@@ -88,5 +88,6 @@
   ],
   "engines": {
     "node": ">=24.0.0"
-  }
+  },
+  "packageManager": "bun@1.4.5"
 }
